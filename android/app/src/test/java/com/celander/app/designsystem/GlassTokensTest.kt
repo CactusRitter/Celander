@@ -67,6 +67,13 @@ class GlassTokensTest {
         for (dark in listOf(false, true)) {
             assertEquals(GlassTokens.WIDGET_MIN_ALPHA, GlassTokens.widgetAlpha(1f, dark))
             assertEquals(1f, GlassTokens.widgetAlpha(0f, dark))
+            // The whole slider shows: each 5 % step above the default makes the card a little clearer.
+            var before = GlassTokens.widgetAlpha(GlassTokens.DEFAULT_TRANSPARENCY, dark)
+            for (percent in 70..100 step 5) {
+                val now = GlassTokens.widgetAlpha(percent / 100f, dark)
+                assertTrue("$percent %", now < before)
+                before = now
+            }
         }
     }
 
