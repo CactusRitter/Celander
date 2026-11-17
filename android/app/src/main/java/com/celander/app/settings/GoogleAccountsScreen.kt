@@ -1,6 +1,8 @@
 package com.celander.app.settings
 
 import android.content.Intent
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.unit.dp
 import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -34,11 +36,10 @@ import com.celander.app.calendar.device.DeviceCalendarStatus
 import com.celander.app.calendar.device.rememberCalendarAccessRequest
 import com.celander.app.core.ui.Formats
 import com.celander.app.core.ui.rememberFormats
-import com.celander.app.designsystem.AccentButton
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.GlassDialog
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
+import com.celander.app.ui.AccentButton
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.GlassDialog
+import com.celander.app.ui.Sizes
 import com.celander.app.task.google.GoogleTasksState
 import com.celander.app.task.google.GoogleTasksStatus
 import java.time.Instant
@@ -114,9 +115,9 @@ fun GoogleAccountsScreen(
         item(key = "intro") {
             Text(
                 stringResource(R.string.google_accounts_intro),
-                style = CelanderTheme.typography.bodyMedium,
-                color = CelanderTheme.colors.textSecondary,
-                modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = Spacing.xl, vertical = Spacing.s),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
             )
         }
         settingsGroup(phoneTitle) {
@@ -142,20 +143,20 @@ fun GoogleAccountsScreen(
             }
         }
         item(key = "add") {
-            Column(Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = Spacing.xl, vertical = Spacing.m)) {
+            Column(Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp)) {
                 if (current.accounts.isEmpty()) {
                     Text(
                         stringResource(R.string.google_accounts_empty),
-                        style = CelanderTheme.typography.bodyLarge,
-                        color = CelanderTheme.colors.textPrimary,
-                        modifier = Modifier.padding(bottom = Spacing.m),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(bottom = 12.dp),
                     )
                 }
                 if (current.adding) {
                     Text(
                         current.busy?.let { stringResource(R.string.google_accounts_adding, it) } ?: stringResource(R.string.google_tasks_connecting),
-                        style = CelanderTheme.typography.bodyMedium,
-                        color = CelanderTheme.colors.textSecondary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                     )
                 } else {
@@ -176,9 +177,9 @@ fun GoogleAccountsScreen(
             item(key = "local-only") {
                 Text(
                     stringResource(R.string.google_tasks_local_only),
-                    style = CelanderTheme.typography.bodySmall,
-                    color = CelanderTheme.colors.textSecondary,
-                    modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = Spacing.xl, vertical = Spacing.xs),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
                 )
             }
         }
@@ -211,7 +212,7 @@ private fun PhoneCalendarRows(state: GoogleAccountsUiState, onShow: (Boolean) ->
             SettingsRow(
                 title = stringResource(R.string.settings_google_calendar_no_access),
                 summary = stringResource(R.string.settings_google_calendar_denied),
-                summaryColor = CelanderTheme.colors.danger,
+                summaryColor = MaterialTheme.colorScheme.error,
                 onClick = onFixAccess,
                 modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
             )
@@ -221,7 +222,7 @@ private fun PhoneCalendarRows(state: GoogleAccountsUiState, onShow: (Boolean) ->
             SettingsRow(
                 title = stringResource(R.string.settings_calendar_read_only),
                 summary = stringResource(R.string.settings_google_calendar_read_only),
-                summaryColor = CelanderTheme.colors.danger,
+                summaryColor = MaterialTheme.colorScheme.error,
                 onClick = onFixAccess,
             )
         }
@@ -244,7 +245,7 @@ private fun AccountRows(
     onRemove: () -> Unit,
 ) {
     val account = row.account
-    val danger = CelanderTheme.colors.danger
+    val danger = MaterialTheme.colorScheme.error
     val calendarTitle = stringResource(R.string.settings_google_calendar)
     when (val sync = account.calendarSync) {
         null -> SettingsRow(title = calendarTitle)
@@ -284,7 +285,7 @@ private fun AccountRows(
                     error != null -> statusText(error, null)
                     else -> stringResource(R.string.google_accounts_tasks_off)
                 },
-                summaryColor = if (error != null || !state.playServices) danger else CelanderTheme.colors.textSecondary,
+                summaryColor = if (error != null || !state.playServices) danger else MaterialTheme.colorScheme.onSurfaceVariant,
                 onClick = if (state.playServices && state.busy == null) onConnectTasks else null,
                 modifier = polite,
             )
@@ -293,7 +294,7 @@ private fun AccountRows(
             SettingsRow(
                 title = tasksTitle,
                 summary = statusText(tasks.status, tasks, formats),
-                summaryColor = if (tasks.status.isProblem) danger else CelanderTheme.colors.textSecondary,
+                summaryColor = if (tasks.status.isProblem) danger else MaterialTheme.colorScheme.onSurfaceVariant,
                 onClick = when (tasks.status) {
                     GoogleTasksStatus.NeedsReauth -> onConnectTasks
                     is GoogleTasksStatus.Failed, GoogleTasksStatus.Offline -> onSyncNow

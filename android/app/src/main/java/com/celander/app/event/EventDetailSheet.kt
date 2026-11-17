@@ -1,6 +1,8 @@
 package com.celander.app.event
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,18 +58,17 @@ import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.ReadOnlyReason
 import com.celander.app.core.recurrence.SeriesScope
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.AccentButton
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.GlassSheet
-import com.celander.app.designsystem.IconRow
-import com.celander.app.designsystem.SelectableChip
-import com.celander.app.designsystem.SkeletonRows
-import com.celander.app.designsystem.SoftButton
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.color
-import com.celander.app.designsystem.rememberGlassSheetController
-import com.celander.app.designsystem.springClickable
+import com.celander.app.ui.AccentButton
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.GlassSheet
+import com.celander.app.ui.IconRow
+import com.celander.app.ui.SelectableChip
+import com.celander.app.ui.SkeletonRows
+import com.celander.app.ui.SoftButton
+import com.celander.app.ui.color
+import com.celander.app.ui.rememberGlassSheetController
+import com.celander.app.ui.springClickable
 import java.time.ZoneId
 import kotlinx.coroutines.launch
 
@@ -100,7 +101,7 @@ fun EventDetailSheet(
         paneTitle = (state as? EventDetailUiState.Ready)?.occurrence?.title ?: stringResource(R.string.event_details),
     ) {
         when (val s = state) {
-            EventDetailUiState.Loading, is EventDetailUiState.Missing -> SkeletonRows(3, Modifier.padding(Spacing.xl))
+            EventDetailUiState.Loading, is EventDetailUiState.Missing -> SkeletonRows(3, Modifier.padding(20.dp))
             is EventDetailUiState.Ready -> DetailContent(
                 occurrence = s.occurrence,
                 formats = formats,
@@ -156,7 +157,7 @@ private fun DetailContent(
     access: EventAccess,
     onNoApp: (Int) -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val context = LocalContext.current
     val resources = LocalResources.current
     val scope = rememberCoroutineScope()
@@ -169,28 +170,28 @@ private fun DetailContent(
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = Spacing.xl)
-            .padding(bottom = Spacing.l),
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 16.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = Spacing.xs)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
             Box(Modifier.size(10.dp).background(calendarColor, CircleShape))
-            Spacer(Modifier.size(Spacing.s))
-            Text(occurrence.calendar.name, style = CelanderTheme.typography.labelLarge, color = colors.textSecondary)
+            Spacer(Modifier.size(8.dp))
+            Text(occurrence.calendar.name, style = MaterialTheme.typography.labelLarge, color = colors.onSurfaceVariant)
         }
         SelectionContainer {
             Text(
                 occurrence.title.ifBlank { stringResource(R.string.untitled) },
-                style = CelanderTheme.typography.headlineSmall,
-                color = colors.textPrimary,
-                modifier = Modifier.padding(top = Spacing.s, bottom = Spacing.m).semantics { heading() },
+                style = MaterialTheme.typography.headlineSmall,
+                color = colors.onSurface,
+                modifier = Modifier.padding(top = 8.dp, bottom = 12.dp).semantics { heading() },
             )
         }
 
         IconRow(Icons.Outlined.Schedule) {
-            Column(Modifier.padding(vertical = Spacing.xs)) {
+            Column(Modifier.padding(vertical = 4.dp)) {
                 val date = if (firstDay == lastDay) formats.capitalize(firstDay.format(formats.dayLong))
                 else stringResource(R.string.time_range, formats.capitalize(firstDay.format(formats.dayMonthShort)), formats.capitalize(lastDay.format(formats.dayLong)))
-                Text(date, style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary)
+                Text(date, style = MaterialTheme.typography.bodyLarge, color = colors.onSurface)
                 val time = when (timing) {
                     is EventTiming.AllDay -> stringResource(R.string.all_day)
                     is EventTiming.Timed -> stringResource(
@@ -199,7 +200,7 @@ private fun DetailContent(
                         timing.end.atZone(zone).format(formats.time),
                     )
                 }
-                Text(time, style = CelanderTheme.typography.bodyMedium, color = colors.textSecondary)
+                Text(time, style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
             }
         }
         val rrule = occurrence.event.rrule
@@ -207,9 +208,9 @@ private fun DetailContent(
             IconRow(Icons.Outlined.Repeat) {
                 Text(
                     RecurrenceText.describe(resources, rrule, occurrence.event.timing, formats, zone),
-                    style = CelanderTheme.typography.bodyMedium,
-                    color = colors.textPrimary,
-                    modifier = Modifier.padding(vertical = Spacing.xs),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.onSurface,
+                    modifier = Modifier.padding(vertical = 4.dp),
                 )
             }
         }
@@ -221,13 +222,13 @@ private fun DetailContent(
                     if (!openInMaps(context, occurrence.location)) onNoApp(R.string.error_no_maps_app)
                 },
             ) {
-                Text(occurrence.location, style = CelanderTheme.typography.bodyMedium, color = colors.accent, modifier = Modifier.padding(vertical = Spacing.xs))
+                Text(occurrence.location, style = MaterialTheme.typography.bodyMedium, color = colors.primary, modifier = Modifier.padding(vertical = 4.dp))
             }
         }
         if (occurrence.description.isNotBlank()) {
             IconRow(Icons.AutoMirrored.Outlined.Notes) {
                 SelectionContainer {
-                    Text(occurrence.description, style = CelanderTheme.typography.bodyMedium, color = colors.textPrimary, modifier = Modifier.padding(vertical = Spacing.s))
+                    Text(occurrence.description, style = MaterialTheme.typography.bodyMedium, color = colors.onSurface, modifier = Modifier.padding(vertical = 8.dp))
                 }
             }
         }
@@ -241,26 +242,26 @@ private fun DetailContent(
                             ?: stringResource(R.string.event_read_only_guest_plain)
                         ReadOnlyReason.NO_PERMISSION -> stringResource(R.string.event_read_only_permission)
                     },
-                    style = CelanderTheme.typography.bodyMedium,
-                    color = colors.textSecondary,
-                    modifier = Modifier.padding(vertical = Spacing.xs),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.onSurfaceVariant,
+                    modifier = Modifier.padding(vertical = 4.dp),
                 )
             }
         }
 
-        Spacer(Modifier.height(Spacing.l))
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+        Spacer(Modifier.height(16.dp))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (access.canEdit) AccentButton(stringResource(R.string.action_edit), onEdit, icon = Icons.Outlined.Edit)
             SoftButton(stringResource(R.string.action_duplicate), onDuplicate, icon = Icons.Outlined.ContentCopy)
             SoftButton(stringResource(R.string.action_share), onClick = { shareOpen = !shareOpen }, icon = Icons.Outlined.Share)
-            if (access.canDelete) SoftButton(stringResource(R.string.action_delete), onDelete, icon = Icons.Outlined.Delete, contentColor = colors.danger)
+            if (access.canDelete) SoftButton(stringResource(R.string.action_delete), onDelete, icon = Icons.Outlined.Delete, contentColor = colors.error)
         }
         AnimatedVisibility(
             shareOpen,
-            enter = CelanderTheme.motion.expandIn(),
-            exit = CelanderTheme.motion.shrinkOut(),
+            enter = LocalMotion.current.expandIn(),
+            exit = LocalMotion.current.shrinkOut(),
         ) {
-            Row(Modifier.fillMaxWidth().padding(top = Spacing.s), horizontalArrangement = Arrangement.spacedBy(Spacing.s)) {
+            Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SelectableChip(stringResource(R.string.share_as_text), selected = false, onClick = {
                     EventSharing.shareText(context, occurrence, formats, zone)
                 })

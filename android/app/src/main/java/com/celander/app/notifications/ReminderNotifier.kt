@@ -22,7 +22,7 @@ import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.Instant
 import java.time.LocalDate

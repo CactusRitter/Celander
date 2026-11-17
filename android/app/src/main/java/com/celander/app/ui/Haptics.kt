@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import android.os.Build
 import android.view.HapticFeedbackConstants

@@ -1,6 +1,9 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import com.celander.app.ui.glass.GlassKind
+import com.celander.app.ui.glass.glass
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -54,7 +57,7 @@ fun GlassSnackbarHost(
     onTimeout: (SnackbarMessage) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     val accessibility = LocalAccessibilityManager.current
     LaunchedEffect(message?.id) {
         val current = message ?: return@LaunchedEffect
@@ -79,23 +82,23 @@ fun GlassSnackbarHost(
         exit = if (motion.reduced) fadeOut(motion.fade()) else fadeOut(motion.fade()) + slideOutVertically(motion.standard()) { it / 2 },
     ) {
         val msg = shown ?: return@AnimatedVisibility
-        GlassSurface(
+        Box(
             Modifier
                 .widthIn(max = 560.dp)
                 .fillMaxWidth()
                 .blockTouchesBelow()
-                .semantics { liveRegion = LiveRegionMode.Polite },
-            shape = RoundedCornerShape(Radii.card),
+                .semantics { liveRegion = LiveRegionMode.Polite }
+                .glass(RoundedCornerShape(18.dp), GlassKind.Menu, elevation = 10.dp),
         ) {
             Row(
-                Modifier.fillMaxWidth().heightIn(min = 52.dp).padding(start = Spacing.l, end = Spacing.xs),
+                Modifier.fillMaxWidth().heightIn(min = 52.dp).padding(start = 16.dp, end = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     msg.text.asString(),
-                    style = CelanderTheme.typography.bodyMedium,
-                    color = CelanderTheme.colors.textPrimary,
-                    modifier = Modifier.weight(1f).padding(vertical = Spacing.s),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f).padding(vertical = 8.dp),
                 )
                 msg.actionLabel?.let { label -> TextAction(label.asString(), onClick = { onAction(msg) }) }
             }
@@ -105,9 +108,9 @@ fun GlassSnackbarHost(
 
 /** Pulsing placeholder block in the glass look, used instead of spinners. */
 @Composable
-fun SkeletonBlock(modifier: Modifier = Modifier, height: Dp = 16.dp, shape: RoundedCornerShape = RoundedCornerShape(Radii.chip)) {
-    val colors = CelanderTheme.colors
-    val alpha = if (CelanderTheme.motion.reduced) {
+fun SkeletonBlock(modifier: Modifier = Modifier, height: Dp = 16.dp, shape: RoundedCornerShape = RoundedCornerShape(6.dp)) {
+    val colors = MaterialTheme.colorScheme
+    val alpha = if (LocalMotion.current.reduced) {
         0.6f
     } else {
         val transition = rememberInfiniteTransition(label = "skeleton")
@@ -118,19 +121,19 @@ fun SkeletonBlock(modifier: Modifier = Modifier, height: Dp = 16.dp, shape: Roun
         modifier
             .height(height)
             .alpha(alpha)
-            .background(colors.textTertiary.copy(alpha = 0.22f), shape),
+            .background(colors.onSurfaceVariant.copy(alpha = 0.22f), shape),
     )
 }
 
 /** Skeleton list rows matching the event row layout. */
 @Composable
 fun SkeletonRows(count: Int, modifier: Modifier = Modifier) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(Spacing.l)) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
         repeat(count) { index ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 SkeletonBlock(Modifier.size(width = 4.dp, height = 36.dp))
-                Spacer(Modifier.size(Spacing.m))
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+                Spacer(Modifier.size(12.dp))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     SkeletonBlock(Modifier.fillMaxWidth(if (index % 2 == 0) 0.7f else 0.5f))
                     SkeletonBlock(Modifier.fillMaxWidth(0.35f), height = 12.dp)
                 }
@@ -149,24 +152,24 @@ fun EmptyState(
     primaryAction: Pair<String, () -> Unit>? = null,
     secondaryAction: Pair<String, () -> Unit>? = null,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Column(
-        modifier.fillMaxWidth().padding(horizontal = Spacing.xxl, vertical = Spacing.xl),
+        modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
-            Modifier.size(56.dp).background(colors.accentSoft, CircleShape),
+            Modifier.size(56.dp).background(colors.primaryContainer, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(icon, null, tint = colors.accent, modifier = Modifier.size(26.dp))
+            Icon(icon, null, tint = colors.primary, modifier = Modifier.size(26.dp))
         }
-        Spacer(Modifier.height(Spacing.l))
-        Text(title, style = CelanderTheme.typography.titleMedium, color = colors.textPrimary, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(Spacing.xs))
-        Text(message, style = CelanderTheme.typography.bodyMedium, color = colors.textSecondary, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(16.dp))
+        Text(title, style = MaterialTheme.typography.titleMedium, color = colors.onSurface, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(4.dp))
+        Text(message, style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant, textAlign = TextAlign.Center)
         if (primaryAction != null || secondaryAction != null) {
-            Spacer(Modifier.height(Spacing.l))
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalAlignment = Alignment.CenterVertically) {
+            Spacer(Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 primaryAction?.let { (label, action) -> AccentButton(label, action) }
                 secondaryAction?.let { (label, action) -> SoftButton(label, action) }
             }
@@ -177,9 +180,9 @@ fun EmptyState(
 /** Short error message with a retry action. */
 @Composable
 fun ErrorState(message: String, retryLabel: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxWidth().padding(Spacing.xxl), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(message, style = CelanderTheme.typography.bodyMedium, color = CelanderTheme.colors.textSecondary, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(Spacing.m))
+    Column(modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(message, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(12.dp))
         SoftButton(retryLabel, onRetry)
     }
 }

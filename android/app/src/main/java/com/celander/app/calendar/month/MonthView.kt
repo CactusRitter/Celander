@@ -1,6 +1,16 @@
 package com.celander.app.calendar.month
 
 import androidx.compose.foundation.background
+import com.celander.app.ui.glass.GlassKind
+import com.celander.app.ui.glass.glass
+import com.celander.app.ui.glass.fadingBottomEdge
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.isDark
+import com.celander.app.ui.today
+import com.celander.app.ui.onToday
+import com.celander.app.ui.sunday
+import com.celander.app.ui.LocalWindowLayout
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.Orientation
@@ -86,26 +96,21 @@ import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderColors
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.ChipTextStyle
-import com.celander.app.designsystem.EmptyState
-import com.celander.app.designsystem.LimitedFontScale
-import com.celander.app.designsystem.PlainIconButton
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.SkeletonRows
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.elastic
-import com.celander.app.designsystem.fadingBottomEdge
-import com.celander.app.designsystem.glassCard
-import com.celander.app.designsystem.glassTile
-import com.celander.app.designsystem.pressScale
-import com.celander.app.designsystem.pulseOn
-import com.celander.app.designsystem.rememberEntranceWindow
-import com.celander.app.designsystem.rememberHaptics
-import com.celander.app.designsystem.staggeredEntrance
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.ChipTextStyle
+import com.celander.app.ui.EmptyState
+import com.celander.app.ui.LimitedFontScale
+import com.celander.app.ui.PlainIconButton
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.SkeletonRows
+import com.celander.app.ui.elastic
+import com.celander.app.ui.glass.fadingBottomEdge
+import com.celander.app.ui.glass.pressScale
+import com.celander.app.ui.pulseOn
+import com.celander.app.ui.rememberEntranceWindow
+import com.celander.app.ui.rememberHaptics
+import com.celander.app.ui.staggeredEntrance
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -165,7 +170,7 @@ fun MonthView(
     modifier: Modifier = Modifier,
 ) {
     // Wider than tall (landscape phones and tablets, wide split screens): the day list sits beside the grid.
-    val sideBySide = CelanderTheme.window.isLandscape
+    val sideBySide = LocalWindowLayout.current.isLandscape
     val openFraction = if (sideBySide) 0.42f else 0.36f
     val month = YearMonth.from(selectedDate)
     // The list's share of the height follows the finger while swiping and a fast spring otherwise.
@@ -238,26 +243,26 @@ fun MonthView(
             vertical = false,
             panelShown = panelShown,
             panelSize = { total -> (minOf(total * openFraction, maxPanelWidth.toPx()) * swipe.progress).roundToInt() },
-            gap = { if (panelShown) Spacing.m.roundToPx() else 0 },
+            gap = { if (panelShown) 12.dp.roundToPx() else 0 },
             grid = { grid(Modifier) },
             panel = { panel(Modifier) },
             modifier = modifier
                 .fillMaxSize()
                 .then(verticalInsets)
-                .padding(horizontal = Spacing.m),
+                .padding(horizontal = 12.dp),
         )
     } else {
         PanelSplit(
             vertical = true,
             panelShown = panelShown,
             panelSize = { total -> (total * (openFraction * swipe.progress).coerceAtMost(openFraction * MAX_STRETCH)).roundToInt() },
-            gap = { (Spacing.m.toPx() * swipe.progress.coerceIn(0f, 1f)).roundToInt() },
+            gap = { (12.dp.toPx() * swipe.progress.coerceIn(0f, 1f)).roundToInt() },
             grid = { grid(Modifier) },
             panel = { panel(Modifier) },
             modifier = modifier
                 .fillMaxSize()
                 .then(verticalInsets)
-                .padding(horizontal = Spacing.s)
+                .padding(horizontal = 8.dp)
                 .onSizeChanged { swipe.panelHeight = it.height * openFraction }
                 // Swipe up opens the day list, swipe down closes it; both follow the finger.
                 .draggable(
@@ -302,15 +307,15 @@ private fun PanelSplit(
 
 @Composable
 private fun WeekdayHeader(firstDay: DayOfWeek, showWeekNumbers: Boolean, formats: Formats) {
-    val colors = CelanderTheme.colors
-    Row(Modifier.fillMaxWidth().padding(bottom = Spacing.xs).clearAndSetSemantics { }) {
+    val colors = MaterialTheme.colorScheme
+    Row(Modifier.fillMaxWidth().padding(bottom = 4.dp).clearAndSetSemantics { }) {
         if (showWeekNumbers) Spacer(Modifier.width(WeekNumberWidth))
         for (i in 0 until 7) {
             val day = firstDay.plus(i.toLong())
             Text(
                 formats.weekdayShort(day),
-                style = CelanderTheme.typography.labelMedium,
-                color = if (day == DayOfWeek.SUNDAY) colors.sunday else colors.textSecondary,
+                style = MaterialTheme.typography.labelMedium,
+                color = if (day == DayOfWeek.SUNDAY) colors.sunday else colors.onSurfaceVariant,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 modifier = Modifier.weight(1f),
@@ -376,17 +381,17 @@ private fun WeekRow(
     onDayLongPress: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Row(modifier.fillMaxWidth()) {
         if (showWeekNumbers) {
             Text(
                 CalendarMath.weekNumber(weekStart, firstDay).toString(),
-                style = CelanderTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                color = colors.textTertiary,
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                color = colors.onSurfaceVariant,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .width(WeekNumberWidth)
-                    .padding(top = Spacing.xs + 2.dp)
+                    .padding(top = 4.dp + 2.dp)
                     .clearAndSetSemantics { },
             )
         }
@@ -426,9 +431,9 @@ private fun DayCell(
     onLongPress: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val haptics = rememberHaptics()
-    val shape = RoundedCornerShape(Radii.cell)
+    val shape = RoundedCornerShape(12.dp)
     val todayLabel = stringResource(R.string.today)
     val countLabel = pluralStringResource(R.plurals.entries_count, count, count)
     val description = listOfNotNull(formats.capitalize(date.format(formats.dayMonthLong)), todayLabel.takeIf { isToday }, countLabel)
@@ -437,10 +442,10 @@ private fun DayCell(
     val source = remember { MutableInteractionSource() }
     Box(
         modifier
-            .pressScale(source, pressedScale = 0.95f)
+            .pressScale(0.95f)
             .alpha(if (inMonth) 1f else 0.5f)
             .glassTile(shape)
-            .then(if (isSelected) Modifier.border(1.5.dp, colors.accent, shape) else Modifier)
+            .then(if (isSelected) Modifier.border(1.5.dp, colors.primary, shape) else Modifier)
             .combinedClickable(
                 interactionSource = source,
                 indication = ripple(),
@@ -466,11 +471,11 @@ private fun DayCell(
             ) {
                 Text(
                     date.dayOfMonth.toString(),
-                    style = CelanderTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = when {
                         isToday -> colors.onToday
                         date.dayOfWeek == DayOfWeek.SUNDAY -> colors.sunday
-                        else -> colors.textPrimary
+                        else -> colors.onSurface
                     },
                 )
             }
@@ -489,7 +494,7 @@ private fun DayCell(
  */
 @Composable
 private fun SegmentOverlay(layout: WeekLayout) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val density = LocalDensity.current
     val styles = remember(layout, colors) { layout.segments.map { SegmentStyle.of(it, colors) } }
     // These change only when a lane comes or goes, which recomposes the "+N" labels and nothing else.
@@ -595,7 +600,7 @@ private class WeekGeometry(width: Float, height: Float, laneCount: Int, density:
 /** The colors an entry is drawn in, worked out once per composition. */
 private class SegmentStyle(val bar: Color, val chip: Color, val marker: Color, val task: Boolean) {
     companion object {
-        fun of(segment: WeekSegment, colors: CelanderColors): SegmentStyle {
+        fun of(segment: WeekSegment, colors: androidx.compose.material3.ColorScheme): SegmentStyle {
             val calendarColor = CalendarColor.fromKey(segment.entry.colorKey)
             val base = calendarColor.base(colors.isDark)
             val task = segment.entry is MonthEntry.Task
@@ -622,7 +627,7 @@ private fun DrawScope.drawSegment(segment: WeekSegment, style: SegmentStyle, geo
     val y = geometry.top(segment)
     val height = geometry.itemHeight
     if (segment.bar) {
-        val radius = CornerRadius(lerp(2.dp.toPx(), Radii.chip.toPx(), geometry.chipness))
+        val radius = CornerRadius(lerp(2.dp.toPx(), 6.dp.toPx(), geometry.chipness))
         // Square ends where the entry goes on in the week before or after.
         val startRadius = if (segment.continuesBefore) CornerRadius.Zero else radius
         val endRadius = if (segment.continuesAfter) CornerRadius.Zero else radius
@@ -656,11 +661,11 @@ private fun DrawScope.drawSegment(segment: WeekSegment, style: SegmentStyle, geo
 /** Title (and for tasks the ring) of one entry; the overlay draws the colors and sets the fade. */
 @Composable
 private fun SegmentLabel(segment: WeekSegment) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val title = segment.entry.title.ifBlank { stringResource(R.string.untitled) }
     if (segment.bar) {
-        Box(Modifier.fillMaxSize().padding(horizontal = Spacing.xs), contentAlignment = Alignment.CenterStart) {
-            Text(title, style = ChipTextStyle, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Clip)
+        Box(Modifier.fillMaxSize().padding(horizontal = 4.dp), contentAlignment = Alignment.CenterStart) {
+            Text(title, style = ChipTextStyle, color = colors.onSurface, maxLines = 1, overflow = TextOverflow.Clip)
         }
     } else {
         Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
@@ -671,7 +676,7 @@ private fun SegmentLabel(segment: WeekSegment) {
                 Spacer(Modifier.width(EventMarkerWidth))
             }
             Spacer(Modifier.width(3.dp))
-            Text(title, style = ChipTextStyle, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Clip)
+            Text(title, style = ChipTextStyle, color = colors.onSurface, maxLines = 1, overflow = TextOverflow.Clip)
         }
     }
 }
@@ -682,7 +687,7 @@ private fun MoreLabel(count: Int, long: Boolean, modifier: Modifier = Modifier) 
     Text(
         text,
         style = ChipTextStyle.copy(fontSize = 10.sp),
-        color = CelanderTheme.colors.textSecondary,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         maxLines = 1,
         modifier = modifier.padding(start = 2.dp),
     )
@@ -703,27 +708,27 @@ private fun DayPanel(
     onToggleTask: (TaskItem, Boolean) -> Unit,
     swipe: DayPanelSwipe,
 ) {
-    val colors = CelanderTheme.colors
-    Column(Modifier.fillMaxSize().glassCard()) {
+    val colors = MaterialTheme.colorScheme
+    Column(Modifier.fillMaxSize().glass(RoundedCornerShape(28.dp), GlassKind.Card, elevation = 6.dp)) {
         Row(
-            Modifier.fillMaxWidth().padding(start = Spacing.l, end = Spacing.xs, top = Spacing.s),
+            Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 date.dayOfMonth.toString(),
-                style = CelanderTheme.typography.headlineMedium,
-                color = colors.textPrimary,
+                style = MaterialTheme.typography.headlineMedium,
+                color = colors.onSurface,
             )
-            Spacer(Modifier.width(Spacing.s))
+            Spacer(Modifier.width(8.dp))
             Column(Modifier.weight(1f).semantics(mergeDescendants = true) { heading() }) {
-                Text(formats.weekdayLong(date.dayOfWeek), style = CelanderTheme.typography.titleSmall, color = colors.textPrimary)
-                Text(formats.capitalize(date.format(formats.monthYear)), style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+                Text(formats.weekdayLong(date.dayOfWeek), style = MaterialTheme.typography.titleSmall, color = colors.onSurface)
+                Text(formats.capitalize(date.format(formats.monthYear)), style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
             }
-            PlainIconButton(Icons.Rounded.Add, stringResource(R.string.action_new_event), onAdd, tint = colors.accent)
+            PlainIconButton(Icons.Rounded.Add, stringResource(R.string.action_new_event), onAdd, tint = colors.primary)
             PlainIconButton(Icons.Rounded.Close, stringResource(R.string.action_close_day), onClose)
         }
         when {
-            content == null -> SkeletonRows(3, Modifier.padding(Spacing.l))
+            content == null -> SkeletonRows(3, Modifier.padding(16.dp))
             content.isEmpty -> Column(Modifier.fillMaxSize().elastic().nestedScroll(swipe.nestedScroll).verticalScroll(rememberScrollState())) {
                 EndsPanelDragWhenGone(swipe)
                 EmptyState(
@@ -741,12 +746,12 @@ private fun DayPanel(
                 LazyColumn(
                     Modifier
                         .fillMaxSize()
-                        .then(if (listState.canScrollForward) Modifier.fadingBottomEdge(Spacing.xxl) else Modifier)
+                        .then(if (listState.canScrollForward) Modifier.fadingBottomEdge(24.dp) else Modifier)
                         .elastic()
                         // Inside the elastic edge, so a pull down at the top moves the panel instead of stretching.
                         .nestedScroll(swipe.nestedScroll),
                     state = listState,
-                    contentPadding = PaddingValues(start = Spacing.s, end = Spacing.s, top = Spacing.xs, bottom = Spacing.m),
+                    contentPadding = PaddingValues(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 12.dp),
                 ) {
                     itemsIndexed(events, key = { _, it -> "e:" + it.key }) { index, occurrence ->
                         OccurrenceRow(

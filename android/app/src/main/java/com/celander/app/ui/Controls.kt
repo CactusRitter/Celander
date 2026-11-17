@@ -1,6 +1,14 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.animation.animateColorAsState
+import com.celander.app.ui.theme.LocalSkin
+import com.celander.app.ui.theme.LocalGlass
+import com.celander.app.ui.glass.Elevation
+import com.celander.app.ui.glass.softShadow
+import com.celander.app.ui.glass.TaskCheckbox
+import com.celander.app.ui.theme.Skin
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,33 +66,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
 
-/** Round glass button for floating actions (today, search, settings). */
-@Composable
-fun GlassIconButton(
-    icon: ImageVector?,
-    contentDescription: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    tint: Color = CelanderTheme.colors.textPrimary,
-    content: (@Composable () -> Unit)? = null,
-) {
-    val source = remember { MutableInteractionSource() }
-    GlassSurface(modifier.pressScale(source).size(Sizes.touchTarget), shape = CircleShape) {
-        Box(
-            Modifier
-                .size(Sizes.touchTarget)
-                .clickable(interactionSource = source, indication = ripple(), role = Role.Button, onClick = onClick)
-                .semantics { this.contentDescription = contentDescription },
-            contentAlignment = Alignment.Center,
-        ) {
-            when {
-                content != null -> content()
-                icon != null -> Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(Sizes.icon))
-            }
-        }
-    }
-}
-
 /** Plain icon button without a surface, for use inside glass areas. */
 @Composable
 fun PlainIconButton(
@@ -92,7 +73,7 @@ fun PlainIconButton(
     contentDescription: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    tint: Color = CelanderTheme.colors.textSecondary,
+    tint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     enabled: Boolean = true,
 ) {
     Box(
@@ -115,21 +96,21 @@ fun AccentButton(
     icon: ImageVector? = null,
     enabled: Boolean = true,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Row(
         modifier
-            .springClickable(enabled = enabled, role = Role.Button, shape = PillShape, onClick = onClick)
+            .springClickable(enabled = enabled, role = Role.Button, shape = CircleShape, onClick = onClick)
             .heightIn(min = Sizes.touchTarget)
-            .background(if (enabled) colors.accent else colors.outline)
-            .padding(horizontal = Spacing.xl),
+            .background(if (enabled) colors.primary else colors.outline)
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
         if (icon != null) {
-            Icon(icon, null, tint = colors.onAccent, modifier = Modifier.size(Sizes.iconSmall + 2.dp))
-            Box(Modifier.width(Spacing.s))
+            Icon(icon, null, tint = colors.onPrimary, modifier = Modifier.size(Sizes.iconSmall + 2.dp))
+            Box(Modifier.width(8.dp))
         }
-        Text(text, style = CelanderTheme.typography.labelLarge, color = colors.onAccent, maxLines = 1)
+        Text(text, style = MaterialTheme.typography.labelLarge, color = colors.onPrimary, maxLines = 1)
     }
 }
 
@@ -139,37 +120,37 @@ fun SoftButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    contentColor: Color = CelanderTheme.colors.accent,
+    contentColor: Color = MaterialTheme.colorScheme.primary,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Row(
         modifier
-            .springClickable(role = Role.Button, shape = PillShape, onClick = onClick)
+            .springClickable(role = Role.Button, shape = CircleShape, onClick = onClick)
             .heightIn(min = Sizes.touchTarget)
-            .background(colors.accentSoft.copy(alpha = if (colors.isDark) 0.9f else 0.85f))
-            .padding(horizontal = Spacing.l),
+            .background(colors.primaryContainer.copy(alpha = if (colors.isDark) 0.9f else 0.85f))
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
         if (icon != null) {
             Icon(icon, null, tint = contentColor, modifier = Modifier.size(Sizes.iconSmall + 2.dp))
-            Box(Modifier.width(Spacing.s))
+            Box(Modifier.width(8.dp))
         }
-        Text(text, style = CelanderTheme.typography.labelLarge, color = contentColor, maxLines = 1)
+        Text(text, style = MaterialTheme.typography.labelLarge, color = contentColor, maxLines = 1)
     }
 }
 
 @Composable
-fun TextAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, color: Color = CelanderTheme.colors.accent) {
+fun TextAction(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, color: Color = MaterialTheme.colorScheme.primary) {
     Box(
         modifier
             .minimumInteractiveComponentSize()
-            .clip(PillShape)
+            .clip(CircleShape)
             .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = Spacing.m, vertical = Spacing.s),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text, style = CelanderTheme.typography.labelLarge, color = color, maxLines = 1)
+        Text(text, style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1)
     }
 }
 
@@ -183,27 +164,27 @@ fun SelectableChip(
     leading: (@Composable () -> Unit)? = null,
     role: Role = Role.RadioButton,
 ) {
-    val colors = CelanderTheme.colors
-    val bg by animateColorAsState(if (selected) colors.accentSoft else colors.tile.copy(alpha = 0.5f), CelanderTheme.motion.fade(), label = "chipBg")
+    val colors = MaterialTheme.colorScheme
+    val bg by animateColorAsState(if (selected) colors.primaryContainer else colors.surface.copy(alpha = 0.5f), LocalMotion.current.fade(), label = "chipBg")
     Row(
         modifier
             .heightIn(min = 36.dp)
             .minimumInteractiveComponentSize()
-            .clip(PillShape)
+            .clip(CircleShape)
             .background(bg)
-            .border(Sizes.hairline, if (selected) colors.accent.copy(alpha = 0.5f) else colors.outline, PillShape)
+            .border(Sizes.hairline, if (selected) colors.primary.copy(alpha = 0.5f) else colors.outline, CircleShape)
             .selectable(selected = selected, role = role, onClick = onClick)
-            .padding(horizontal = Spacing.m),
+            .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (leading != null) {
             leading()
-            Box(Modifier.width(Spacing.xs + 2.dp))
+            Box(Modifier.width(4.dp + 2.dp))
         }
         Text(
             text,
-            style = CelanderTheme.typography.labelLarge,
-            color = if (selected) colors.textPrimary else colors.textSecondary,
+            style = MaterialTheme.typography.labelLarge,
+            color = if (selected) colors.onSurface else colors.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -221,13 +202,13 @@ fun SegmentedControl(
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     val position by animateFloatAsState(selectedIndex.toFloat(), motion.standard(), label = "segment")
     BoxWithConstraints(
         modifier
             .height(Sizes.touchTarget)
-            .background(colors.segmentTrack, PillShape),
+            .background(colors.onSurface.copy(alpha = 0.08f), CircleShape),
     ) {
         val segment = maxWidth / options.size
         // Taps count over the control's full height; the pill drawn inside keeps its inset.
@@ -236,29 +217,29 @@ fun SegmentedControl(
                 .offset { IntOffset((segment * position).roundToPx(), 0) }
                 .width(segment)
                 .fillMaxHeight()
-                .padding(Spacing.xs)
-                .softShadow(PillShape, colors.shadow, Elevation.lifted)
-                .background(colors.segmentThumb, PillShape)
-                .border(Sizes.hairline, colors.segmentThumbEdge, PillShape),
+                .padding(4.dp)
+                .softShadow(CircleShape, LocalGlass.current.shadow, Elevation.lifted)
+                .background(colors.surface, CircleShape)
+                .border(Sizes.hairline, colors.outlineVariant, CircleShape),
         )
         Row(Modifier.fillMaxSize().selectableGroup()) {
             options.forEachIndexed { index, label ->
                 val selected = index == selectedIndex
-                val text by animateColorAsState(if (selected) colors.textPrimary else colors.textSecondary, motion.fade(), label = "segmentText")
+                val text by animateColorAsState(if (selected) colors.onSurface else colors.onSurfaceVariant, motion.fade(), label = "segmentText")
                 val interactions = remember { MutableInteractionSource() }
                 Box(
                     Modifier
                         .weight(1f)
                         .fillMaxHeight()
                         .selectable(selected = selected, interactionSource = interactions, indication = null, role = Role.Tab) { onSelect(index) }
-                        .padding(Spacing.xs)
-                        .clip(PillShape)
+                        .padding(4.dp)
+                        .clip(CircleShape)
                         .indication(interactions, ripple()),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         label,
-                        style = CelanderTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                         color = text,
                         maxLines = 1,
@@ -273,12 +254,12 @@ fun SegmentedControl(
 /** "− value +" for small counts such as a repeat interval; [label] describes the current value. */
 @Composable
 fun Stepper(value: Int, onValueChange: (Int) -> Unit, range: IntRange, label: String, modifier: Modifier = Modifier) {
-    Row(modifier.glassTile(PillShape), verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier.glassTile(CircleShape), verticalAlignment = Alignment.CenterVertically) {
         PlainIconButton(Icons.Rounded.Remove, stringResource(R.string.action_decrease), { onValueChange(value - 1) }, enabled = value > range.first)
         Text(
             label,
-            style = CelanderTheme.typography.labelLarge,
-            color = CelanderTheme.colors.textPrimary,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
             maxLines = 1,
             modifier = Modifier.widthIn(min = 24.dp).semantics { liveRegion = LiveRegionMode.Polite },
@@ -290,16 +271,16 @@ fun Stepper(value: Int, onValueChange: (Int) -> Unit, range: IntRange, label: St
 /** Chip for a chosen value that can be removed again, e.g. a reminder. */
 @Composable
 fun RemovableChip(text: String, removeLabel: String, onRemove: () -> Unit, modifier: Modifier = Modifier) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Row(
         modifier
             .heightIn(min = 36.dp)
-            .clip(PillShape)
-            .background(colors.accentSoft)
-            .padding(start = Spacing.m),
+            .clip(CircleShape)
+            .background(colors.primaryContainer)
+            .padding(start = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text, style = CelanderTheme.typography.labelLarge, color = colors.textPrimary, maxLines = 1)
+        Text(text, style = MaterialTheme.typography.labelLarge, color = colors.onSurface, maxLines = 1)
         Box(
             Modifier
                 .size(Sizes.touchTarget)
@@ -308,14 +289,14 @@ fun RemovableChip(text: String, removeLabel: String, onRemove: () -> Unit, modif
                 .semantics { contentDescription = removeLabel },
             contentAlignment = Alignment.Center,
         ) {
-            Icon(Icons.Rounded.Close, null, tint = colors.textSecondary, modifier = Modifier.size(Sizes.iconSmall))
+            Icon(Icons.Rounded.Close, null, tint = colors.onSurfaceVariant, modifier = Modifier.size(Sizes.iconSmall))
         }
     }
 }
 
-/** Round checkbox used for tasks everywhere (lists, timeline, agenda). */
+/** Round checkbox used for tasks everywhere (lists, timeline, agenda), in the colour of its calendar; Retro 98 draws its own. */
 @Composable
-fun TaskCheckbox(
+fun CalendarCheckbox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     color: Color,
@@ -323,10 +304,18 @@ fun TaskCheckbox(
     modifier: Modifier = Modifier,
     size: androidx.compose.ui.unit.Dp = 22.dp,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val haptics = rememberHaptics()
-    val fill by animateColorAsState(if (checked) color else Color.Transparent, CelanderTheme.motion.fade(), label = "check")
-    val checkScale by animateFloatAsState(if (checked) 1f else 0.4f, CelanderTheme.motion.bouncy(), label = "checkScale")
+    if (LocalSkin.current.skin == Skin.RETRO) {
+        TaskCheckbox(
+            checked, onCheckedChange,
+            modifier.minimumInteractiveComponentSize().semantics { this.contentDescription = contentDescription },
+            default = {},
+        )
+        return
+    }
+    val fill by animateColorAsState(if (checked) color else Color.Transparent, LocalMotion.current.fade(), label = "check")
+    val checkScale by animateFloatAsState(if (checked) 1f else 0.4f, LocalMotion.current.bouncy(), label = "checkScale")
     Box(
         modifier
             .minimumInteractiveComponentSize()
@@ -360,7 +349,7 @@ fun TaskCheckbox(
 /** Color swatch for calendar color selection; the name is announced for accessibility. */
 @Composable
 fun ColorSwatch(color: Color, selected: Boolean, label: String, onClick: () -> Unit, modifier: Modifier = Modifier, checkTint: Color = Color.White) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Box(
         modifier
             .size(Sizes.touchTarget)
@@ -374,7 +363,7 @@ fun ColorSwatch(color: Color, selected: Boolean, label: String, onClick: () -> U
                 .size(34.dp)
                 .clip(CircleShape)
                 .background(color)
-                .then(if (selected) Modifier.border(2.5.dp, colors.textPrimary, CircleShape) else Modifier),
+                .then(if (selected) Modifier.border(2.5.dp, colors.onSurface, CircleShape) else Modifier),
             contentAlignment = Alignment.Center,
         ) {
             if (selected) Icon(Icons.Rounded.Check, null, tint = checkTint, modifier = Modifier.size(18.dp))
@@ -386,15 +375,15 @@ fun ColorSwatch(color: Color, selected: Boolean, label: String, onClick: () -> U
 fun SectionTitle(text: String, modifier: Modifier = Modifier) {
     Text(
         text.uppercase(),
-        style = CelanderTheme.typography.labelMedium,
-        color = CelanderTheme.colors.textSecondary,
-        modifier = modifier.padding(horizontal = Spacing.xl, vertical = Spacing.s),
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.padding(horizontal = 20.dp, vertical = 8.dp),
     )
 }
 
 @Composable
 fun HairlineDivider(modifier: Modifier = Modifier) {
-    Box(modifier.fillMaxWidth().height(Sizes.hairline).background(CelanderTheme.colors.divider))
+    Box(modifier.fillMaxWidth().height(Sizes.hairline).background(MaterialTheme.colorScheme.outlineVariant))
 }
 
 /** A row with a leading icon slot, used in sheets and settings. */
@@ -402,7 +391,7 @@ fun HairlineDivider(modifier: Modifier = Modifier) {
 fun IconRow(
     icon: ImageVector?,
     modifier: Modifier = Modifier,
-    iconTint: Color = CelanderTheme.colors.textSecondary,
+    iconTint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     content: @Composable RowScope.() -> Unit,
 ) {
     Row(modifier.fillMaxWidth().heightIn(min = Sizes.touchTarget), verticalAlignment = Alignment.CenterVertically) {

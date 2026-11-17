@@ -13,7 +13,7 @@ import com.celander.app.core.model.Event
 import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.Task
 import com.celander.app.core.time.TimeSource
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 import com.celander.app.event.EventRepository
 import com.celander.app.settings.SettingsRepository
 import com.celander.app.task.TaskRepository

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <cache-path name="shared" path="shared/" />
+
+    <!-- The APK of a newer Celander, for Android's installer (see Updates.install) -->
+    <files-path name="updates" path="updates/" />
 </paths>

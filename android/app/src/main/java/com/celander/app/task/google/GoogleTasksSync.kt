@@ -14,7 +14,7 @@ import com.celander.app.core.googletasks.TaskFields
 import com.celander.app.core.googletasks.TaskMerge
 import com.celander.app.core.model.CalendarSource
 import com.celander.app.core.time.TimeSource
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 import com.celander.app.settings.SettingsRepository
 import java.io.IOException
 import java.time.LocalDate

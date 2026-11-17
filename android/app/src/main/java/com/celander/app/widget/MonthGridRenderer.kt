@@ -8,7 +8,7 @@ import com.celander.app.calendar.month.MonthEntry
 import com.celander.app.calendar.month.MonthLayout
 import com.celander.app.calendar.month.WeekLayout
 import com.celander.app.core.time.CalendarMath
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth

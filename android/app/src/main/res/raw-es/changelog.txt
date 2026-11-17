@@ -1,0 +1,149 @@
+## 2.0.1
+- Una sola copia de seguridad: desaparece la página aparte «Copia de ajustes». «Crear copia de seguridad» pregunta qué guardar (notas, imágenes, ajustes) e Importar restaura cualquiera de ellas.
+
+## 2.0.0
+- La copia de seguridad es ahora un solo botón: «Crear copia de seguridad» pregunta, con casillas, si guardar notas (con o sin imágenes) y/o ajustes en un único .zip.
+- Cenotes pasa a firmarse con clave propia. Hay que reinstalarla una vez: haz una copia de seguridad de tus notas y ajustes, desinstala, instala esta versión y restaura.
+
+## 1.6.1
+- Una franja detrás de la barra de estado y de la fila superior evita que las notas se mezclen con el título y los botones al desplazar la lista.
+- Diseño Brutalista: la sombra dura de la tarjeta que vuelve a la lista se ve durante toda la transición.
+
+## 1.6.0
+- Las actualizaciones se descargan ahora dentro de la app, con barra de progreso y botón Cancelar. Si se corta la conexión, la descarga sigue donde se quedó.
+- Al seleccionar notas, la selección sigue cada diseño: borde y marca propios en Brutalista, Retro 98, Papel y AMOLED.
+- Cada nota tiene ahora su propia identidad, y Cenotes recuerda las notas que borras para siempre. Es el primer paso para sincronizar entre dispositivos. Tus notas se actualizan solas la primera vez que abres la app.
+- Las copias de seguridad son ahora un .zip con tus notas y tus ajustes por separado. Al importar una, Cenotes muestra lo que lleva y pregunta qué restaurar, con casillas. Las copias hechas con versiones anteriores ya no se pueden importar.
+- Diseño Brutalista: la sombra dura de una tarjeta ya no se corta al cerrar una nota.
+- Por dentro: limpieza de código.
+
+## 1.5.1
+- Diseño Brutalista: la sombra dura de las tarjetas de nota ya no se corta al archivar, borrar o añadir una nota, ni la de la barra de búsqueda, el chip de enlace y la barra de formato al aparecer.
+
+## 1.5.0
+- Listas de casillas: un elemento con sub-elementos sangrados es ahora un desplegable. Una flecha lo pliega y despliega y, plegado, muestra cuántos van hechos (por ejemplo 2/5). Si sueltas un elemento sobre uno plegado, entra como su último sub-elemento. Marcar el padre marca todas sus hijas.
+- La lista conserva su posición al abrir una nota y volver, y al girar la pantalla. Al pasar a otra lista empieza arriba.
+
+## 1.0.2
+- Etiquetas: al abrir una etiqueta se ven también sus notas archivadas, como en Keep, y el menú lateral las cuenta. Las notas archivadas llevan un pequeño icono de archivo junto al título.
+
+## 1.0.1
+- Copia de seguridad: Importar ya deja elegir cualquier archivo, así que el .zip de una copia no sale en gris en los dispositivos que lo marcan con otro tipo. Si el archivo no es una copia de Cenotes, lo dice. Igual al importar los ajustes.
+
+## 1.0.0
+- Cenotes 1.0: la primera versión completa. Notas, listas y bloques desplegables; etiquetas y colores de nota; recordatorios a una hora o en un lugar; notas protegidas; historial de cada nota; exportar, dictar y texto de imágenes; papelera, archivo y orden a mano; widgets, tabletas y los seis diseños Ce, en inglés, español y alemán.
+- Retro 98: el botón de nota nueva tiene el mismo color que los demás botones.
+
+## 0.18.2
+- TalkBack: al seleccionar notas dice cuántas hay seleccionadas, no solo el número.
+
+## 0.18.1
+- Ajustes: las tarjetas conservan también la sombra de los lados, que antes se cortaba en el borde.
+
+## 0.18.0
+- El menú lateral es como el de Cemail: una tarjeta flotante con Ajustes en la esquina de arriba, Notas, Recordatorios, Archivo, Protegidas y Papelera como botones, y debajo tus etiquetas con su color y su número. Se cierra tocando fuera.
+
+## 0.17.2
+- Los botones, las tarjetas de Ajustes y los diálogos muestran su sombra 3D mientras aparecen, no solo al final.
+
+## 0.17.1
+- La sombra 3D (Ajustes → Apariencia) es ahora una sombra suave que eleva el cristal sobre el fondo, igual que en Cemail.
+
+## 0.17.0
+- Recordatorios en un lugar: Recordarme → En un lugar. Elige al llegar o al salir y luego un lugar guardado, Estoy aquí o una dirección que buscas. Los lugares se guardan con nombre para volver a usarlos. Cenotes pide una vez la ubicación «todo el tiempo» para avisarte aunque esté cerrado; tu ubicación no sale del dispositivo.
+- Elegir fecha y hora es ahora una tarjeta de Cenotes que sigue tu diseño, en vez del diálogo gris de Android.
+- Tabletas: la lista y la nota abierta comparten el mismo fondo, sin corte entre ellas.
+- Los textos hablan de tu dispositivo en vez de tu teléfono, y un recordatorio que se repite muestra bien su punto.
+
+## 0.16.0
+- Orden a mano: Ajustes → Notas → A mano. Mantén pulsada una nota y arrástrala a donde quieras; las demás le hacen sitio mientras la mueves.
+- Historial: ⋮ → Historial en una nota enseña cómo estaba antes de cada cambio (las 20 últimas), y Restaurar recupera cualquiera. Lo que había en pantalla también se guarda.
+- Tabletas y plegables abiertos: la lista y la nota abierta lado a lado, y Ajustes en una columna que se mueve a cualquier lado, como en Cemail. Aspecto → Lista de notas pone la lista a la izquierda o a la derecha.
+- Retro 98 y los demás diseños mantienen sus esquinas mientras una nota se abre y se cierra.
+- TalkBack: los interruptores y las opciones dicen si están activados, los colores tienen nombre, y las notas y los elementos de las listas se pueden subir y bajar sin arrastrar.
+
+## 0.15.0
+- Bloques desplegables: el nuevo icono de la barra de formato convierte una línea en un título con una flecha. Lo que escribes debajo (Intro) va dentro, y al tocar la flecha se esconde o se enseña. Pueden ir unos dentro de otros, hasta tres; Intro en una línea vacía de dentro te saca.
+- La barra de formato también tiene iconos para bloque de código y línea separadora: cada tipo de línea tiene su botón.
+
+## 0.14.0
+- Notas protegidas: ⋮ → Proteger lleva una nota a Protegidas (en el menú). Desaparece de tus notas, de la búsqueda, de los widgets y de los atajos, y solo se abre con la huella, la cara o el bloqueo de pantalla del móvil: un solo desbloqueo abre todas hasta que sales de Cenotes o pulsas Bloquear. Sus recordatorios solo dicen «Nota protegida».
+- Exportar: ⋮ → Exportar guarda o envía una nota en PDF (con sus imágenes), Markdown o texto.
+- Dictar: el micrófono de la barra de formato escribe lo que dices donde está el cursor.
+- Texto de las imágenes: en el menú de una imagen, Copiar el texto de la imagen lo lee en el móvil y lo añade debajo.
+
+## 0.13.0
+- Recordatorios: ⋮ → Recordarme en cualquier nota. Elige más tarde hoy, mañana por la mañana, este fin de semana, la semana que viene o tu propia fecha y hora, una vez o cada día, semana o mes. La notificación trae Hecho y, en los de una vez, Dentro de una hora. El chip de la campana sale en la nota y en su tarjeta, y el menú tiene una sección Recordatorios con el siguiente primero. Siguen funcionando tras reiniciar el móvil.
+- Compartir a Cenotes: comparte texto, un enlace o fotos desde cualquier app y se convierten en una nota nueva.
+- Mosaico de Ajustes rápidos: añade Nota nueva al panel de Ajustes rápidos para empezar una nota desde cualquier sitio.
+
+## 0.12.1
+- Actualizaciones: Instalar abre el instalador de Android aunque el gestor de descargas no entregue el archivo descargado (visto en el emulador, donde Instalar no hacía nada).
+
+## 0.12.0
+- Papelera: las notas eliminadas van a la papelera (en el menú, debajo de Archivo) y se borran para siempre a los 7 días. Desde allí se pueden restaurar, eliminar para siempre o vaciar la papelera entera.
+- Color de nota: da a una nota un color de fondo suave desde su menú (⋮ → Color), o a varias a la vez desde la selección.
+- Listas: lo que marcas baja al final y vuelve a subir si lo desmarcas (Ajustes → Notas), y puedes arrastrar los elementos por su asa para cambiarlos de orden.
+- Orden de las notas: última edición, fecha de creación o título (Ajustes → Notas). Las fijadas van siempre primero.
+
+## 0.11.1
+- El botón de nota nueva está abajo a la derecha, redondo y de 60 dp como el de redactar de Cemail; la búsqueda es un botón redondo arriba.
+- La barra inferior es más pequeña, con las mismas medidas que las barras de Cemail.
+- Retro 98: las casillas son como las de Windows 98 (blancas, borde hundido y tic negro).
+
+## 0.11.0
+- Cenotes se parece a Cemail: Ajustes es ahora un árbol de pantallas con filas grandes (Apariencia, Colores de etiquetas, Copia de seguridad, Copia de ajustes y Actualizaciones), con las mismas transiciones.
+- Apariencia: los seis diseños de Cemail (Cristal, Moderno, AMOLED, Retro 98, Papel y Brutalista), claro u oscuro (o el del sistema), seis estilos de fondo para el cristal (Aurora, Clásico, Neutro, Atardecer, Océano y Neón), sombra 3D y transparencia.
+- Los ocho colores de Celander y Cemail, más un color personalizado con una barra arcoíris.
+- Copia de ajustes: guarda todos los ajustes en un archivo y restáuralos aquí o en otro dispositivo.
+- Actualizaciones: Cenotes busca versiones nuevas en GitHub, las avisa arriba en tus notas y desde Ajustes → Actualizaciones se ven las novedades de cada versión.
+- Cenotes en inglés y alemán, además de español, según el idioma del teléfono.
+- Interruptores y deslizadores propios, y botones y tarjetas que se encogen al pulsarlos y rebotan, como en Cemail.
+
+## 0.10.2
+- Al reabrir una nota muy rápido, el botón atrás ya no se ignora.
+
+## 0.10.1
+- El resaltado de la píldora inferior sigue al dedo.
+
+## 0.10
+- Las notas se abren desde su tarjeta, como en Google Keep, y se puede arrastrar por la píldora inferior.
+
+## 0.9.5
+- El icono de etiqueta sale hueco cuando la nota no tiene etiquetas.
+
+## 0.9.4
+- El icono de etiqueta lleva su color y el menú se lee mejor.
+
+## 0.9.3
+- Menú lateral de cristal translúcido.
+
+## 0.9.2
+- Menú lateral estrecho, como en Google Keep.
+
+## 0.9.1
+- Colores propios para las etiquetas.
+
+## 0.9
+- Colores de etiquetas.
+
+## 0.8
+- Etiquetas, archivo, menú lateral y selección múltiple.
+
+## 0.7
+- Copia de seguridad de las notas, widgets y atajos del icono.
+
+## 0.6
+- La app pasa a llamarse Cenotes.
+
+## 0.5
+- Subtareas, enlaces que se abren e imágenes en las notas.
+
+## 0.4
+- Editor visual: casillas y formato sin ver el Markdown.
+
+## 0.3
+- Casillas de verificación y Markdown.
+
+## 0.2
+- Primera versión: notas con estilo de cristal esmerilado.

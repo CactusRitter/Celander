@@ -39,6 +39,7 @@ data class GoogleCalendarState(val status: DeviceCalendarStatus)
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
+    val backup: Backup,
     private val calendars: CalendarsRepository,
     private val samples: SampleDataRepository,
     private val reset: DataReset,

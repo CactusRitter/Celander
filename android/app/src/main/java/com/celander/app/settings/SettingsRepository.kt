@@ -10,7 +10,11 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.celander.app.designsystem.GlassTokens
+import com.celander.app.ui.glass.GlassTokens
+import com.celander.app.ui.theme.Accent
+import com.celander.app.ui.theme.Skin
+import com.celander.app.ui.theme.ThemeStyle
+import kotlin.math.roundToInt
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.json.JSONObject
 
 @Singleton
 class SettingsRepository @Inject constructor(
@@ -25,8 +30,19 @@ class SettingsRepository @Inject constructor(
 ) {
     private object Keys {
         val theme = stringPreferencesKey("theme")
-        val accentHue = floatPreferencesKey("accent_hue")
-        val glassTransparency = floatPreferencesKey("glass_transparency")
+        val accent = stringPreferencesKey("accent")
+        val customHue = floatPreferencesKey("custom_hue")
+        val themeStyle = stringPreferencesKey("theme_style")
+        val skin = stringPreferencesKey("skin")
+        val depth3d = booleanPreferencesKey("depth_3d")
+        val transparency = intPreferencesKey("transparency")
+        val checkUpdates = booleanPreferencesKey("check_updates")
+
+        /** Replaced by [customHue] (the colour picked by hue); read once to carry an earlier choice over. */
+        val legacyAccentHue = floatPreferencesKey("accent_hue")
+
+        /** Replaced by [transparency] (0–100); read once to carry an earlier choice over. */
+        val legacyGlassTransparency = floatPreferencesKey("glass_transparency")
 
         /** Replaced by [glassTransparency]; read once to carry an earlier choice over. */
         val legacyGlass = stringPreferencesKey("glass")
@@ -77,12 +93,20 @@ class SettingsRepository @Inject constructor(
 
     private fun Preferences.toSettings(): AppSettings {
         val d = AppSettings()
-        val glassTransparency = this[Keys.glassTransparency] ?: legacyTransparency(this[Keys.legacyGlass]) ?: d.glassTransparency
+        val legacyTransparency = this[Keys.legacyGlassTransparency] ?: legacyTransparency(this[Keys.legacyGlass])
+        val transparency = this[Keys.transparency] ?: legacyTransparency?.let { (it * 100).roundToInt() } ?: d.transparency
+        val accentName = this[Keys.accent]
         return AppSettings(
+            accent = accentName.toEnum(d.accent),
+            // The earlier hue picker becomes the free colour, unless a ready-made accent was chosen since.
+            customHue = this[Keys.customHue] ?: if (accentName == null) this[Keys.legacyAccentHue] else null,
             themeMode = this[Keys.theme].toEnum(d.themeMode),
-            accentHue = this[Keys.accentHue] ?: d.accentHue,
-            glassTransparency = glassTransparency,
-            widgetTransparency = this[Keys.widgetTransparency] ?: glassTransparency,
+            themeStyle = this[Keys.themeStyle].toEnum(d.themeStyle),
+            skin = this[Keys.skin].toEnum(d.skin),
+            depth3d = this[Keys.depth3d] ?: d.depth3d,
+            transparency = transparency,
+            checkUpdates = this[Keys.checkUpdates] ?: d.checkUpdates,
+            widgetTransparency = this[Keys.widgetTransparency] ?: (transparency / 100f),
             reduceMotion = this[Keys.reduceMotion] ?: d.reduceMotion,
             weekStart = this[Keys.weekStart].toEnum(d.weekStart),
             showWeekNumbers = this[Keys.weekNumbers] ?: d.showWeekNumbers,
@@ -102,8 +126,15 @@ class SettingsRepository @Inject constructor(
 
     private fun MutablePreferences.write(s: AppSettings) {
         this[Keys.theme] = s.themeMode.name
-        this[Keys.accentHue] = s.accentHue
-        this[Keys.glassTransparency] = s.glassTransparency
+        this[Keys.accent] = s.accent.name
+        if (s.customHue != null) this[Keys.customHue] = s.customHue else remove(Keys.customHue)
+        remove(Keys.legacyAccentHue)
+        this[Keys.themeStyle] = s.themeStyle.name
+        this[Keys.skin] = s.skin.name
+        this[Keys.depth3d] = s.depth3d
+        this[Keys.transparency] = s.transparency
+        this[Keys.checkUpdates] = s.checkUpdates
+        remove(Keys.legacyGlassTransparency)
         remove(Keys.legacyGlass)
         this[Keys.widgetTransparency] = s.widgetTransparency
         this[Keys.reduceMotion] = s.reduceMotion
@@ -121,5 +152,56 @@ class SettingsRepository @Inject constructor(
         this[Keys.eventReminders] = s.eventReminders.joinToString(",")
         this[Keys.allDayReminders] = s.allDayReminders.joinToString(",")
         this[Keys.taskReminders] = s.taskReminders.joinToString(",")
+    }
+
+    /**
+     * Every setting that is not tied to this phone, as JSON for the backup (the same format as Cemail's and Cenotes', with
+     * "app": "celander"). The default calendars and the choice about the phone's calendars are ids and choices of this
+     * phone: left out.
+     */
+    suspend fun exportJson(): String {
+        val values = JSONObject()
+        dataStore.data.first().asMap().forEach { (key, value) ->
+            if (key.name in PhoneBound) return@forEach
+            val typed = when (value) {
+                is Boolean -> JSONObject().put("b", value)
+                is Int -> JSONObject().put("i", value)
+                is Long -> JSONObject().put("l", value)
+                is Float -> JSONObject().put("f", value.toDouble())
+                is String -> JSONObject().put("s", value)
+                else -> null
+            }
+            if (typed != null) values.put(key.name, typed)
+        }
+        return JSONObject().put("app", "celander").put("format", 1).put("settings", values).toString(2)
+    }
+
+    /** Applies settings made by [exportJson]; returns false (and changes nothing) if [text] is not one. */
+    suspend fun importJson(text: String): Boolean {
+        val root = runCatching { JSONObject(text) }.getOrNull() ?: return false
+        if (root.optString("app") != "celander") return false
+        val values = root.optJSONObject("settings") ?: return false
+        dataStore.edit { prefs ->
+            values.keys().forEach { name ->
+                if (name in PhoneBound) return@forEach
+                val typed = values.optJSONObject(name) ?: return@forEach
+                when {
+                    typed.has("b") -> prefs[booleanPreferencesKey(name)] = typed.getBoolean("b")
+                    typed.has("i") -> prefs[intPreferencesKey(name)] = typed.getInt("i")
+                    typed.has("l") -> prefs[longPreferencesKey(name)] = typed.getLong("l")
+                    typed.has("f") -> prefs[floatPreferencesKey(name)] = typed.getDouble("f").toFloat()
+                    typed.has("s") -> prefs[stringPreferencesKey(name)] = typed.getString("s")
+                }
+            }
+        }
+        return true
+    }
+
+    private companion object {
+        /** Ids of this phone's calendars and the choice about showing them: not part of a backup. */
+        val PhoneBound = setOf(
+            "default_calendar", "last_used_calendar", "default_task_calendar", "last_used_task_calendar",
+            "device_calendars", "device_calendars_choice",
+        )
     }
 }

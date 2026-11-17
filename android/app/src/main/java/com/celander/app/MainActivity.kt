@@ -29,12 +29,13 @@ import com.celander.app.calendar.LaunchRequests
 import com.celander.app.calendar.LocalKeyboardShortcuts
 import com.celander.app.calendar.ViewRequest
 import com.celander.app.core.time.TimeSource
-import com.celander.app.designsystem.CelanderTheme
+import com.celander.app.ui.theme.CelanderTheme
 import com.celander.app.notifications.ReminderKind
 import com.celander.app.notifications.ReminderNotifier
 import com.celander.app.notifications.reminder
 import com.celander.app.settings.SettingsRepository
-import com.celander.app.settings.ThemeMode
+import com.celander.app.ui.CalendarEnvironment
+import com.celander.app.ui.theme.isDarkNow
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import javax.inject.Inject
@@ -61,21 +62,14 @@ class MainActivity : ComponentActivity() {
         val initialSettings = runBlocking { settingsRepository.current() }
         setContent {
             val settings by settingsRepository.settings.collectAsStateWithLifecycle(initialSettings)
-            val dark = when (settings.themeMode) {
-                ThemeMode.SYSTEM -> isSystemInDarkTheme()
-                ThemeMode.LIGHT -> false
-                ThemeMode.DARK -> true
-            }
+            val dark = settings.isDarkNow()
             SystemBars(dark)
-            CelanderTheme(
-                darkTheme = dark,
-                accentHue = settings.accentHue,
-                glassTransparency = settings.glassTransparency,
-                reduceMotion = settings.reduceMotion || systemAnimationsOff(),
-            ) {
+            CelanderTheme(settings) {
+              CalendarEnvironment(reduceMotion = settings.reduceMotion || systemAnimationsOff()) {
                 CompositionLocalProvider(LocalKeyboardShortcuts provides keyboardShortcuts) {
                     CelanderNavHost(launchRequests)
                 }
+              }
             }
         }
     }

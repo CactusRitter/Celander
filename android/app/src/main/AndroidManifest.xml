@@ -29,7 +29,7 @@
     </queries>
 
     <application
-        android:name=".CelanderApplication"
+        android:name=".CelanderApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -173,7 +173,7 @@
         <!-- Shares .ics files of single events with other apps. -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
+            android:authorities="${applicationId}.files"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

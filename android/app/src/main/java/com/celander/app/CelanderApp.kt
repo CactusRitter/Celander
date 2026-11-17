@@ -9,6 +9,7 @@ import com.celander.app.core.di.ApplicationScope
 import com.celander.app.notifications.ReminderNotifier
 import com.celander.app.notifications.ReminderScheduler
 import com.celander.app.task.google.GoogleTasksSyncTrigger
+import com.celander.app.update.Updates
 import com.celander.app.widget.WidgetUpdater
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -16,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @HiltAndroidApp
-class CelanderApplication : Application() {
+class CelanderApp : Application() {
     @Inject lateinit var calendars: CalendarsRepository
 
     @Inject lateinit var notifier: ReminderNotifier
@@ -31,6 +32,9 @@ class CelanderApplication : Application() {
 
     @Inject @ApplicationScope
     lateinit var scope: CoroutineScope
+
+    /** New versions published on GitHub (Settings → Updates and the notice at the top of the calendar). */
+    val updates: Updates by lazy { Updates(this) }
 
     override fun onCreate() {
         super.onCreate()

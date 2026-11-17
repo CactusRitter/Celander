@@ -1,6 +1,8 @@
 package com.celander.app.event
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,10 +43,9 @@ import com.celander.app.R
 import com.celander.app.calendar.components.DateGridPicker
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.SelectableChip
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.Stepper
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.SelectableChip
+import com.celander.app.ui.Stepper
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -60,8 +61,8 @@ fun RepeatSection(
     formats: Formats,
     onChange: (RepeatSpec) -> Unit,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     var expanded by rememberSaveable { mutableStateOf(false) }
     val rotation by animateFloatAsState(if (expanded) 180f else 0f, motion.standard(), label = "repeatChevron")
 
@@ -71,19 +72,19 @@ fun RepeatSection(
         modifier = Modifier.toggleable(value = expanded, role = Role.Button, onValueChange = { expanded = it }),
     ) {
         Column(Modifier.weight(1f)) {
-            Text(stringResource(R.string.editor_repeat), style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary)
-            Text(summary, style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+            Text(stringResource(R.string.editor_repeat), style = MaterialTheme.typography.bodyLarge, color = colors.onSurface)
+            Text(summary, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
         }
-        Icon(Icons.Rounded.ExpandMore, null, tint = colors.textSecondary, modifier = Modifier.rotate(rotation))
+        Icon(Icons.Rounded.ExpandMore, null, tint = colors.onSurfaceVariant, modifier = Modifier.rotate(rotation))
     }
     AnimatedVisibility(
         expanded,
         enter = motion.expandIn(),
         exit = motion.shrinkOut(),
     ) {
-        Column(Modifier.padding(start = 44.dp, bottom = Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+        Column(Modifier.padding(start = 44.dp, bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val monthly = spec.kind == RepeatKind.MONTHLY_DATE || spec.kind == RepeatKind.MONTHLY_LAST_DAY || spec.kind == RepeatKind.MONTHLY_WEEKDAY
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 RepeatChoice(R.string.repeat_none, spec.kind == RepeatKind.NONE) { onChange(RepeatSpec()) }
                 RepeatChoice(R.string.repeat_daily, spec.kind == RepeatKind.DAILY) { onChange(spec.switchTo(RepeatKind.DAILY)) }
                 RepeatChoice(R.string.repeat_weekly, spec.kind == RepeatKind.WEEKLY) {
@@ -99,7 +100,7 @@ fun RepeatSection(
                     val resources = LocalResources.current
                     val ordinal = RepeatRules.weekdayOrdinal(start)
                     val ordinalText = if (ordinal == -1) resources.getString(R.string.repeat_last) else resources.getStringArray(R.array.repeat_ordinals)[ordinal - 1]
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         SelectableChip(
                             stringResource(R.string.repeat_monthly_on_date, start.dayOfMonth),
                             selected = spec.kind == RepeatKind.MONTHLY_DATE,
@@ -154,7 +155,7 @@ private fun intervalLabel(spec: RepeatSpec): String {
 
 @Composable
 private fun WeekdayPicker(selected: Set<DayOfWeek>, start: LocalDate, firstDay: DayOfWeek, formats: Formats, onChange: (Set<DayOfWeek>) -> Unit) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val days = CalendarMath.weekDays(start, firstDay).map { it.dayOfWeek }
     val chosen = selected.ifEmpty { setOf(start.dayOfWeek) }
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -164,8 +165,8 @@ private fun WeekdayPicker(selected: Set<DayOfWeek>, start: LocalDate, firstDay: 
                 Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(if (on) colors.accent else Color.Transparent)
-                    .border(1.dp, if (on) colors.accent else colors.outline, CircleShape)
+                    .background(if (on) colors.primary else Color.Transparent)
+                    .border(1.dp, if (on) colors.primary else colors.outline, CircleShape)
                     .toggleable(value = on, role = Role.Checkbox) { checked ->
                         // At least one weekday stays selected.
                         val next = if (checked) chosen + day else chosen - day
@@ -174,7 +175,7 @@ private fun WeekdayPicker(selected: Set<DayOfWeek>, start: LocalDate, firstDay: 
                     .semantics { contentDescription = formats.weekdayLong(day) },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(formats.weekdayNarrow(day), style = CelanderTheme.typography.labelLarge, color = if (on) colors.onAccent else colors.textPrimary)
+                Text(formats.weekdayNarrow(day), style = MaterialTheme.typography.labelLarge, color = if (on) colors.onPrimary else colors.onSurface)
             }
         }
     }
@@ -183,12 +184,12 @@ private fun WeekdayPicker(selected: Set<DayOfWeek>, start: LocalDate, firstDay: 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RepeatEndChooser(spec: RepeatSpec, start: LocalDate, today: LocalDate, firstDay: DayOfWeek, formats: Formats, onChange: (RepeatSpec) -> Unit) {
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     var pickDate by rememberSaveable { mutableStateOf(false) }
     val until = spec.until ?: start.plusMonths(1)
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
-        Text(stringResource(R.string.repeat_ends), style = CelanderTheme.typography.labelMedium, color = CelanderTheme.colors.textSecondary)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.repeat_ends), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             SelectableChip(stringResource(R.string.repeat_end_never), spec.end == RepeatEnd.NEVER, onClick = { onChange(spec.copy(end = RepeatEnd.NEVER)) })
             SelectableChip(
                 if (spec.end == RepeatEnd.UNTIL) stringResource(R.string.repeat_until, formats.capitalize(until.format(formats.dateMedium)))

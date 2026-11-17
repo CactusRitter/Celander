@@ -1,6 +1,10 @@
 package com.celander.app.calendar
 
 import androidx.annotation.StringRes
+import com.celander.app.ui.glass.GlassKind
+import com.celander.app.ui.glass.glass
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
@@ -53,14 +57,11 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.GlassSurface
-import com.celander.app.designsystem.PillShape
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.blockTouchesBelow
-import com.celander.app.designsystem.rememberHaptics
-import com.celander.app.designsystem.springClickable
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.blockTouchesBelow
+import com.celander.app.ui.rememberHaptics
+import com.celander.app.ui.springClickable
 import kotlinx.coroutines.launch
 
 val HomeDestination.icon: ImageVector
@@ -102,11 +103,11 @@ fun NavigationPill(
     onContextClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
 
     Box(modifier, contentAlignment = Alignment.Center) {
-        val outerPadding = Spacing.xs + 2.dp
-        val motion = CelanderTheme.motion
+        val outerPadding = 4.dp + 2.dp
+        val motion = LocalMotion.current
         val haptics = rememberHaptics()
         val scope = rememberCoroutineScope()
         val currentOnSelect by rememberUpdatedState(onSelect)
@@ -143,8 +144,9 @@ fun NavigationPill(
 
         // blockTouchesBelow consumes presses on their way out of the pill, so the slide also takes
         // a down that is already consumed.
-        GlassSurface(
+        Box(
             Modifier
+                .glass(CircleShape, GlassKind.Chrome, elevation = 10.dp)
                 .pointerInput(destinations) {
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)
@@ -177,7 +179,6 @@ fun NavigationPill(
                     }
                 }
                 .blockTouchesBelow(),
-            shape = PillShape,
         ) {
             Box(
                 Modifier
@@ -186,7 +187,7 @@ fun NavigationPill(
                         if (!placed) return@drawBehind
                         val height = Sizes.pillAddButton.toPx()
                         drawRoundRect(
-                            color = colors.accentSoft,
+                            color = colors.primaryContainer,
                             topLeft = Offset(center.value - width.value / 2, (size.height - height) / 2),
                             size = Size(width.value, height),
                             cornerRadius = CornerRadius(height / 2),
@@ -239,7 +240,7 @@ private data class SegmentBounds(val left: Float, val right: Float) {
 @Composable
 private fun IconSegment(destination: HomeDestination, highlighted: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val name = stringResource(destination.label)
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Box(
         modifier
             .size(Sizes.pillSegment)
@@ -251,32 +252,32 @@ private fun IconSegment(destination: HomeDestination, highlighted: Boolean, modi
             },
         contentAlignment = Alignment.Center,
     ) {
-        Icon(destination.icon, null, tint = if (highlighted) colors.accent else colors.textSecondary, modifier = Modifier.size(Sizes.icon))
+        Icon(destination.icon, null, tint = if (highlighted) colors.primary else colors.onSurfaceVariant, modifier = Modifier.size(Sizes.icon))
     }
 }
 
 @Composable
 private fun ActiveSegment(destination: HomeDestination, onContextClick: (() -> Unit)?, modifier: Modifier) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val name = stringResource(destination.label)
     val pickDate = stringResource(R.string.pill_pick_date)
     // The tinted container behind it is drawn by the pill, so it can follow a finger.
     Row(
         modifier
             .height(Sizes.pillAddButton)
-            .springClickable(enabled = onContextClick != null, onClickLabel = pickDate, shape = PillShape) { onContextClick?.invoke() }
+            .springClickable(enabled = onContextClick != null, onClickLabel = pickDate, shape = CircleShape) { onContextClick?.invoke() }
             .semantics {
                 role = Role.Tab
                 selected = true
                 contentDescription = name
             }
-            .padding(horizontal = Spacing.m - 2.dp),
+            .padding(horizontal = 12.dp - 2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(destination.icon, null, tint = colors.accent, modifier = Modifier.size(Sizes.icon))
+        Icon(destination.icon, null, tint = colors.primary, modifier = Modifier.size(Sizes.icon))
         if (onContextClick != null) {
-            Spacer(Modifier.width(Spacing.xxs))
-            Icon(Icons.Rounded.ExpandMore, null, tint = colors.textSecondary, modifier = Modifier.size(ChevronSize))
+            Spacer(Modifier.width(2.dp))
+            Icon(Icons.Rounded.ExpandMore, null, tint = colors.onSurfaceVariant, modifier = Modifier.size(ChevronSize))
         }
     }
 }
@@ -285,8 +286,8 @@ private fun ActiveSegment(destination: HomeDestination, onContextClick: (() -> U
 private fun PillDivider() {
     Box(
         Modifier
-            .padding(horizontal = Spacing.xs)
+            .padding(horizontal = 4.dp)
             .size(width = Sizes.hairline, height = 24.dp)
-            .background(CelanderTheme.colors.outline),
+            .background(MaterialTheme.colorScheme.outline),
     )
 }

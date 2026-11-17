@@ -18,7 +18,7 @@ import com.celander.app.core.ical.IcsMapper
 import com.celander.app.core.model.AccountStatus
 import com.celander.app.core.model.CalendarSource
 import com.celander.app.core.model.SyncState
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 
 /** How a sync of an account ended. */
 sealed interface SyncOutcome {

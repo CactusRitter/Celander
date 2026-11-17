@@ -1,6 +1,7 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.annotation.StringRes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
@@ -107,8 +108,8 @@ enum class CalendarColor(
 
 @Composable
 @ReadOnlyComposable
-fun CalendarColor.color(): Color = base(CelanderTheme.colors.isDark)
+fun CalendarColor.color(): Color = base(MaterialTheme.colorScheme.isDark)
 
 @Composable
 @ReadOnlyComposable
-fun CalendarColor.containerColor(): Color = CelanderTheme.colors.let { container(it.isDark, it.surface) }
+fun CalendarColor.containerColor(): Color = MaterialTheme.colorScheme.let { container(it.isDark, it.surface) }

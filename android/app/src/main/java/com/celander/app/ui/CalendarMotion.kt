@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -25,6 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.celander.app.ui.glass.pressScale
 import kotlinx.coroutines.delay
 
 /**
@@ -43,22 +44,6 @@ fun Modifier.blockTouchesBelow(): Modifier = pointerInput(Unit) {
     }
 }
 
-/** Shrinks the element slightly while pressed, giving tactile feedback without moving layout. */
-@Composable
-fun Modifier.pressScale(interactionSource: InteractionSource, pressedScale: Float = MotionTokens.PRESS_SCALE): Modifier {
-    if (CelanderTheme.motion.reduced) return this
-    val pressed by interactionSource.collectIsPressedAsState()
-    val scale by animateFloatAsState(
-        targetValue = if (pressed) pressedScale else 1f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
-        label = "pressScale",
-    )
-    return graphicsLayer {
-        scaleX = scale
-        scaleY = scale
-    }
-}
-
 /** clickable + ripple + press scale; place it before background/clip so the whole element scales. */
 @Composable
 fun Modifier.springClickable(
@@ -69,12 +54,9 @@ fun Modifier.springClickable(
     pressedScale: Float = MotionTokens.PRESS_SCALE,
     onClick: () -> Unit,
 ): Modifier {
-    val source = remember { MutableInteractionSource() }
-    return pressScale(source, pressedScale)
+    return pressScale(pressedScale)
         .then(if (shape != null) Modifier.clip(shape) else Modifier)
         .clickable(
-            interactionSource = source,
-            indication = ripple(),
             enabled = enabled,
             onClickLabel = onClickLabel,
             role = role,
@@ -99,7 +81,7 @@ fun rememberEntranceWindow(key: Any?): State<Boolean> {
 /** Fades and lifts an item in with a staggered delay when [enabled]. */
 @Composable
 fun Modifier.staggeredEntrance(index: Int, enabled: Boolean): Modifier {
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     if (!enabled || motion.reduced) return this
     val progress = remember { Animatable(0f) }
     val offsetPx = with(LocalDensity.current) { 12.dp.toPx() }
@@ -116,7 +98,7 @@ fun Modifier.staggeredEntrance(index: Int, enabled: Boolean): Modifier {
 /** Briefly enlarges the element whenever [trigger] changes (used for "today" after a jump). */
 @Composable
 fun Modifier.pulseOn(trigger: Int, enabled: Boolean = true): Modifier {
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     val scale = remember { Animatable(1f) }
     val initial = remember { trigger }
     LaunchedEffect(trigger) {

@@ -5,7 +5,7 @@ import android.graphics.RectF
 import androidx.compose.ui.graphics.toArgb
 import com.celander.app.calendar.CalendarWindow
 import com.celander.app.core.time.CalendarMath
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth

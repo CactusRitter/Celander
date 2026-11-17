@@ -1,6 +1,7 @@
 package com.celander.app
 
 import androidx.activity.compose.BackHandler
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,10 +16,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.celander.app.calendar.HomeScreen
 import com.celander.app.calendar.LaunchRequests
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.MotionTokens
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.MotionTokens
 import com.celander.app.settings.CalendarsScreen
-import com.celander.app.settings.DesignScreen
 import com.celander.app.settings.GoogleAccountsScreen
 import com.celander.app.settings.LicensesScreen
 import com.celander.app.settings.SettingsScreen
@@ -29,9 +29,6 @@ object HomeRoute
 
 @Serializable
 object SettingsRoute
-
-@Serializable
-object DesignRoute
 
 @Serializable
 object CalendarsRoute
@@ -49,7 +46,7 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
     LaunchedEffect(launchRequests) {
         launchRequests.arrivals.collect { navController.popBackStack(HomeRoute, inclusive = false) }
     }
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     val reduced = motion.reduced
     // Pages sit side by side: forward, the new page pushes the old one out to the left; back, the page
     // slides out to the right and pulls the one below back in. Both move the full width on one eased curve.
@@ -76,15 +73,11 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
             Page(navController) { back ->
                 SettingsScreen(
                     onBack = back,
-                    onOpenDesign = { navController.navigate(DesignRoute) },
                     onOpenCalendars = { navController.navigate(CalendarsRoute) },
                     onOpenLicenses = { navController.navigate(LicensesRoute) },
                     onOpenGoogleAccounts = { navController.navigate(GoogleAccountsRoute) },
                 )
             }
-        }
-        composable<DesignRoute> {
-            Page(navController) { back -> DesignScreen(onBack = back) }
         }
         composable<CalendarsRoute> {
             Page(navController) { back -> CalendarsScreen(onBack = back) }

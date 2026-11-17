@@ -1,6 +1,7 @@
 package com.celander.app.calendar.month
 
 import androidx.compose.animation.core.AnimationSpec
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.core.animate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -15,9 +16,9 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Velocity
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.MotionTokens
-import com.celander.app.designsystem.rubberBand
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.MotionTokens
+import com.celander.app.ui.rubberBand
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -157,7 +158,7 @@ internal class DayPanelSwipe(
 @Composable
 internal fun rememberDayPanelSwipe(): DayPanelSwipe {
     val scope = rememberCoroutineScope()
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     val density = LocalDensity.current
     return remember(motion.reduced, density) {
         with(density) {

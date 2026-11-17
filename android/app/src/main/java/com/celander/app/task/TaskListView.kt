@@ -1,6 +1,10 @@
 package com.celander.app.task
 
 import androidx.compose.animation.AnimatedVisibility
+import com.celander.app.ui.glass.fadingTopEdge
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -57,17 +61,14 @@ import com.celander.app.R
 import com.celander.app.calendar.components.TaskRow
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.EmptyState
-import com.celander.app.designsystem.PlainIconButton
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.SkeletonRows
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.centeringPadding
-import com.celander.app.designsystem.elastic
-import com.celander.app.designsystem.fadingTopEdge
-import com.celander.app.designsystem.glassTile
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.EmptyState
+import com.celander.app.ui.PlainIconButton
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.SkeletonRows
+import com.celander.app.ui.centeringPadding
+import com.celander.app.ui.elastic
+import com.celander.app.ui.glass.fadingTopEdge
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -96,26 +97,26 @@ fun TaskListView(
 
     BoxWithConstraints(modifier.fillMaxSize()) {
         // Rows stay at a readable width in wide windows; the whole width still scrolls.
-        val side = centeringPadding(maxWidth, Sizes.maxListWidth, Spacing.m)
-        val skeletonSide = centeringPadding(maxWidth, Sizes.maxListWidth, Spacing.xl)
+        val side = centeringPadding(maxWidth, Sizes.maxListWidth, 12.dp)
+        val skeletonSide = centeringPadding(maxWidth, Sizes.maxListWidth, 20.dp)
         Column(Modifier.fillMaxSize().padding(top = contentPadding.calculateTopPadding())) {
-            QuickAddField(onQuickAdd, Modifier.padding(horizontal = side, vertical = Spacing.xs))
+            QuickAddField(onQuickAdd, Modifier.padding(horizontal = side, vertical = 4.dp))
             when {
-                sections == null -> SkeletonRows(5, Modifier.padding(horizontal = skeletonSide, vertical = Spacing.l))
+                sections == null -> SkeletonRows(5, Modifier.padding(horizontal = skeletonSide, vertical = 16.dp))
                 sections.isEmpty() -> EmptyState(
                     icon = Icons.Outlined.TaskAlt,
                     title = stringResource(R.string.tasks_empty_title),
                     message = stringResource(R.string.tasks_empty_message),
                     primaryAction = stringResource(R.string.editor_new_task) to onNewTask,
-                    modifier = Modifier.padding(top = Spacing.xl),
+                    modifier = Modifier.padding(top = 20.dp),
                 )
                 else -> LazyColumn(
-                    modifier = Modifier.fillMaxSize().fadingTopEdge(Spacing.m).elastic(),
+                    modifier = Modifier.fillMaxSize().fadingTopEdge(12.dp).elastic(),
                     contentPadding = PaddingValues(
                         start = side,
                         end = side,
-                        top = Spacing.s,
-                        bottom = bottom + Spacing.l,
+                        top = 8.dp,
+                        bottom = bottom + 16.dp,
                     ),
                 ) {
                     if (sections.all { it.group == TaskGroup.DONE }) {
@@ -170,46 +171,46 @@ private fun LazyListScope.taskRows(
 
 @Composable
 private fun SectionHeader(group: TaskGroup, count: Int, modifier: Modifier = Modifier) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Row(
-        modifier.fillMaxWidth().padding(start = Spacing.s, top = Spacing.l, bottom = Spacing.xs).semantics(mergeDescendants = true) { heading() },
+        modifier.fillMaxWidth().padding(start = 8.dp, top = 16.dp, bottom = 4.dp).semantics(mergeDescendants = true) { heading() },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             stringResource(group.label),
-            style = CelanderTheme.typography.titleSmall,
+            style = MaterialTheme.typography.titleSmall,
             // Overdue is highlighted, but only in the header, not as a red list.
-            color = if (group == TaskGroup.OVERDUE) colors.danger else colors.textPrimary,
+            color = if (group == TaskGroup.OVERDUE) colors.error else colors.onSurface,
         )
         Text(
             "  $count",
-            style = CelanderTheme.typography.labelLarge,
-            color = colors.textTertiary,
+            style = MaterialTheme.typography.labelLarge,
+            color = colors.onSurfaceVariant,
         )
     }
 }
 
 @Composable
 private fun DoneHeader(count: Int, expanded: Boolean, onExpandedChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    val colors = CelanderTheme.colors
-    val rotation by animateFloatAsState(if (expanded) 180f else 0f, CelanderTheme.motion.standard(), label = "doneChevron")
+    val colors = MaterialTheme.colorScheme
+    val rotation by animateFloatAsState(if (expanded) 180f else 0f, LocalMotion.current.standard(), label = "doneChevron")
     Row(
         modifier
             .fillMaxWidth()
-            .padding(top = Spacing.l)
+            .padding(top = 16.dp)
             .heightIn(min = Sizes.touchTarget)
             .toggleable(value = expanded, role = Role.Button, onValueChange = onExpandedChange)
             .semantics(mergeDescendants = true) { heading() }
-            .padding(start = Spacing.s),
+            .padding(start = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(stringResource(TaskGroup.DONE.label), style = CelanderTheme.typography.titleSmall, color = colors.textSecondary)
-        Text("  $count", style = CelanderTheme.typography.labelLarge, color = colors.textTertiary, modifier = Modifier.weight(1f))
+        Text(stringResource(TaskGroup.DONE.label), style = MaterialTheme.typography.titleSmall, color = colors.onSurfaceVariant)
+        Text("  $count", style = MaterialTheme.typography.labelLarge, color = colors.onSurfaceVariant, modifier = Modifier.weight(1f))
         Box(Modifier.size(Sizes.touchTarget), contentAlignment = Alignment.Center) {
             Icon(
                 Icons.Rounded.ExpandMore,
                 contentDescription = stringResource(if (expanded) R.string.tasks_hide_done else R.string.tasks_show_done),
-                tint = colors.textSecondary,
+                tint = colors.onSurfaceVariant,
                 modifier = Modifier.rotate(rotation),
             )
         }
@@ -218,8 +219,8 @@ private fun DoneHeader(count: Int, expanded: Boolean, onExpandedChange: (Boolean
 
 @Composable
 private fun QuickAddField(onAdd: (String) -> Unit, modifier: Modifier = Modifier) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     var text by rememberSaveable { mutableStateOf("") }
     val placeholder = stringResource(R.string.tasks_quick_add)
     val submit = {
@@ -233,25 +234,25 @@ private fun QuickAddField(onAdd: (String) -> Unit, modifier: Modifier = Modifier
         modifier
             .fillMaxWidth()
             .heightIn(min = 52.dp)
-            .glassTile(RoundedCornerShape(Radii.card))
-            .padding(start = Spacing.m, end = Spacing.xs),
+            .glassTile(RoundedCornerShape(18.dp))
+            .padding(start = 12.dp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(Icons.Rounded.Add, null, tint = colors.accent, modifier = Modifier.size(Sizes.icon))
-        Box(Modifier.width(Spacing.m))
+        Icon(Icons.Rounded.Add, null, tint = colors.primary, modifier = Modifier.size(Sizes.icon))
+        Box(Modifier.width(12.dp))
         BasicTextField(
             value = text,
             onValueChange = { text = it },
             singleLine = true,
-            textStyle = CelanderTheme.typography.bodyLarge.copy(color = colors.textPrimary),
-            cursorBrush = SolidColor(colors.accent),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = colors.onSurface),
+            cursorBrush = SolidColor(colors.primary),
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
             // Keeps the keyboard open so several tasks can be noted in a row.
             keyboardActions = KeyboardActions(onDone = { submit() }),
             modifier = Modifier.weight(1f).semantics { contentDescription = placeholder },
             decorationBox = { inner ->
                 Box {
-                    if (text.isEmpty()) Text(placeholder, style = CelanderTheme.typography.bodyLarge, color = colors.textTertiary)
+                    if (text.isEmpty()) Text(placeholder, style = MaterialTheme.typography.bodyLarge, color = colors.onSurfaceVariant)
                     inner()
                 }
             },
@@ -261,7 +262,7 @@ private fun QuickAddField(onAdd: (String) -> Unit, modifier: Modifier = Modifier
             enter = fadeIn(motion.fade()) + scaleIn(motion.standard(), initialScale = 0.6f),
             exit = fadeOut(motion.fade()) + scaleOut(motion.standard(), targetScale = 0.6f),
         ) {
-            PlainIconButton(Icons.Rounded.ArrowUpward, stringResource(R.string.tasks_quick_add_send), { submit() }, tint = colors.accent)
+            PlainIconButton(Icons.Rounded.ArrowUpward, stringResource(R.string.tasks_quick_add_send), { submit() }, tint = colors.primary)
         }
     }
 }

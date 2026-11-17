@@ -1,6 +1,8 @@
 package com.celander.app.calendar.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -49,11 +51,9 @@ import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.PlainIconButton
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.WheelPicker
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.PlainIconButton
+import com.celander.app.ui.WheelPicker
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -70,27 +70,27 @@ fun DateGridPicker(
     onPick: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     var month by rememberSaveable { mutableStateOf(YearMonth.from(selected)) }
     Column(modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             PlainIconButton(Icons.Rounded.ChevronLeft, stringResource(R.string.action_previous), { month = month.minusMonths(1) })
             Text(
                 formats.capitalize(month.format(formats.monthYear)),
-                style = CelanderTheme.typography.titleSmall,
-                color = colors.textPrimary,
+                style = MaterialTheme.typography.titleSmall,
+                color = colors.onSurface,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f),
             )
             PlainIconButton(Icons.Rounded.ChevronRight, stringResource(R.string.action_next), { month = month.plusMonths(1) })
         }
-        Row(Modifier.fillMaxWidth().padding(vertical = Spacing.xs)) {
+        Row(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
             CalendarMath.weekDays(month.atDay(1), firstDay).forEach { day ->
                 Text(
                     formats.weekdayNarrow(day.dayOfWeek),
-                    style = CelanderTheme.typography.labelSmall,
-                    color = colors.textTertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = colors.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f),
                 )
@@ -140,7 +140,7 @@ private fun DayCell(
     onClick: () -> Unit,
     modifier: Modifier,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Box(
         modifier
             .height(44.dp)
@@ -152,17 +152,17 @@ private fun DayCell(
             Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(if (selected) colors.accent else Color.Transparent)
-                .then(if (isToday && !selected) Modifier.border(1.5.dp, colors.accent, CircleShape) else Modifier),
+                .background(if (selected) colors.primary else Color.Transparent)
+                .then(if (isToday && !selected) Modifier.border(1.5.dp, colors.primary, CircleShape) else Modifier),
         )
         Text(
             date.dayOfMonth.toString(),
-            style = CelanderTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = when {
-                selected -> colors.onAccent
-                isToday -> colors.accent
-                inMonth -> colors.textPrimary
-                else -> colors.textTertiary
+                selected -> colors.onPrimary
+                isToday -> colors.primary
+                inMonth -> colors.onSurface
+                else -> colors.onSurfaceVariant
             },
         )
     }
@@ -184,12 +184,12 @@ fun TimeWheelPicker(
     // A wheel coming to rest on the value it already shows changes nothing.
     val pick: (LocalTime) -> Unit = { value -> if (value != time) onPick(value) }
     fun twoDigits(value: Int) = String.format(formats.locale, "%02d", value)
-    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.xs)) {
+    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             GridLabel(stringResource(R.string.picker_exact_time), Modifier.weight(1f))
             ExactTimeField(time, formats, pick)
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             val afternoon = time.hour >= 12
             if (formats.use24h) {
                 WheelPicker(
@@ -216,7 +216,7 @@ fun TimeWheelPicker(
                     visibleItems = TIME_WHEEL_ITEMS,
                 )
             }
-            Text(":", style = CelanderTheme.typography.titleLarge, color = CelanderTheme.colors.textSecondary)
+            Text(":", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
             WheelPicker(
                 values = MINUTES,
                 selected = time.minute,
@@ -281,7 +281,7 @@ internal fun parseTypedTime(text: String, use24h: Boolean, current: LocalTime, f
 /** A small field for typing the exact time; every complete entry is picked right away. */
 @Composable
 private fun ExactTimeField(time: LocalTime, formats: Formats, onPick: (LocalTime) -> Unit) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val focus = LocalFocusManager.current
     val shown = time.format(DateTimeFormatter.ofPattern(if (formats.use24h) "HH:mm" else "h:mm", formats.locale))
     // Starts over from the picked time whenever the grids or a complete entry change it.
@@ -290,9 +290,9 @@ private fun ExactTimeField(time: LocalTime, formats: Formats, onPick: (LocalTime
     Row(
         Modifier
             .height(44.dp)
-            .clip(RoundedCornerShape(Radii.cell))
-            .background(colors.tile.copy(alpha = 0.5f))
-            .padding(horizontal = Spacing.m),
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surface.copy(alpha = 0.5f))
+            .padding(horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicTextField(
@@ -302,8 +302,8 @@ private fun ExactTimeField(time: LocalTime, formats: Formats, onPick: (LocalTime
                 parseTypedTime(text, formats.use24h, time)?.takeIf { it != time }?.let(onPick)
             },
             singleLine = true,
-            textStyle = CelanderTheme.typography.labelLarge.copy(color = colors.textPrimary, textAlign = TextAlign.End),
-            cursorBrush = SolidColor(colors.accent),
+            textStyle = MaterialTheme.typography.labelLarge.copy(color = colors.onSurface, textAlign = TextAlign.End),
+            cursorBrush = SolidColor(colors.primary),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = {
                 parseTypedTime(text, formats.use24h, time, finished = true)?.takeIf { it != time }?.let(onPick)
@@ -314,9 +314,9 @@ private fun ExactTimeField(time: LocalTime, formats: Formats, onPick: (LocalTime
         if (!formats.use24h) {
             Text(
                 time.format(DateTimeFormatter.ofPattern("a", formats.locale)),
-                style = CelanderTheme.typography.labelLarge,
-                color = colors.textSecondary,
-                modifier = Modifier.padding(start = Spacing.xs),
+                style = MaterialTheme.typography.labelLarge,
+                color = colors.onSurfaceVariant,
+                modifier = Modifier.padding(start = 4.dp),
             )
         }
     }
@@ -324,5 +324,5 @@ private fun ExactTimeField(time: LocalTime, formats: Formats, onPick: (LocalTime
 
 @Composable
 private fun GridLabel(text: String, modifier: Modifier = Modifier) {
-    Text(text, style = CelanderTheme.typography.labelMedium, color = CelanderTheme.colors.textSecondary, modifier = modifier)
+    Text(text, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = modifier)
 }

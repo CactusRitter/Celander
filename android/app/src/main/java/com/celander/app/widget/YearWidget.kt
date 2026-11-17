@@ -38,7 +38,7 @@ import androidx.glance.semantics.semantics
 import com.celander.app.R
 import com.celander.app.calendar.HomeDestination
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.MAX_GRID_FONT_SCALE
+import com.celander.app.ui.MAX_GRID_FONT_SCALE
 import com.celander.app.settings.AppSettings
 import java.time.LocalDate
 import java.time.YearMonth

@@ -1,6 +1,10 @@
 package com.celander.app.calendar
 
 import androidx.compose.animation.AnimatedContent
+import com.celander.app.ui.glass.GlassKind
+import com.celander.app.ui.glass.glass
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -40,13 +44,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.celander.app.R
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.GlassIconButton
-import com.celander.app.designsystem.GlassSurface
-import com.celander.app.designsystem.PillShape
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.springClickable
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.glass.GlassIconButton
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.springClickable
 import java.time.LocalDate
 
 /**
@@ -66,10 +67,10 @@ fun HomeTopBar(
     onSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val motion = CelanderTheme.motion
-    val colors = CelanderTheme.colors
+    val motion = LocalMotion.current
+    val colors = MaterialTheme.colorScheme
     Layout(
-        modifier = modifier.fillMaxWidth().height(Sizes.topBar).padding(horizontal = Spacing.l),
+        modifier = modifier.fillMaxWidth().height(Sizes.topBar).padding(horizontal = 16.dp),
         content = {
             GlassIconButton(Icons.Outlined.Settings, stringResource(R.string.action_settings), onSettings)
             AnimatedContent(
@@ -79,14 +80,14 @@ fun HomeTopBar(
             ) { text ->
                 BasicText(
                     text,
-                    style = CelanderTheme.typography.titleLarge.copy(color = colors.textPrimary, textAlign = TextAlign.Center),
+                    style = MaterialTheme.typography.titleLarge.copy(color = colors.onSurface, textAlign = TextAlign.Center),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    autoSize = TextAutoSize.StepBased(minFontSize = HeadingMinSize, maxFontSize = CelanderTheme.typography.titleLarge.fontSize),
+                    autoSize = TextAutoSize.StepBased(minFontSize = HeadingMinSize, maxFontSize = MaterialTheme.typography.titleLarge.fontSize),
                     modifier = Modifier.semantics { heading() },
                 )
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalAlignment = Alignment.CenterVertically) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 AnimatedVisibility(
                     visible = showToday,
                     enter = fadeIn(motion.fade()) + if (motion.reduced) fadeIn(motion.fade()) else scaleIn(motion.standard(), initialScale = 0.8f),
@@ -101,7 +102,7 @@ fun HomeTopBar(
         val loose = constraints.copy(minWidth = 0, minHeight = 0)
         val leading = measurables[0].measure(loose)
         val trailing = measurables[2].measure(loose)
-        val gap = Spacing.s.roundToPx()
+        val gap = 8.dp.roundToPx()
         val width = constraints.maxWidth
         val centred = width - 2 * (maxOf(leading.width, trailing.width) + gap)
         val free = width - leading.width - trailing.width - 2 * gap
@@ -122,7 +123,7 @@ private val HeadingMinSize = 16.sp
 /** Search and "new entry" side by side on one glass pill, both plain icons like the other buttons. */
 @Composable
 private fun ActionPill(onAdd: () -> Unit, onSearch: (() -> Unit)?) {
-    GlassSurface(shape = PillShape) {
+    Box(Modifier.glass(CircleShape, GlassKind.Chrome, elevation = 10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (onSearch != null) PillAction(Icons.Outlined.Search, stringResource(R.string.action_search), onSearch)
             PillAction(Icons.Rounded.Add, stringResource(R.string.action_new_entry), onAdd)
@@ -139,14 +140,14 @@ private fun PillAction(icon: ImageVector, description: String, onClick: () -> Un
             .semantics { contentDescription = description },
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = null, tint = CelanderTheme.colors.textPrimary, modifier = Modifier.size(Sizes.icon))
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(Sizes.icon))
     }
 }
 
 /** Same icon everywhere: a small calendar sheet with today's day number. */
 @Composable
 private fun TodayButton(today: LocalDate, onClick: () -> Unit) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     GlassIconButton(
         icon = null,
         contentDescription = stringResource(R.string.action_today),
@@ -155,13 +156,13 @@ private fun TodayButton(today: LocalDate, onClick: () -> Unit) {
         Box(
             Modifier
                 .size(22.dp)
-                .border(1.6.dp, colors.textPrimary, RoundedCornerShape(5.dp)),
+                .border(1.6.dp, colors.onSurface, RoundedCornerShape(5.dp)),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 today.dayOfMonth.toString(),
-                style = CelanderTheme.typography.labelSmall.copy(fontSize = 11.sp, lineHeight = 11.sp),
-                color = colors.textPrimary,
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp, lineHeight = 11.sp),
+                color = colors.onSurface,
             )
         }
     }
