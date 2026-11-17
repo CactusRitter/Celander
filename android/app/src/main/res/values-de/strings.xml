@@ -662,7 +662,6 @@
     <string name="accounts_title">Konten</string>
     <string name="accounts_summary_none">Kein Konto verbunden</string>
     <string name="accounts_intro">Verbinde ein Konto, dann speichert Celander seine Kalender hier – so funktionieren sie auch ohne Verbindung.</string>
-    <string name="accounts_add_google">Google-Konto hinzufügen</string>
     <string name="accounts_google_missing">Die Google-Anmeldung ist in dieser Version nicht eingerichtet.</string>
     <string name="accounts_never_synced">Noch nicht synchronisiert</string>
     <string name="accounts_last_sync">Zuletzt synchronisiert: %1$s</string>
@@ -676,4 +675,7 @@
     <string name="accounts_remove_confirm">Entfernen</string>
     <string name="accounts_sign_in_failed">Die Anmeldung hat nicht geklappt.</string>
     <string name="accounts_added">%1$s verbunden</string>
+    <string name="accounts_add_button">Hinzufügen</string>
+    <string name="accounts_provider_google">Google</string>
+    <string name="accounts_row_body">%1$s · %2$s</string>
 </resources>

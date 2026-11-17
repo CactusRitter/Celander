@@ -46,22 +46,28 @@ class CelanderApp : Application() {
         googleTasks.start(scope)
         // Calendars of the connected accounts: sync at start and every quarter of an hour.
         accounts.start(scope)
-        // Back in the app: look for changes at the accounts (at most every 30 seconds).
-        registerActivityLifecycleCallbacks(OnActivityStarted { accounts.onForeground(scope) })
+        // While the app is on screen: look for changes at the accounts every minute.
+        registerActivityLifecycleCallbacks(VisibleTracker { visible -> accounts.onVisibilityChanged(scope, visible) })
     }
 }
 
-/** Runs [action] whenever an activity starts. */
-private class OnActivityStarted(private val action: () -> Unit) : Application.ActivityLifecycleCallbacks {
-    override fun onActivityStarted(activity: Activity) = action()
+/** Tells [onChange] when the app goes on screen (the first activity starts) and off it (the last one stops). */
+private class VisibleTracker(private val onChange: (Boolean) -> Unit) : Application.ActivityLifecycleCallbacks {
+    private var started = 0
+
+    override fun onActivityStarted(activity: Activity) {
+        if (started++ == 0) onChange(true)
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+        if (--started == 0) onChange(false)
+    }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
 
     override fun onActivityResumed(activity: Activity) = Unit
 
     override fun onActivityPaused(activity: Activity) = Unit
-
-    override fun onActivityStopped(activity: Activity) = Unit
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
 

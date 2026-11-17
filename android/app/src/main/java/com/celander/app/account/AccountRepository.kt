@@ -11,6 +11,8 @@ import com.celander.app.core.model.AccountType
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -84,19 +86,36 @@ class AccountRepository @Inject constructor(
     }
 
     private var lastForegroundSync = 0L
+    private var visibleJob: Job? = null
 
-    /** The app came to the front: syncs, but not more often than every [FOREGROUND_MIN_MILLIS]. */
-    fun onForeground(scope: CoroutineScope) {
+    /**
+     * The app came on screen or went off it. While it is on screen the accounts are asked for changes every
+     * [VISIBLE_POLL_MILLIS] (cheap: Google only answers with what changed since the sync token) and once when it comes
+     * up, but not more often than every [FOREGROUND_MIN_MILLIS]. Off screen the 15-minute background run takes over.
+     */
+    fun onVisibilityChanged(scope: CoroutineScope, visible: Boolean) {
+        if (!visible) {
+            visibleJob?.cancel()
+            visibleJob = null
+            return
+        }
+        if (visibleJob?.isActive == true) return
         val now = android.os.SystemClock.elapsedRealtime()
-        if (lastForegroundSync != 0L && now - lastForegroundSync < FOREGROUND_MIN_MILLIS) return
-        lastForegroundSync = now
-        scope.launch { runCatching { syncAll() } }
+        val first = lastForegroundSync == 0L || now - lastForegroundSync >= FOREGROUND_MIN_MILLIS
+        if (first) lastForegroundSync = now
+        visibleJob = scope.launch {
+            if (first) runCatching { syncAll() }
+            while (true) {
+                delay(VISIBLE_POLL_MILLIS)
+                runCatching { syncAll() }
+            }
+        }
     }
 
     /**
      * Keeps the accounts in sync without a server of our own: a run every 15 minutes in the background while an account
      * is connected, one a few seconds after any change made here (the database marks them, see AccountTriggers), and
-     * one when the app starts.
+     * and one while the app is on screen every minute (see [onVisibilityChanged]).
      */
     fun start(scope: CoroutineScope) {
         scope.launch {
@@ -109,11 +128,11 @@ class AccountRepository @Inject constructor(
                 scheduler.requestSoon(AccountSyncScheduler.LOCAL_CHANGE_DELAY)
             }
         }
-        onForeground(scope)
     }
 
     private companion object {
         const val TAG = "Accounts"
         const val FOREGROUND_MIN_MILLIS = 30_000L
+        const val VISIBLE_POLL_MILLIS = 60_000L
     }
 }

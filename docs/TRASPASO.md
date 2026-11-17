@@ -41,4 +41,5 @@ Ver `CLAUDE.md` (compilar, emulador). Prueba con paquete `.test`: `-PidSuffix=.t
 - Envío inmediato: cualquier cambio local (los disparadores de AccountTriggers lo marcan) lanza en ~3 s un trabajo único de WorkManager con red (`AccountSyncScheduler.requestSoon`); si no hay red, reintenta con backoff.
 - Recibir: pull al abrir/volver a la app (mínimo 30 s entre pulls, `AccountRepository.onForeground`), al arrancar, y periódico cada 15 min en segundo plano (mínimo de Android, solo con red y mientras haya una cuenta).
 - Widgets y recordatorios se actualizan solos: observan las tablas que escribe el sync.
-- Pendiente: deslizar para refrescar en las vistas del calendario (no hecho: conflicto con los gestos de página del mes; hoy hay «Sincronizar ahora» en Ajustes › Cuentas).
+- Deslizar para refrescar: CANCELADO por César (no lo quiere en ningún sitio). Con la app visible se pregunta por cambios cada 60 s (parado en segundo plano), además del pull al abrir (mín. 30 s) y el periódico de 15 min; «Sincronizar ahora» queda en Ajustes › Cuentas.
+- Medido en el S26 con la cuenta real (evento de prueba propio, creado y borrado): Guardar -> creado en Google en ~4,5 s (3 s de espera para agrupar cambios + ~1,5 s); Eliminar -> borrado en Google en ~4,5 s.
