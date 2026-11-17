@@ -20,8 +20,6 @@ data class AppSettings(
     val glassTransparency: Float = GlassTokens.DEFAULT_TRANSPARENCY,
     /** The cards of all home screen widgets, set apart from [glassTransparency]. */
     val widgetTransparency: Float = GlassTokens.DEFAULT_TRANSPARENCY,
-    /** Widgets show the wallpaper blurred behind their glass (needs "All files access", see `WallpaperBlur`). */
-    val widgetBlur: Boolean = false,
     val reduceMotion: Boolean = false,
     val weekStart: WeekStart = WeekStart.SYSTEM,
     val showWeekNumbers: Boolean = true,

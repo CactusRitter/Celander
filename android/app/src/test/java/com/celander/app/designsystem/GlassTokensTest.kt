@@ -59,7 +59,14 @@ class GlassTokensTest {
                 assertEquals(0f, GlassTokens.sheetFillAlpha(1f, dark, blur))
             }
             assertEquals(0f, GlassTokens.tileAlpha(1f, dark))
-            assertEquals(0f, GlassTokens.widgetAlpha(1f, dark))
+        }
+    }
+
+    @Test
+    fun widgetsKeepAFloorOfOpacityBecauseTheyCannotBlur() {
+        for (dark in listOf(false, true)) {
+            assertEquals(GlassTokens.WIDGET_MIN_ALPHA, GlassTokens.widgetAlpha(1f, dark))
+            assertEquals(1f, GlassTokens.widgetAlpha(0f, dark))
         }
     }
 

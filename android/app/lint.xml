@@ -4,8 +4,4 @@
     <issue id="ObsoleteSdkInt">
         <ignore path="src/main/res/mipmap-anydpi-v26" />
     </issue>
-    <!-- The wallpaper is only handed out with access to all photos; a selection is deliberately not used (WallpaperBlur). -->
-    <issue id="SelectedPhotoAccess">
-        <ignore path="src/main/AndroidManifest.xml" />
-    </issue>
 </lint>

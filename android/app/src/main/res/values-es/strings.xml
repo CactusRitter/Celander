@@ -658,14 +658,4 @@
         <item quantity="other">Activado – %d calendarios en este teléfono</item>
     </plurals>
     <!-- Widget blur -->
-    <string name="design_widget_blur">Fondo desenfocado</string>
-    <string name="design_widget_blur_summary">Los widgets muestran tu fondo de pantalla desenfocado tras su cristal. Celander lee el fondo solo en este dispositivo; Android solo lo permite con «Acceso a todos los archivos» y, hasta Android 15, también con acceso a todas las fotos. Después toca cada widget una vez.</string>
-    <string name="design_widget_blur_no_access">Necesita «Acceso a todos los archivos»: toca para permitirlo</string>
-    <string name="design_widget_blur_live">No es posible con un fondo animado</string>
-    <string name="design_widget_blur_refresh">Fondo de pantalla cambiado</string>
-    <string name="design_widget_blur_refresh_summary">Desenfoca el nuevo fondo para los widgets</string>
-    <string name="design_widget_blur_realign">Volver a alinear los widgets</string>
-    <string name="design_widget_blur_realign_summary">Tras mover un widget: toca cada widget una vez</string>
-    <string name="design_widget_blur_no_photos">Necesita acceso a todas las fotos: toca para permitirlo</string>
-    <string name="widget_blur_align">Toca para alinear el desenfoque</string>
 </resources>

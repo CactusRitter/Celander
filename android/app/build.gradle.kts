@@ -41,6 +41,8 @@ android {
     buildTypes {
         debug {
             signingConfigs.findByName("celander")?.let { signingConfig = it }
+            // Tests next to an installed Celander with another signature: ./gradlew :app:assembleDebug -PidSuffix=.test
+            providers.gradleProperty("idSuffix").orNull?.let { applicationIdSuffix = it }
         }
         release {
             isMinifyEnabled = true

@@ -124,8 +124,6 @@ internal class WidgetColors(settings: AppSettings) {
 
     private val transparency = settings.widgetTransparency
 
-    /** The wallpaper shows blurred behind the card when it is placed (see [WallpaperBlur]). */
-    val blur = settings.widgetBlur && WallpaperBlur.supported
 
     /** The sheen from above of the app's glass, for the day or night card like [card]. */
     val glassSheen: Int = when (mode) {
@@ -146,9 +144,8 @@ internal class WidgetColors(settings: AppSettings) {
     val danger = pair(light.danger, dark.danger)
     val divider = pair(light.divider, dark.divider)
 
-    /** Tints of the card's glass masks, the app's glass edge and shadow. */
+    /** Tints of the card's glass masks. */
     val rim = pair(WidgetGlass.rimColor(light.glassEdgeLight, dark = false), WidgetGlass.rimColor(dark.glassEdgeLight, dark = true))
-    val shadow = pair(light.shadow, dark.shadow)
 
     fun calendar(colorKey: String): ColorProvider = CalendarColor.fromKey(colorKey).let { pair(it.base(dark = false), it.base(dark = true)) }
 
@@ -177,80 +174,25 @@ internal val WidgetCardLight = Color.White
 internal val WidgetCardDark = Color(0xFF121318)
 
 /**
- * The glass card every widget sits on, as in the app: a translucent fill, a sheen from above, a light
- * rim and a soft shadow around it ([WidgetGlass]). With the blur on, the wallpaper shows blurred
- * under the fill once the card was tapped to align it ([WallpaperBlur]). The card sits
- * [WidgetElevation] inside the widget so the shadow has room; its content sees the card's size as
- * [LocalSize]. Before Android 12 there is no rounded clipping, so a rounded drawable with the theme's
+ * The glass card every widget sits on, as in the app: a translucent fill, a sheen from above and a
+ * light rim ([WidgetGlass]). It fills the whole widget: no shadow is drawn around it, because a widget
+ * cannot blur what is behind it and a shadow outside the card shows as a dark frame on light
+ * wallpapers. Before Android 12 there is no rounded clipping, so a rounded drawable with the theme's
  * card color is used instead.
  */
 @Composable
 internal fun WidgetCard(colors: WidgetColors, modifier: GlanceModifier = GlanceModifier, content: @Composable () -> Unit) {
     val context = LocalContext.current
-    val size = LocalSize.current
-    val density = context.resources.displayMetrics.density
-    val memory = rememberPictureMemory(context)
-    val glass = remember(size, density, memory) { WidgetGlass.render(size, density, memory) }
-    val card = WidgetGlass.cardSize(size)
-    val blur = rememberCardBlur(colors.blur, card)
-    val surface = when {
-        blur is CardBlur.Shown -> GlanceModifier.cornerRadius(WidgetTokens.corner)
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> GlanceModifier.background(colors.card).cornerRadius(WidgetTokens.corner)
-        else -> GlanceModifier.background(ImageProvider(R.drawable.widget_card), colorFilter = ColorFilter.tint(ColorProvider(colors.legacyCard(context))))
+    val surface = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        GlanceModifier.background(colors.card).cornerRadius(WidgetTokens.corner)
+    } else {
+        GlanceModifier.background(ImageProvider(R.drawable.widget_card), colorFilter = ColorFilter.tint(ColorProvider(colors.legacyCard(context))))
     }
     val fill = GlanceModifier.fillMaxSize()
-    Box(modifier.fillMaxSize()) {
-        Image(ImageProvider(glass.shadow), contentDescription = null, modifier = fill, contentScale = ContentScale.FillBounds, colorFilter = ColorFilter.tint(colors.shadow))
-        Box(fill.padding(start = WidgetElevation.side, top = WidgetElevation.top, end = WidgetElevation.side, bottom = WidgetElevation.bottom)) {
-            Box(fill.appWidgetBackground().then(surface)) {
-                if (blur is CardBlur.Shown) {
-                    Image(ImageProvider(blur.picture), contentDescription = null, modifier = fill, contentScale = ContentScale.FillBounds)
-                    Box(fill.background(colors.card)) {}
-                }
-                Image(ImageProvider(colors.glassSheen), contentDescription = null, modifier = fill, contentScale = ContentScale.FillBounds)
-                Image(ImageProvider(glass.rim), contentDescription = null, modifier = fill, contentScale = ContentScale.FillBounds, colorFilter = ColorFilter.tint(colors.rim))
-                CompositionLocalProvider(LocalSize provides card) { content() }
-                if (blur is CardBlur.NeedsTap) AndroidRemoteViews(blur.views, fill)
-            }
-        }
-    }
-}
-
-/** What the card shows of the wallpaper. */
-private sealed interface CardBlur {
-    /** No blur: turned off, not allowed, a live wallpaper or before Android 12. */
-    data object Off : CardBlur
-
-    /** The blurred wallpaper behind the card. */
-    class Shown(val picture: Bitmap) : CardBlur
-
-    /** The card's place is not known yet: a hint over it asks for a tap ([WidgetAlignReceiver]). */
-    class NeedsTap(val views: RemoteViews) : CardBlur
-}
-
-@Composable
-private fun rememberCardBlur(on: Boolean, card: DpSize): CardBlur {
-    if (!on) return CardBlur.Off
-    val context = LocalContext.current
-    val glanceId = LocalGlanceId.current
-    val widgetId = remember(glanceId) { runCatching { GlanceAppWidgetManager(context).getAppWidgetId(glanceId) }.getOrNull() } ?: return CardBlur.Off
-    // Read so a running session recomposes after a tap or a new wallpaper; the values below come from files.
-    val revision by WallpaperBlur.revision.collectAsState()
-    val wallpaper = remember(revision) { WallpaperBlur.current(context) } ?: return CardBlur.Off
-    val placement = remember(revision, widgetId, card) { WidgetPlacements.of(context).get(widgetId, card) }
-    return remember(wallpaper, placement, widgetId, card) {
-        val picture = placement
-            ?.takeIf { it.screenWidth == wallpaper.screenWidth && it.screenHeight == wallpaper.screenHeight }
-            ?.let { wallpaper.behind(it.card) }
-        if (picture != null) {
-            CardBlur.Shown(picture)
-        } else {
-            val views = RemoteViews(context.packageName, R.layout.widget_align).apply {
-                setTextViewText(R.id.widget_align_text, context.getString(R.string.widget_blur_align))
-                setOnClickPendingIntent(R.id.widget_align, WidgetAlignReceiver.tap(context, widgetId, card))
-            }
-            CardBlur.NeedsTap(views)
-        }
+    Box(modifier.fillMaxSize().appWidgetBackground().then(surface)) {
+        Image(ImageProvider(colors.glassSheen), contentDescription = null, modifier = fill, contentScale = ContentScale.FillBounds)
+        Image(ImageProvider(R.drawable.widget_rim), contentDescription = null, modifier = fill, contentScale = ContentScale.FillBounds, colorFilter = ColorFilter.tint(colors.rim))
+        content()
     }
 }
 

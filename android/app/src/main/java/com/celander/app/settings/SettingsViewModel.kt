@@ -15,8 +15,6 @@ import com.celander.app.core.ui.SnackbarManager
 import com.celander.app.core.ui.SnackbarMessage
 import com.celander.app.core.ui.UiText
 import com.celander.app.task.google.GoogleTasksAccounts
-import com.celander.app.widget.WallpaperBlur
-import com.celander.app.widget.WidgetPlacements
 import com.celander.app.widget.WidgetUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -93,23 +91,6 @@ class SettingsViewModel @Inject constructor(
 
     fun updateLive(transform: (AppSettings) -> AppSettings) {
         liveChanges.value = transform
-    }
-
-    /** The wallpaper changed: the widgets' blur reads it again. */
-    fun refreshWidgetBlur() {
-        viewModelScope.launch(Dispatchers.IO) {
-            WallpaperBlur.forget(context)
-            WidgetUpdater.updateAll(context)
-        }
-    }
-
-    /** Widgets moved: each asks for a tap again to find its place. */
-    fun realignWidgets() {
-        viewModelScope.launch(Dispatchers.IO) {
-            WidgetPlacements.of(context).clear()
-            WallpaperBlur.changed()
-            WidgetUpdater.updateAll(context)
-        }
     }
 
     fun setVisible(id: Long, visible: Boolean) {

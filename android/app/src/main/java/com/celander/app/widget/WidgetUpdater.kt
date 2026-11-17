@@ -54,10 +54,8 @@ class WidgetUpdater @Inject constructor(
                 // Visibility and color of the phone's calendars live in device_calendar_prefs, which the provider does not report.
                 db.invalidationTracker.createFlow(*WIDGET_TABLES).map { },
                 device.changes,
-                // A new wallpaper changes what the blurred cards show (WallpaperBlur keys its copy by the wallpaper).
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) wallpaperChanges() else emptyFlow(),
                 settings.settings
-                    .map { listOf(it.themeMode, it.accentHue, it.widgetTransparency, it.widgetBlur, it.weekStart, it.showWeekNumbers, it.timeFormat) }
+                    .map { listOf(it.themeMode, it.accentHue, it.widgetTransparency, it.weekStart, it.showWeekNumbers, it.timeFormat) }
                     .distinctUntilChanged()
                     .map { },
             ).debounce(UPDATE_DEBOUNCE_MILLIS).collect { updateAll(context) }
@@ -65,19 +63,6 @@ class WidgetUpdater @Inject constructor(
         scope.launch { scheduleNextDay(context) }
         // Outside the app, a content trigger refreshes the widgets on changes in the phone's calendars.
         scope.launch { device.status.distinctUntilChanged().collect { DeviceCalendarRefreshWorker.enqueueIfNeeded(context) } }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O_MR1)
-    private fun wallpaperChanges(): Flow<Unit> = callbackFlow {
-        val manager = WallpaperManager.getInstance(context)
-        val listener = WallpaperManager.OnColorsChangedListener { _, which ->
-            if (which and WallpaperManager.FLAG_SYSTEM != 0) {
-                WallpaperBlur.changed()
-                trySend(Unit)
-            }
-        }
-        manager.addOnColorsChangedListener(listener, Handler(Looper.getMainLooper()))
-        awaitClose { manager.removeOnColorsChangedListener(listener) }
     }
 
     companion object {

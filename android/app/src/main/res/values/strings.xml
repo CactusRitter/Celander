@@ -625,14 +625,4 @@
         <item quantity="other">On – %d calendars on this phone</item>
     </plurals>
     <!-- Widget blur -->
-    <string name="design_widget_blur">Blurred wallpaper</string>
-    <string name="design_widget_blur_summary">Widgets show your wallpaper blurred behind their glass. Celander reads the wallpaper on this device only; Android allows that only with “All files access”, up to Android 15 also with access to all photos. Then tap each widget once.</string>
-    <string name="design_widget_blur_no_access">Needs “All files access” – tap to allow</string>
-    <string name="design_widget_blur_live">Not possible with a live wallpaper</string>
-    <string name="design_widget_blur_refresh">Wallpaper changed</string>
-    <string name="design_widget_blur_refresh_summary">Blurs the new wallpaper for the widgets</string>
-    <string name="design_widget_blur_realign">Align widgets again</string>
-    <string name="design_widget_blur_realign_summary">After moving a widget: tap each widget once</string>
-    <string name="design_widget_blur_no_photos">Needs access to all photos – tap to allow</string>
-    <string name="widget_blur_align">Tap to align the blur</string>
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The glass edge of a dark widget card, as in the app: a faint sheen from above (the rim and shadow are drawn, see WidgetGlass). -->
+<!-- The glass edge of a dark widget card, as in the app: a faint sheen from above (the rim is widget_rim). -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">

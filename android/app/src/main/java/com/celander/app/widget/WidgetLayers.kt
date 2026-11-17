@@ -89,16 +89,16 @@ internal fun gridCanvas(width: Dp, height: Dp, density: Float, memory: PictureMe
 internal fun pictureScale(area: Float, density: Float, memory: PictureMemory, withAccent: Boolean): Float {
     val reported = memory.sizes.sumOf { it.width.value.toDouble() * it.height.value * density * density }.toFloat()
     val total = if (memory.sizes.isEmpty()) area * FALLBACK_PICTURES else maxOf(reported, area)
-    return min(1f, sqrt(layerPixelBudget(memory.screenPixels, withAccent, glassBytes(area, density, memory)) / total.coerceAtLeast(1f)))
+    return min(1f, sqrt(layerPixelBudget(memory.screenPixels, withAccent) / total.coerceAtLeast(1f)))
 }
 
 /**
- * Pixels each layer may have across all pictures of one widget: 80 % of the system's limit less the
- * [glassBytes] of the card, shared by a 4-byte color layer and 1-byte alpha masks.
+ * Pixels each layer may have across all pictures of one widget: 80 % of the system's limit,
+ * shared by a 4-byte color layer and 1-byte alpha masks.
  */
-internal fun layerPixelBudget(screenPixels: Long, withAccent: Boolean, glassBytes: Float = 0f): Float {
+internal fun layerPixelBudget(screenPixels: Long, withAccent: Boolean): Float {
     val bytesPerPixel = COLOR_LAYER_BYTES + MASK_LAYERS + if (withAccent) 1 else 0
-    return (screenPixels * SYSTEM_BYTES_PER_SCREEN_PIXEL * USED_SHARE - glassBytes).coerceAtLeast(0f) / bytesPerPixel
+    return (screenPixels * SYSTEM_BYTES_PER_SCREEN_PIXEL * USED_SHARE).coerceAtLeast(0f) / bytesPerPixel
 }
 
 /**

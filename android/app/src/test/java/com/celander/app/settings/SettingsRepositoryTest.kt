@@ -40,7 +40,6 @@ class SettingsRepositoryTest {
         assertEquals(AccentPalette.DEFAULT_HUE, settings.accentHue)
         assertEquals(GlassTokens.DEFAULT_TRANSPARENCY, settings.glassTransparency)
         assertEquals(GlassTokens.DEFAULT_TRANSPARENCY, settings.widgetTransparency)
-        assertEquals(false, settings.widgetBlur)
     }
 
     @Test
@@ -55,8 +54,6 @@ class SettingsRepositoryTest {
         assertEquals(0.2f, repository.current().widgetTransparency)
 
         repository.update { it.copy(widgetTransparency = 0.5f) }
-        repository.update { it.copy(widgetBlur = true) }
-        assertEquals(true, repository.current().widgetBlur)
         val settings = repository.current()
         assertEquals(0.9f, settings.glassTransparency)
         assertEquals(0.5f, settings.widgetTransparency)

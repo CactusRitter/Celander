@@ -622,14 +622,4 @@
         <item quantity="other">An – %d Kalender auf diesem Telefon</item>
     </plurals>
     <!-- Widget blur -->
-    <string name="design_widget_blur">Unscharfes Hintergrundbild</string>
-    <string name="design_widget_blur_summary">Widgets zeigen dein Hintergrundbild unscharf hinter ihrem Glas. Celander liest das Hintergrundbild nur auf diesem Gerät; Android erlaubt das nur mit „Zugriff auf alle Dateien“, bis Android 15 zusätzlich mit Zugriff auf alle Fotos. Tippe danach einmal auf jedes Widget.</string>
-    <string name="design_widget_blur_no_access">Braucht „Zugriff auf alle Dateien“ – zum Erlauben tippen</string>
-    <string name="design_widget_blur_live">Mit einem Live-Hintergrund nicht möglich</string>
-    <string name="design_widget_blur_refresh">Hintergrundbild geändert</string>
-    <string name="design_widget_blur_refresh_summary">Rechnet den Blur für das neue Hintergrundbild</string>
-    <string name="design_widget_blur_realign">Widgets neu ausrichten</string>
-    <string name="design_widget_blur_realign_summary">Nach dem Verschieben eines Widgets: einmal auf jedes Widget tippen</string>
-    <string name="design_widget_blur_no_photos">Braucht Zugriff auf alle Fotos – zum Erlauben tippen</string>
-    <string name="widget_blur_align">Tippen, um den Blur auszurichten</string>
 </resources>

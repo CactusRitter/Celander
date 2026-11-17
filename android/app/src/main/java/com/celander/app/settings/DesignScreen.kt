@@ -71,8 +71,6 @@ import com.celander.app.designsystem.Radii
 import com.celander.app.designsystem.Spacing
 import com.celander.app.designsystem.celanderColors
 import com.celander.app.designsystem.softShadow
-import com.celander.app.widget.BlurAccess
-import com.celander.app.widget.WallpaperBlur
 import com.celander.app.widget.WidgetCardDark
 import com.celander.app.widget.WidgetCardLight
 import com.celander.app.widget.WidgetElevation
@@ -129,15 +127,6 @@ fun DesignScreen(
                 formats = formats,
                 onCommit = { value -> viewModel.update { it.copy(widgetTransparency = value) } },
             )
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                SettingsDivider()
-                WidgetBlurRows(
-                    on = current.widgetBlur,
-                    onChange = { value -> viewModel.update { it.copy(widgetBlur = value) } },
-                    onRefresh = viewModel::refreshWidgetBlur,
-                    onRealign = viewModel::realignWidgets,
-                )
-            }
         }
         settingsGroup(motionTitle) {
             SettingsSwitchRow(
@@ -268,88 +257,6 @@ private fun WidgetTransparencyControl(transparency: Float, formats: Formats, onC
     }
 }
 
-/**
- * The wallpaper blurred behind the widgets. Turning it on first asks for the access Android still
- * wants ([WallpaperBlur.missing]): "All files access" in the system settings, then photos through the
- * permission dialog; after a refusal for good Android shows no dialog any more, so the app's system
- * settings open. Once all is granted the blur turns on and the widgets redraw. While on, the
- * wallpaper can be blurred again after a change and the widgets realigned.
- */
-@RequiresApi(Build.VERSION_CODES.S)
-@Composable
-private fun WidgetBlurRows(on: Boolean, onChange: (Boolean) -> Unit, onRefresh: () -> Unit, onRealign: () -> Unit) {
-    val context = LocalContext.current
-    val activity = LocalActivity.current
-    var missing by remember { mutableStateOf(WallpaperBlur.missing(context)) }
-    var live by remember { mutableStateOf(false) }
-    // Set while the system settings are open for this switch; coming back continues with the next step.
-    var asked by rememberSaveable { mutableStateOf(false) }
-    val enable = {
-        onChange(true)
-        onRefresh()
-    }
-    val openAppSettings = {
-        asked = true
-        runCatching { context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null))) }
-    }
-    val request = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        missing = WallpaperBlur.missing(context)
-        when {
-            missing.isEmpty() -> enable()
-            // Refused for good: only the app's system settings can still allow it.
-            !granted && activity?.shouldShowRequestPermissionRationale(WallpaperBlur.photoPermission) == false -> openAppSettings()
-        }
-    }
-    val askNext = {
-        when (missing.firstOrNull()) {
-            null -> enable()
-            BlurAccess.FILES -> {
-                asked = true
-                val app = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.fromParts("package", context.packageName, null))
-                runCatching { context.startActivity(app) }.recoverCatching { context.startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)) }
-            }
-            BlurAccess.PHOTOS -> request.launch(WallpaperBlur.photoPermission)
-        }
-    }
-    LifecycleResumeEffect(Unit) {
-        missing = WallpaperBlur.missing(context)
-        live = WallpaperManager.getInstance(context).wallpaperInfo != null
-        if (asked) {
-            asked = false
-            if (missing.firstOrNull() != BlurAccess.FILES) askNext()
-        }
-        onPauseOrDispose {}
-    }
-    val permitted = missing.isEmpty()
-    SettingsSwitchRow(
-        title = stringResource(R.string.design_widget_blur),
-        checked = on && permitted,
-        summary = stringResource(
-            when {
-                live -> R.string.design_widget_blur_live
-                on && missing.firstOrNull() == BlurAccess.FILES -> R.string.design_widget_blur_no_access
-                on && missing.firstOrNull() == BlurAccess.PHOTOS -> R.string.design_widget_blur_no_photos
-                else -> R.string.design_widget_blur_summary
-            },
-        ),
-        onCheckedChange = { value -> if (value) askNext() else onChange(false) },
-    )
-    if (on && permitted && !live) {
-        SettingsDivider()
-        SettingsRow(
-            title = stringResource(R.string.design_widget_blur_refresh),
-            summary = stringResource(R.string.design_widget_blur_refresh_summary),
-            onClick = onRefresh,
-        )
-        SettingsDivider()
-        SettingsRow(
-            title = stringResource(R.string.design_widget_blur_realign),
-            summary = stringResource(R.string.design_widget_blur_realign_summary),
-            onClick = onRealign,
-        )
-    }
-}
-
 /** Title with the percentage, a summary and a 5 % step slider from solid to clearest. */
 @Composable
 private fun TransparencySlider(
@@ -427,7 +334,6 @@ private fun WidgetPreview(transparency: Float) {
             style = CelanderTheme.typography.labelLarge,
             color = colors.textPrimary,
             modifier = Modifier
-                .softShadow(shape, colors.shadow, WidgetElevation.layers)
                 .background(card, shape)
                 .background(Brush.verticalGradient(0f to colors.sheen, WIDGET_SHEEN_END to Color.Transparent), shape)
                 .border(WidgetElevation.rim, rim, shape)

@@ -17,15 +17,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- Google Tasks sync; only used after the user connected an account. -->
-    <!-- Only to read the wallpaper for the widgets' blur (WallpaperBlur.missing): Android 13 and later hand it out only
-         with "All files access", 13 to 15 also with all photos (a selection is not enough, see lint.xml), 12 with storage. -->
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -189,11 +180,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <!-- The tap that aligns a widget's blur; only Celander's own widgets send it. -->
-        <receiver
-            android:name=".widget.WidgetAlignReceiver"
-            android:exported="false" />
-
     </application>
 
 </manifest>

@@ -17,12 +17,11 @@ class WidgetLimitsTest {
 
     /**
      * Bytes of all pictures a month widget sends: one per reported size, a color layer and two masks
-     * each, plus the glass of its card.
+     * each.
      */
     private fun monthBytes(memory: PictureMemory): Long = memory.sizes.sumOf { size ->
         val canvas = gridCanvas(size.width - 20.dp, size.height - 60.dp, density, memory, withAccent = false)
-        val glass = WidgetGlass.render(size, density, memory)
-        canvas.width.toLong() * canvas.height * 6 + glass.rim.width.toLong() * glass.rim.height + glass.shadow.width.toLong() * glass.shadow.height
+        canvas.width.toLong() * canvas.height * 6
     }
 
     @Test
