@@ -35,3 +35,10 @@ Ver `CLAUDE.md` (compilar, emulador). Prueba con paquete `.test`: `-PidSuffix=.t
 ## Datos reales de César: no tocar
 - En su calendario de Google y en la base local del S26 hay un evento REAL, «quedada con Gloria» (creado desde Celander y sincronizado el 2026-11-18). No borrarlo, editarlo ni moverlo en ninguna prueba. Para probar editar/borrar: un evento de prueba propio que se crea y se borra, o el servidor falso de los tests.
 - La cuenta real solo se usa para lo que César pida; los tests usan datos simulados.
+
+## Sincronización en segundo plano y «tiempo real» (decidido con Ce Líder, 2026-11-18)
+- Sin servidor propio ni notificaciones push de Google (calendar.watch) ni de Microsoft: exigirían un servidor público y FCM, contra la política de privacidad («no enviamos nada a servidores nuestros»).
+- Envío inmediato: cualquier cambio local (los disparadores de AccountTriggers lo marcan) lanza en ~3 s un trabajo único de WorkManager con red (`AccountSyncScheduler.requestSoon`); si no hay red, reintenta con backoff.
+- Recibir: pull al abrir/volver a la app (mínimo 30 s entre pulls, `AccountRepository.onForeground`), al arrancar, y periódico cada 15 min en segundo plano (mínimo de Android, solo con red y mientras haya una cuenta).
+- Widgets y recordatorios se actualizan solos: observan las tablas que escribe el sync.
+- Pendiente: deslizar para refrescar en las vistas del calendario (no hecho: conflicto con los gestos de página del mes; hoy hay «Sincronizar ahora» en Ajustes › Cuentas).

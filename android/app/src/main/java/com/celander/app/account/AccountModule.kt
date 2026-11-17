@@ -38,3 +38,10 @@ object AccountModule {
         providers = mapOf(AccountType.GOOGLE to GoogleCalendarProvider(GoogleCalendarApi(client, io), AccountTokens(tokens, google))),
     )
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class AccountBindings {
+    @dagger.Binds
+    abstract fun scheduler(impl: WorkManagerAccountSyncScheduler): AccountSyncScheduler
+}

@@ -11,7 +11,9 @@ import com.celander.app.core.model.AccountType
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -35,6 +37,7 @@ class AccountRepository @Inject constructor(
     private val sync: AccountSync,
     private val tokens: TokenStore,
     private val google: GoogleAuth,
+    private val scheduler: AccountSyncScheduler,
 ) {
     val accounts: Flow<List<AccountEntity>> = dao.observeAccounts()
 
@@ -67,9 +70,11 @@ class AccountRepository @Inject constructor(
 
     suspend fun syncAccount(id: Long): SyncOutcome = lock.withLock { sync.sync(id).also { android.util.Log.i(TAG, "sync of account $id: $it") } }
 
-    /** Syncs every account (one after the other). */
-    suspend fun syncAll() {
-        dao.accounts().forEach { syncAccount(it.id) }
+    /** Syncs every account (one after the other). True when a passing problem (offline, server error) means it should be tried again. */
+    suspend fun syncAll(): Boolean {
+        var retry = false
+        dao.accounts().forEach { if (syncAccount(it.id) is SyncOutcome.Failed) retry = true }
+        return retry
     }
 
     /** Removes an account with its calendars and events on this device and its tokens. The server is not touched. */
@@ -78,18 +83,37 @@ class AccountRepository @Inject constructor(
         tokens.clear(AccountTokens.key(id))
     }
 
-    /** Syncs when the app starts and then every [EVERY_MILLIS] while it lives. */
+    private var lastForegroundSync = 0L
+
+    /** The app came to the front: syncs, but not more often than every [FOREGROUND_MIN_MILLIS]. */
+    fun onForeground(scope: CoroutineScope) {
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (lastForegroundSync != 0L && now - lastForegroundSync < FOREGROUND_MIN_MILLIS) return
+        lastForegroundSync = now
+        scope.launch { runCatching { syncAll() } }
+    }
+
+    /**
+     * Keeps the accounts in sync without a server of our own: a run every 15 minutes in the background while an account
+     * is connected, one a few seconds after any change made here (the database marks them, see AccountTriggers), and
+     * one when the app starts.
+     */
     fun start(scope: CoroutineScope) {
         scope.launch {
-            while (true) {
-                runCatching { syncAll() }
-                delay(EVERY_MILLIS)
+            dao.observeAccounts().map { it.isNotEmpty() }.distinctUntilChanged().collect { connected ->
+                if (connected) scheduler.schedulePeriodic() else scheduler.cancelAll()
             }
         }
+        scope.launch {
+            dao.observePendingCount().distinctUntilChanged().filter { it > 0 }.collect {
+                scheduler.requestSoon(AccountSyncScheduler.LOCAL_CHANGE_DELAY)
+            }
+        }
+        onForeground(scope)
     }
 
     private companion object {
         const val TAG = "Accounts"
-        const val EVERY_MILLIS = 15L * 60 * 1000
+        const val FOREGROUND_MIN_MILLIS = 30_000L
     }
 }

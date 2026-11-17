@@ -1,6 +1,8 @@
 package com.celander.app
 
+import android.app.Activity
 import android.app.Application
+import android.os.Bundle
 import com.celander.app.calendar.data.CalendarsRepository
 import com.celander.app.core.di.ApplicationScope
 import com.celander.app.notifications.ReminderNotifier
@@ -44,5 +46,24 @@ class CelanderApp : Application() {
         googleTasks.start(scope)
         // Calendars of the connected accounts: sync at start and every quarter of an hour.
         accounts.start(scope)
+        // Back in the app: look for changes at the accounts (at most every 30 seconds).
+        registerActivityLifecycleCallbacks(OnActivityStarted { accounts.onForeground(scope) })
     }
+}
+
+/** Runs [action] whenever an activity starts. */
+private class OnActivityStarted(private val action: () -> Unit) : Application.ActivityLifecycleCallbacks {
+    override fun onActivityStarted(activity: Activity) = action()
+
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
+
+    override fun onActivityResumed(activity: Activity) = Unit
+
+    override fun onActivityPaused(activity: Activity) = Unit
+
+    override fun onActivityStopped(activity: Activity) = Unit
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
+
+    override fun onActivityDestroyed(activity: Activity) = Unit
 }
