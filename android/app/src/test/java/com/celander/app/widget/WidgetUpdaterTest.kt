@@ -1,7 +1,6 @@
 package com.celander.app.widget
 
 import android.app.AlarmManager
-import com.celander.app.core.database.DeviceCalendarPrefEntity
 import com.celander.app.testing.TestEnvironment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -37,15 +36,16 @@ class WidgetUpdaterTest {
     fun tearDown() = env.close()
 
     @Test
-    fun hidingAPhoneCalendarRefreshesTheWidgets() = runBlocking {
+    fun hidingACalendarRefreshesTheWidgets() = runBlocking {
         val changes = Channel<Set<String>>(Channel.UNLIMITED)
         val watcher = launch(Dispatchers.IO) { env.db.invalidationTracker.createFlow(*WidgetUpdater.WIDGET_TABLES).collect { changes.send(it) } }
         // The first emission says the tables are observed.
         withTimeout(TIMEOUT_MILLIS) { changes.receive() }
-        env.db.devicePrefsDao().upsert(DeviceCalendarPrefEntity("com.google/me@example.com/work", visible = false, colorKey = null))
+        env.calendars.ensureDefault("Personal")
+        env.calendars.setVisible(env.calendars.first().single().id, false)
         val changed = withTimeout(TIMEOUT_MILLIS) { changes.receive() }
         watcher.cancel()
-        assertTrue(changed.toString(), "device_calendar_prefs" in changed)
+        assertTrue(changed.toString(), "calendars" in changed)
     }
 
     @Test

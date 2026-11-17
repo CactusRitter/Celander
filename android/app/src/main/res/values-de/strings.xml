@@ -455,42 +455,19 @@
         <item quantity="other">%1$d offen</item>
     </plurals>
 
-    <!-- Google Calendar through the phone's calendars -->
+    <!-- Google-Konten (Google Tasks) -->
     <string name="settings_section_google">Google</string>
-    <string name="settings_google_calendar">Google Kalender</string>
-    <string name="settings_google_calendar_summary_off">Zeigt die Kalender, die dieses Telefon synchronisiert, z. B. aus deinem Google-Konto</string>
-    <string name="settings_google_calendar_no_access">Kein Kalenderzugriff – tippen zum Erlauben</string>
-    <string name="settings_google_calendar_denied">Zugriff abgelehnt – tippen, um ihn in den Systemeinstellungen zu erlauben</string>
-    <string name="settings_google_calendar_read_only">Celander darf diese Kalender nur lesen – tippen, um Änderungen zu erlauben</string>
-    <string name="settings_google_calendar_default_changed">Neue Termine landen jetzt in %s</string>
     <string name="settings_default_task_list">Standardliste für Aufgaben</string>
-    <string name="settings_reminders_google">Google-Termine</string>
-    <string name="settings_reminders_google_by_app">Erinnerungen kommen von %s</string>
-    <string name="settings_reminders_google_no_app">Keine Kalender-App gefunden – Google-Termine erinnern dich nicht</string>
-    <string name="settings_calendars_on_this_phone">Auf diesem Telefon</string>
     <string name="settings_calendar_read_only">Nur lesen</string>
-    <string name="settings_calendars_device_hint">Ein- und Ausblenden gilt nur in Celander. Erinnerungen für diese Termine kommen von deiner Kalender-App.</string>
     <string name="settings_calendar_color_local">Die Farbe gilt nur in Celander.</string>
     <string name="settings_calendar_name_from_account">Der Name kommt aus dem Konto.</string>
-    <string name="editor_reminders_calendar_app">Die Erinnerungen für diesen Kalender zeigt deine Kalender-App.</string>
-    <plurals name="editor_reminders_max">
-        <item quantity="one">Dieser Kalender erlaubt nur %d Erinnerung.</item>
-        <item quantity="other">Dieser Kalender erlaubt bis zu %d Erinnerungen.</item>
-    </plurals>
     <string name="editor_series_limited">Für diesen Serientermin sind nicht alle Optionen verfügbar.</string>
-    <string name="event_save_failed">Konnte nicht in %s speichern</string>
-    <string name="event_delete_failed">Konnte nicht aus %s löschen</string>
     <string name="event_read_only_calendar">Dieser Kalender ist schreibgeschützt</string>
     <string name="event_read_only_guest">Einladung von %s – nur der Organisator kann sie ändern</string>
     <string name="event_read_only_guest_plain">Nur der Organisator kann diesen Termin ändern</string>
     <string name="event_read_only_permission">Celander darf diesen Kalender nur lesen</string>
-    <plurals name="settings_google_calendar_summary_on">
-        <item quantity="one">%1$d Kalender · %2$s</item>
-        <item quantity="other">%1$d Kalender · %2$s</item>
-    </plurals>
 
     <!-- Calendar list: default without entry count -->
-    <string name="settings_calendar_default">Standard</string>
 
     <!-- Google Tasks -->
     <string name="settings_google_tasks">Google Tasks</string>
@@ -587,39 +564,25 @@
 
     <!-- Google accounts -->
     <string name="google_accounts_title">Google-Konten</string>
-    <string name="google_accounts_intro">Celander zeigt die Kalender, die dein Telefon für diese Konten synchronisiert, und gleicht ihre Google-Tasks-Listen in beide Richtungen ab.</string>
-    <string name="google_accounts_empty">Noch kein Google-Konto. Füge eines hinzu, um seine Kalender zu sehen und seine Aufgaben abzugleichen.</string>
+    <string name="google_accounts_intro">Celander gleicht die Google-Tasks-Listen dieser Konten in beide Richtungen ab.</string>
+    <string name="google_accounts_empty">Noch kein Google-Konto. Füge eines hinzu, um seine Aufgaben abzugleichen.</string>
     <string name="google_accounts_overview_empty">Konto für Kalender und Aufgaben hinzufügen</string>
     <string name="google_accounts_attention">%s braucht Aufmerksamkeit – tippen für Details</string>
     <string name="google_accounts_add">Google-Konto hinzufügen</string>
     <string name="google_accounts_adding">%s wird hinzugefügt…</string>
-    <string name="google_accounts_added">%s hinzugefügt – Kalender und Aufgaben werden synchronisiert</string>
-    <string name="google_accounts_added_defaults">%s hinzugefügt – neue Termine und Aufgaben landen jetzt in diesem Konto</string>
-    <string name="google_accounts_added_default_events">%s hinzugefügt – neue Termine landen jetzt in diesem Konto</string>
+    <string name="google_accounts_added">%s hinzugefügt – Aufgaben werden synchronisiert</string>
     <string name="google_accounts_added_default_tasks">%s hinzugefügt – neue Aufgaben landen jetzt in diesem Konto</string>
-    <string name="google_accounts_added_no_tasks">%s hinzugefügt – Kalender werden synchronisiert, Google Tasks ist nicht verbunden</string>
-    <string name="google_accounts_added_phone_off">%s hinzugefügt – Aufgaben werden synchronisiert, Kalender erst, wenn die automatische Synchronisierung des Telefons an ist</string>
-    <string name="google_accounts_added_no_calendar">%s hinzugefügt – Aufgaben werden synchronisiert, die Kalendersynchronisierung ließ sich nicht einschalten</string>
     <string name="google_accounts_add_failed">%s konnte nicht hinzugefügt werden</string>
-    <string name="google_accounts_calendar_off">Aus – die Kalender dieses Kontos werden nicht aufs Telefon synchronisiert</string>
-    <string name="google_accounts_calendar_waiting">An – wartet auf die erste Synchronisierung</string>
-    <string name="google_accounts_calendar_hidden">In Celander ausgeblendet – tippen zum Anzeigen</string>
-    <string name="google_accounts_calendar_phone_off">Automatische Synchronisierung ist auf dem Telefon aus – tippen für die Einstellungen</string>
-    <string name="google_accounts_calendar_failed">Kalendersynchronisierung für %s ließ sich nicht ändern</string>
     <string name="google_accounts_tasks_off">Nicht verbunden – tippen zum Verbinden</string>
     <string name="google_accounts_remove">Aus Celander entfernen</string>
     <string name="google_accounts_remove_summary">Trennt Google Tasks. Das Konto bleibt auf dem Telefon.</string>
     <string name="google_accounts_remove_title">%s aus Celander entfernen?</string>
-    <string name="google_accounts_remove_message">Seine Google-Tasks-Listen werden von diesem Telefon entfernt; deine Aufgaben bleiben in Google Tasks. Das Konto selbst bleibt auf dem Telefon und seine Kalender werden weiter synchronisiert – entferne es in den Systemeinstellungen, wenn du es nicht mehr brauchst.</string>
+    <string name="google_accounts_remove_message">Seine Google-Tasks-Listen werden von diesem Telefon entfernt; deine Aufgaben bleiben in Google Tasks. Das Konto selbst bleibt auf dem Telefon – entferne es in den Systemeinstellungen, wenn du es nicht mehr brauchst.</string>
     <string name="google_accounts_remove_confirm">Entfernen</string>
     <string name="google_accounts_removed">%s aus Celander entfernt</string>
     <plurals name="google_accounts_count">
         <item quantity="one">%d Konto</item>
         <item quantity="other">%d Konten</item>
-    </plurals>
-    <plurals name="google_accounts_calendar_count">
-        <item quantity="one">An – %d Kalender auf diesem Telefon</item>
-        <item quantity="other">An – %d Kalender auf diesem Telefon</item>
     </plurals>
     <!-- Widget blur -->
 

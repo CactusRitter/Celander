@@ -195,7 +195,6 @@ fun EditorSheet(
             title = R.string.scope_edit_title,
             destructive = false,
             choices = choices,
-            limited = state.scopeLimited,
             onChoose = viewModel::saveWithScope,
             onDismissed = viewModel::cancelScope,
         )
@@ -228,7 +227,7 @@ private fun ColumnScope.EditorContent(
         onSave = {
             if (draft.title.isBlank()) runCatching { titleFocus.requestFocus() } else focusManager.clearFocus()
             // Reminders of the phone's calendars come from the calendar app, not from Celander.
-            if (draft.reminders.isNotEmpty() && (draft.kind == EntryKind.EVENT || draft.hasDueDate) && state.deviceCalendar == null) notifications.askOnce()
+            if (draft.reminders.isNotEmpty() && (draft.kind == EntryKind.EVENT || draft.hasDueDate)) notifications.askOnce()
             viewModel.save()
         },
     )
@@ -551,22 +550,13 @@ private fun EventFields(
         )
     }
     EditorSection(Modifier.staggeredEntrance(3, entrance)) {
-        val device = state.deviceCalendar
         RemindersSection(
             reminders = draft.reminders,
             allDay = draft.allDay,
             task = false,
             formats = formats,
             onChange = viewModel::setReminders,
-            warning = { if (draft.reminders.isNotEmpty() && device == null) ReminderWarning(notifications, task = false) },
-            maxCount = device?.maxReminders?.coerceIn(1, MAX_REMINDERS) ?: MAX_REMINDERS,
-            allowSameDay = device == null,
-            note = device?.let { calendar ->
-                listOfNotNull(
-                    stringResource(R.string.editor_reminders_calendar_app),
-                    calendar.maxReminders?.takeIf { it < MAX_REMINDERS }?.let { pluralStringResource(R.plurals.editor_reminders_max, it, it) },
-                ).joinToString(" ")
-            },
+            warning = { if (draft.reminders.isNotEmpty()) ReminderWarning(notifications, task = false) },
         )
     }
     EditorSection(Modifier.staggeredEntrance(4, entrance)) {
@@ -601,15 +591,12 @@ private fun EventFields(
             singleLine = false,
         )
     }
-    // Event colors of the phone's calendars belong to the account; Celander does not set them.
-    if (state.deviceCalendar == null) {
-        ColorChooser(
-            colorKey = draft.colorKey,
-            calendarColorKey = state.calendars.firstOrNull { it.id == draft.calendarId }?.colorKey,
-            onSelect = viewModel::setColor,
-            modifier = Modifier.staggeredEntrance(5, entrance),
-        )
-    }
+    ColorChooser(
+        colorKey = draft.colorKey,
+        calendarColorKey = state.calendars.firstOrNull { it.id == draft.calendarId }?.colorKey,
+        onSelect = viewModel::setColor,
+        modifier = Modifier.staggeredEntrance(5, entrance),
+    )
 }
 
 /** Inline error for text Google Tasks cannot store; saving waits until it is shorter. */

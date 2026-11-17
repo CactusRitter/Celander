@@ -458,42 +458,19 @@
         <item quantity="other">%1$d open</item>
     </plurals>
 
-    <!-- Google Calendar through the phone's calendars -->
+    <!-- Google accounts (Google Tasks) -->
     <string name="settings_section_google">Google</string>
-    <string name="settings_google_calendar">Google Calendar</string>
-    <string name="settings_google_calendar_summary_off">Show the calendars this phone syncs, e.g. from your Google account</string>
-    <string name="settings_google_calendar_no_access">No calendar access – tap to allow</string>
-    <string name="settings_google_calendar_denied">Access denied – tap to allow it in the system settings</string>
-    <string name="settings_google_calendar_read_only">Celander may only read these calendars – tap to allow changes</string>
-    <string name="settings_google_calendar_default_changed">New events now go to %s</string>
     <string name="settings_default_task_list">Default list for tasks</string>
-    <string name="settings_reminders_google">Google events</string>
-    <string name="settings_reminders_google_by_app">Reminders come from %s</string>
-    <string name="settings_reminders_google_no_app">No calendar app found – Google events won\'t remind you</string>
-    <string name="settings_calendars_on_this_phone">On this phone</string>
     <string name="settings_calendar_read_only">Read only</string>
-    <string name="settings_calendars_device_hint">Showing and hiding only applies in Celander. Reminders for these events come from your calendar app.</string>
     <string name="settings_calendar_color_local">The color only changes in Celander.</string>
     <string name="settings_calendar_name_from_account">The name comes from the account.</string>
-    <string name="editor_reminders_calendar_app">Your calendar app shows the reminders for this calendar.</string>
-    <plurals name="editor_reminders_max">
-        <item quantity="one">This calendar allows only %d reminder.</item>
-        <item quantity="other">This calendar allows up to %d reminders.</item>
-    </plurals>
     <string name="editor_series_limited">Not every option is available for this repeating event.</string>
-    <string name="event_save_failed">Couldn\'t save to %s</string>
-    <string name="event_delete_failed">Couldn\'t delete from %s</string>
     <string name="event_read_only_calendar">This calendar is read only</string>
     <string name="event_read_only_guest">Invitation from %s – only the organizer can change it</string>
     <string name="event_read_only_guest_plain">Only the organizer can change this event</string>
     <string name="event_read_only_permission">Celander may only read this calendar</string>
-    <plurals name="settings_google_calendar_summary_on">
-        <item quantity="one">%1$d calendar · %2$s</item>
-        <item quantity="other">%1$d calendars · %2$s</item>
-    </plurals>
 
     <!-- Calendar list: default without entry count -->
-    <string name="settings_calendar_default">Default</string>
 
     <!-- Google Tasks -->
     <string name="settings_google_tasks">Google Tasks</string>
@@ -590,39 +567,25 @@
 
     <!-- Google accounts -->
     <string name="google_accounts_title">Google accounts</string>
-    <string name="google_accounts_intro">Celander shows the calendars your phone syncs for these accounts and syncs their Google Tasks lists both ways.</string>
-    <string name="google_accounts_empty">No Google account yet. Add one to see its calendars and sync its tasks.</string>
+    <string name="google_accounts_intro">Celander syncs the Google Tasks lists of these accounts both ways.</string>
+    <string name="google_accounts_empty">No Google account yet. Add one to sync its tasks.</string>
     <string name="google_accounts_overview_empty">Add an account for its calendars and tasks</string>
     <string name="google_accounts_attention">%s needs attention – tap to see why</string>
     <string name="google_accounts_add">Add Google account</string>
     <string name="google_accounts_adding">Adding %s…</string>
-    <string name="google_accounts_added">%s added – calendars and tasks sync</string>
-    <string name="google_accounts_added_defaults">%s added – new events and tasks now go to this account</string>
-    <string name="google_accounts_added_default_events">%s added – new events now go to this account</string>
+    <string name="google_accounts_added">%s added – tasks sync</string>
     <string name="google_accounts_added_default_tasks">%s added – new tasks now go to this account</string>
-    <string name="google_accounts_added_no_tasks">%s added – calendars sync, Google Tasks isn\'t connected</string>
-    <string name="google_accounts_added_phone_off">%s added – tasks sync, calendars wait until auto-sync is on for this phone</string>
-    <string name="google_accounts_added_no_calendar">%s added – tasks sync, calendar sync couldn\'t be turned on</string>
     <string name="google_accounts_add_failed">Couldn\'t add %s</string>
-    <string name="google_accounts_calendar_off">Off – this account\'s calendars don\'t sync to this phone</string>
-    <string name="google_accounts_calendar_waiting">On – waiting for the first sync</string>
-    <string name="google_accounts_calendar_hidden">Not shown in Celander – tap to show</string>
-    <string name="google_accounts_calendar_phone_off">Auto-sync is off on this phone – tap to open the sync settings</string>
-    <string name="google_accounts_calendar_failed">Couldn\'t change calendar sync for %s</string>
     <string name="google_accounts_tasks_off">Not connected – tap to connect</string>
     <string name="google_accounts_remove">Remove from Celander</string>
     <string name="google_accounts_remove_summary">Disconnects Google Tasks. The account stays on this phone.</string>
     <string name="google_accounts_remove_title">Remove %s from Celander?</string>
-    <string name="google_accounts_remove_message">Its Google Tasks lists are removed from this phone; your tasks stay in Google Tasks. The account itself stays on this phone and its calendars keep syncing – remove it in the system settings if you no longer need it.</string>
+    <string name="google_accounts_remove_message">Its Google Tasks lists are removed from this phone; your tasks stay in Google Tasks. The account itself stays on this phone – remove it in the system settings if you no longer need it.</string>
     <string name="google_accounts_remove_confirm">Remove</string>
     <string name="google_accounts_removed">%s removed from Celander</string>
     <plurals name="google_accounts_count">
         <item quantity="one">%d account</item>
         <item quantity="other">%d accounts</item>
-    </plurals>
-    <plurals name="google_accounts_calendar_count">
-        <item quantity="one">On – %d calendar on this phone</item>
-        <item quantity="other">On – %d calendars on this phone</item>
     </plurals>
     <!-- Widget blur -->
 

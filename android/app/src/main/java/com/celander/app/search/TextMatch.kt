@@ -1,11 +1,11 @@
-package com.celander.app.core.device
+package com.celander.app.search
 
 import java.text.Normalizer
 import java.util.Locale
 
 /**
  * In-memory counterpart of the `unicode61` FTS4 tables queried through `FtsQuery`, for rows that
- * live outside Room (device calendar events).
+ * live outside the index (changed occurrences with texts of their own).
  *
  * Text and query are normalized alike: lowercase in [Locale.ROOT], NFD, non-spacing marks removed,
  * then split on everything that is neither letter, digit nor mark. A query matches when every term

@@ -2,7 +2,6 @@ package com.celander.app.calendar
 
 import androidx.lifecycle.SavedStateHandle
 import com.celander.app.calendar.data.CalendarContentRepository
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.time.TimeSource
 import com.celander.app.testing.BERLIN
 import com.celander.app.testing.TestEnvironment
@@ -67,7 +66,7 @@ class HomeClockTest {
     }
 
     private fun home(clock: TimeSource, launches: LaunchRequests = LaunchRequests(), savedState: SavedStateHandle = SavedStateHandle()): HomeViewModel {
-        val content = CalendarContentRepository(env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), DeviceCalendarSource.None, Dispatchers.Default)
+        val content = CalendarContentRepository(env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), Dispatchers.Default)
         return HomeViewModel(savedState, env.settings, content, env.tasks, env.calendars, env.samples, env.snackbars, launches, clock).also { watch(it) }
     }
 

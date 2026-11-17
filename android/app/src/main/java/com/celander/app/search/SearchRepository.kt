@@ -1,13 +1,11 @@
 package com.celander.app.search
 
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.database.CalendarDao
 import com.celander.app.core.database.CelanderDatabase
 import com.celander.app.core.database.EventDao
 import com.celander.app.core.database.ExceptionDao
 import com.celander.app.core.database.TaskDao
 import com.celander.app.core.database.toModel
-import com.celander.app.core.device.TextMatch
 import com.celander.app.core.di.DefaultDispatcher
 import com.celander.app.core.model.CalendarInfo
 import com.celander.app.core.model.Event
@@ -23,7 +21,6 @@ import java.time.LocalTime
 import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -77,13 +74,12 @@ class SearchRepository @Inject constructor(
     private val exceptionDao: ExceptionDao,
     private val taskDao: TaskDao,
     private val time: TimeSource,
-    private val device: DeviceCalendarSource,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
-    /** Results for [text] that update whenever events, tasks, calendars or the phone's calendars change. */
+    /** Results for [text] that update whenever events, tasks or calendars change. */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun results(text: String, filter: SearchFilter): Flow<List<SearchHit>> =
-        combine(db.invalidationTracker.createFlow("events", "event_exceptions", "tasks", "calendars"), device.changes) { _, _ -> }
+        db.invalidationTracker.createFlow("events", "event_exceptions", "tasks", "calendars")
             .mapLatest { search(text, filter) }
 
     /** Main-safe: reading, matching changed occurrences and expanding series all run on [dispatcher]. */
@@ -101,14 +97,6 @@ class SearchRepository @Inject constructor(
             event.id to exceptionDao.getForEvent(event.id).map { it.toModel(event.zone) }
         }
         val tasks = taskDao.search(match).map { it.toModel() }.filter { allowed(it.calendarId) }
-        // The phone's calendars are searched in memory; if that fails, local hits still show.
-        val deviceOccurrences = try {
-            device.search(text, time.now(), time.zone()) { filter.calendarIds.isEmpty() || it in filter.calendarIds }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (_: Exception) {
-            emptyList()
-        }
         val zone = time.zone()
         val now = time.now()
         val today = now.atZone(zone).toLocalDate()
@@ -138,15 +126,7 @@ class SearchRepository @Inject constructor(
                 past = task.done,
             )
         }
-        val deviceHits = deviceOccurrences.map { occurrence ->
-            SearchHit.EventHit(
-                occurrence = occurrence,
-                date = occurrence.timing.startDate(zone),
-                sortMillis = occurrence.timing.startInstant(zone).toEpochMilli(),
-                past = !occurrence.timing.endInstant(zone).isAfter(now),
-            )
-        }
-        return (eventHits + deviceHits + taskHits)
+        return (eventHits + taskHits)
             .filter {
                 when (filter.range) {
                     SearchRange.ALL -> true

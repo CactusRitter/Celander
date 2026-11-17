@@ -1,6 +1,5 @@
 package com.celander.app.settings
 
-import android.provider.CalendarContract
 import com.celander.app.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
@@ -86,12 +85,9 @@ fun CalendarsScreen(
     val current = settings ?: return
     val formats = rememberFormats(current.timeFormat)
     val local = list.filter { it.calendar.source == CalendarSource.LOCAL }
-    val deviceGroups = list.filter { it.calendar.source == CalendarSource.DEVICE }
-        .groupBy { if (it.calendar.accountType == CalendarContract.ACCOUNT_TYPE_LOCAL) null else it.calendar.account }
     val accountGroups = list.filter { it.calendar.source == CalendarSource.ACCOUNT }.groupBy { it.calendar.account }
     val accountsTitle = stringResource(R.string.accounts_title)
     val groupTitle = stringResource(R.string.settings_your_calendars)
-    val onThisPhone = stringResource(R.string.settings_calendars_on_this_phone)
     val hint = stringResource(R.string.settings_hidden_hint)
 
     SettingsScaffold(
@@ -139,25 +135,6 @@ fun CalendarsScreen(
                 modifier = Modifier.padding(top = 16.dp),
             )
         }
-        // The phone's calendars, one group per account; visibility and color apply only in Celander.
-        deviceGroups.forEach { (account, accountRows) ->
-            settingsGroup(account ?: onThisPhone) {
-                accountRows.forEachIndexed { index, row ->
-                    if (index > 0) SettingsDivider()
-                    CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setVisible(row.calendar.id, it) })
-                }
-            }
-        }
-        if (deviceGroups.isNotEmpty()) {
-            item(key = "device-hint") {
-                Text(
-                    stringResource(R.string.settings_calendars_device_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
-                )
-            }
-        }
         // The calendars of the connected accounts, one group per account: the name follows the account, color and visibility are Celander's own.
         accountGroups.forEach { (account, accountRows) ->
             settingsGroup(account ?: accountsTitle) {
@@ -190,16 +167,14 @@ private fun CalendarListRow(row: CalendarRow, onEdit: () -> Unit, onVisibleChang
         Box(Modifier.size(14.dp).background(CalendarColor.fromKey(calendar.colorKey).color(), CircleShape))
         Column(Modifier.weight(1f).padding(horizontal = 12.dp, vertical = 8.dp)) {
             Text(calendar.name, style = MaterialTheme.typography.bodyLarge, color = colors.onSurface, maxLines = 2)
-            // The phone's calendars are not counted: their events stay in the calendar provider.
-            val entries = if (calendar.source == CalendarSource.DEVICE) null else pluralStringResource(R.plurals.entries_count, row.entries, row.entries)
+            val entries = pluralStringResource(R.plurals.entries_count, row.entries, row.entries)
             val isDefault = if (calendar.source == CalendarSource.GOOGLE_TASKS) row.isTaskDefault else row.isDefault
             val summary = when {
                 !calendar.writable -> stringResource(R.string.settings_calendar_read_only)
-                isDefault && entries != null -> stringResource(R.string.settings_calendar_default_summary, entries)
-                isDefault -> stringResource(R.string.settings_calendar_default)
+                isDefault -> stringResource(R.string.settings_calendar_default_summary, entries)
                 else -> entries
             }
-            if (summary != null) Text(summary, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
+            Text(summary, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
         }
         val visibleLabel = stringResource(R.string.settings_calendar_visible, calendar.name)
         Switch(

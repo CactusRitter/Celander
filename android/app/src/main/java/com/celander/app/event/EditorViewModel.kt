@@ -7,15 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.celander.app.R
 import com.celander.app.calendar.EditorRequest
 import com.celander.app.calendar.data.CalendarsRepository
-import com.celander.app.calendar.device.DeviceWriteException
 import com.celander.app.core.model.CalendarInfo
 import com.celander.app.core.model.CalendarSource
 import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.Event
 import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.ReminderDefaults
-import com.celander.app.core.model.SeriesCapabilities
-import com.celander.app.core.model.SourceIds
 import com.celander.app.core.model.Task
 import com.celander.app.core.places.PlaceSuggestion
 import com.celander.app.core.recurrence.OccurrenceCalculator
@@ -142,13 +139,7 @@ data class EditorUiState(
     val dirty: Boolean = false,
     /** Non-null while asking which occurrences of a series a change applies to. */
     val scopeChoices: List<SeriesScope>? = null,
-    /** Some scopes are missing because the phone's calendar cannot store them. */
-    val scopeLimited: Boolean = false,
 ) {
-    /** The selected calendar if it is one of the phone's: no colors, its own reminder limits. */
-    val deviceCalendar: CalendarInfo?
-        get() = calendars.firstOrNull { it.id == draft?.calendarId }?.takeIf { it.source == CalendarSource.DEVICE }
-
     /** The task goes to a Google Tasks list, which stores only the date and limits text lengths. */
     val googleTask: Boolean
         get() = draft?.kind == EntryKind.TASK && calendars.firstOrNull { it.id == draft.calendarId }?.source == CalendarSource.GOOGLE_TASKS
@@ -200,7 +191,6 @@ class EditorViewModel @Inject constructor(
         val titleError: Boolean = false,
         val endAdjusted: Boolean = false,
         val scopeChoices: List<SeriesScope>? = null,
-        val scopeLimited: Boolean = false,
     )
 
     // Kept until the sheet reads it, also when the sheet is just being recreated (a rotation).
@@ -250,23 +240,19 @@ class EditorViewModel @Inject constructor(
             titleError = f.titleError,
             endAdjusted = f.endAdjusted,
             scopeChoices = f.scopeChoices,
-            scopeLimited = f.scopeLimited,
             dirty = d != null && i != null && d != i,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, EditorUiState())
 
     /**
-     * Calendars that can hold the entry's kind. An existing event stays with its kind of calendar
-     * (no moves between local calendars and the phone's calendars); its own calendar is always listed.
-     * A new entry only lists calendars for its current kind, so switching to a task never offers
-     * the phone's calendars, nor switching to an event a Google Tasks list.
+     * Calendars that can hold the entry's kind. An existing event stays with its kind of calendar;
+     * its own calendar is always listed. A new entry only lists calendars for its current kind, so
+     * switching to an event never offers a Google Tasks list.
      */
     private fun choosable(d: EditorDraft?, i: EditorDraft?, list: List<CalendarInfo>): List<CalendarInfo> {
         if (d == null) return emptyList()
         if (d.isNew) return list.filter { it.offers(d.kind) }
         val own = list.firstOrNull { it.id == i?.calendarId }
-        // An event in the phone's calendars stays in its calendar.
-        if (own?.source == CalendarSource.DEVICE) return listOf(own)
         return list.filter { calendar ->
             calendar.id == own?.id || calendar.offers(d.kind) && (d.kind == EntryKind.TASK || own == null || calendar.source == own.source)
         }
@@ -354,8 +340,6 @@ class EditorViewModel @Inject constructor(
                 // A copy of an event from a calendar that cannot take new events goes to the usual one.
                 val sourceCalendar = calendars.first().firstOrNull { it.id == loaded.event.calendarId }
                 val target = if (sourceCalendar?.offers(EntryKind.EVENT) == true) loaded.event.calendarId else calendarId ?: loaded.event.calendarId
-                val keepsReminders = sourceCalendar?.source != CalendarSource.DEVICE || target == loaded.event.calendarId
-                val reminders = if (keepsReminders) loaded.event.reminders else defaults(target, EntryKind.EVENT, timing is EventTiming.AllDay)
                 fromEvent(
                     loaded.event.copy(
                         timing = timing,
@@ -364,11 +348,10 @@ class EditorViewModel @Inject constructor(
                         location = exception?.location ?: loaded.event.location,
                         description = exception?.description ?: loaded.event.description,
                         calendarId = target,
-                        reminders = reminders,
                     ),
                     key,
                     keepIdentity = false,
-                ).copy(remindersFromDefaults = !keepsReminders)
+                ).copy(remindersFromDefaults = false)
             }
             is EditorRequest.EditTask -> tasks.get(request.taskId)?.let { fromTask(it, key) }
             is EditorRequest.InsertEvent -> insertedDraft(request, newEventDraft(now.toLocalDate(), null, request.allDay, request.title))
@@ -516,7 +499,7 @@ class EditorViewModel @Inject constructor(
             val reminders = if (d.remindersFromDefaults && global != null) {
                 NewEntryReminders.forEntry(calendar, global, d.kind, d.allDay)
             } else {
-                NewEntryReminders.fit(calendar, d.reminders)
+                d.reminders
             }
             d.copy(calendarId = id, reminders = reminders)
         }
@@ -649,25 +632,14 @@ class EditorViewModel @Inject constructor(
         }
         busy = true
         viewModelScope.launch {
-            val result = try {
-                when (d.kind) {
-                    EntryKind.EVENT -> saveEvent(d, calendarId)
-                    EntryKind.TASK -> saveTask(d, calendarId)
-                }
-            } catch (e: DeviceWriteException) {
-                saveFailed(e)
-                return@launch
+            val result = when (d.kind) {
+                EntryKind.EVENT -> saveEvent(d, calendarId)
+                EntryKind.TASK -> saveTask(d, calendarId)
             }
             rememberCalendar(d.kind, calendarId)
             reset()
             _outcomes.trySend(result)
         }
-    }
-
-    /** The phone's calendar refused the write: the editor stays open with the draft. */
-    private fun saveFailed(e: DeviceWriteException) {
-        busy = false
-        snackbars.show(UiText.Res(R.string.event_save_failed, listOf(e.calendarName)))
     }
 
     /**
@@ -683,29 +655,11 @@ class EditorViewModel @Inject constructor(
         }
         val seriesWide = d.calendarId != i.calendarId || d.colorKey != i.colorKey || d.reminders != i.reminders || d.repeatEdited
         val wanted = if (seriesWide) listOf(SeriesScope.THIS_AND_FOLLOWING, SeriesScope.ALL) else SeriesScope.entries
-        val masterId = d.eventId
-        if (masterId == null || !SourceIds.isDevice(masterId)) {
-            flags.value = flags.value.copy(scopeChoices = wanted, scopeLimited = false)
-            return
-        }
-        viewModelScope.launch {
-            // A series from the phone's calendars may not take every scope without losing data.
-            val capabilities = events.getWithExceptions(masterId)?.capabilities ?: SeriesCapabilities()
-            val zone = time.zone()
-            val timeChanged = d.timing(zone) != i.timing(zone)
-            val allowed = wanted.filter { scope ->
-                when (scope) {
-                    SeriesScope.THIS -> true
-                    SeriesScope.THIS_AND_FOLLOWING -> capabilities.canSplit
-                    SeriesScope.ALL -> !timeChanged || capabilities.canShiftAll
-                }
-            }
-            flags.value = flags.value.copy(scopeChoices = allowed, scopeLimited = allowed.size < wanted.size)
-        }
+        flags.value = flags.value.copy(scopeChoices = wanted)
     }
 
     fun cancelScope() {
-        flags.value = flags.value.copy(scopeChoices = null, scopeLimited = false)
+        flags.value = flags.value.copy(scopeChoices = null)
     }
 
     fun saveWithScope(scope: SeriesScope) {
@@ -715,18 +669,13 @@ class EditorViewModel @Inject constructor(
         val masterId = d.eventId ?: return
         if (busy) return
         busy = true
-        flags.value = flags.value.copy(scopeChoices = null, scopeLimited = false)
+        flags.value = flags.value.copy(scopeChoices = null)
         viewModelScope.launch {
-            try {
-                val loaded = events.getWithExceptions(masterId)
-                val built = buildEvent(d, calendarId, loaded?.event)
-                // What was not edited keeps the series as it is now, also after a sync meanwhile.
-                val edited = loaded?.let { editedOnto(occurrenceOf(it, key), built, d, initial.value) } ?: built
-                seriesEditor.save(masterId, key, edited, scope)
-            } catch (e: DeviceWriteException) {
-                saveFailed(e)
-                return@launch
-            }
+            val loaded = events.getWithExceptions(masterId)
+            val built = buildEvent(d, calendarId, loaded?.event)
+            // What was not edited keeps the series as it is now, also after a sync meanwhile.
+            val edited = loaded?.let { editedOnto(occurrenceOf(it, key), built, d, initial.value) } ?: built
+            seriesEditor.save(masterId, key, edited, scope)
             rememberCalendar(EntryKind.EVENT, calendarId)
             reset()
             _outcomes.trySend(EditorOutcome.Saved(EntryKind.EVENT, d.startDate, isNew = false))

@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.celander.app.R
 import com.celander.app.calendar.data.CalendarsRepository
 import com.celander.app.calendar.data.SampleDataRepository
-import com.celander.app.calendar.device.DeviceCalendarSource
-import com.celander.app.calendar.device.DeviceCalendarStatus
 import com.celander.app.core.model.CalendarInfo
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.ui.SnackbarManager
@@ -32,9 +30,6 @@ import kotlinx.coroutines.launch
 /** A calendar in the settings list with how many entries it holds. */
 data class CalendarRow(val calendar: CalendarInfo, val entries: Int, val isDefault: Boolean, val isTaskDefault: Boolean = false)
 
-/** The phone's calendars as the settings show them. */
-data class GoogleCalendarState(val status: DeviceCalendarStatus)
-
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -44,7 +39,6 @@ class SettingsViewModel @Inject constructor(
     private val samples: SampleDataRepository,
     private val reset: DataReset,
     private val snackbar: SnackbarManager,
-    device: DeviceCalendarSource,
     googleAccounts: GoogleAccounts,
     googleTasksAccounts: GoogleTasksAccounts,
 ) : ViewModel() {
@@ -63,11 +57,8 @@ class SettingsViewModel @Inject constructor(
         list.map { CalendarRow(it, counts[it.id] ?: 0, it.id == defaultId, it.id == taskDefaultId) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    val googleCalendar: StateFlow<GoogleCalendarState?> = device.status.map { GoogleCalendarState(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-
     /** Summary of the Google accounts for the overview; the page itself has its own view model. */
-    val googleOverview: StateFlow<GoogleOverview?> = combine(googleAccounts.accounts(), device.status) { accounts, status -> GoogleOverview(accounts, status) }
+    val googleOverview: StateFlow<GoogleOverview?> = googleAccounts.accounts().map { GoogleOverview(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val hasSampleData: StateFlow<Boolean?> = samples.hasSampleData.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)

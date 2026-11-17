@@ -2,7 +2,6 @@ package com.celander.app.event
 
 import com.celander.app.core.model.Event
 import com.celander.app.core.model.EventException
-import com.celander.app.core.model.SourceIds
 import com.celander.app.core.recurrence.SeriesEdits
 import com.celander.app.core.recurrence.SeriesScope
 import java.util.UUID
@@ -18,7 +17,6 @@ class SeriesEditor @Inject constructor(
 ) {
     /** [edited] is the occurrence originally at [key] after editing (title, timing, rule, …). */
     suspend fun save(masterId: Long, key: Long, edited: Event, scope: SeriesScope) {
-        if (SourceIds.isDevice(masterId)) return events.saveDeviceSeries(masterId, key, edited, scope)
         val loaded = events.getWithExceptions(masterId) ?: return
         val master = loaded.event
         when (scope) {

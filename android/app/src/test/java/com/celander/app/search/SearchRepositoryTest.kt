@@ -31,7 +31,7 @@ class SearchRepositoryTest {
         env = TestEnvironment(folder.root)
         env.calendars.ensureDefault("Personal")
         personal = env.calendars.first().single().id
-        search = SearchRepository(env.db, env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), env.time, env.device, Dispatchers.Unconfined)
+        search = SearchRepository(env.db, env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), env.time, Dispatchers.Unconfined)
     }
 
     @After

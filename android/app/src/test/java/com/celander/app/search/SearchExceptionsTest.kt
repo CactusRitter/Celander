@@ -1,6 +1,5 @@
 package com.celander.app.search
 
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.database.EventExceptionEntity
 import com.celander.app.core.database.ExceptionDao
 import com.celander.app.core.model.EventException
@@ -41,7 +40,7 @@ class SearchExceptionsTest {
         env = TestEnvironment(folder.root)
         env.calendars.ensureDefault("Personal")
         personal = env.calendars.first().single().id
-        search = SearchRepository(env.db, env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), env.time, env.device, Dispatchers.Unconfined)
+        search = SearchRepository(env.db, env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), env.time, Dispatchers.Unconfined)
     }
 
     @After
@@ -87,27 +86,21 @@ class SearchExceptionsTest {
         val id = dailyStandUp()
         rename(id, LocalDate.of(2026, 10, 28), title = "Retro")
         // Where the code after each read goes on: the changed occurrences' texts are matched right
-        // after they are read, the phone's calendars are searched after that.
+        // after they are read.
         val threads = Collections.synchronizedList(mutableListOf<String>())
         val exceptions = object : ExceptionDao by env.db.exceptionDao() {
             override suspend fun getWithOwnText(): List<EventExceptionEntity> =
                 env.db.exceptionDao().getWithOwnText().also { threads += "exceptions@" + Thread.currentThread().name.substringBefore(" @") }
         }
-        val device = object : DeviceCalendarSource by DeviceCalendarSource.None {
-            override suspend fun search(text: String, now: Instant, zone: ZoneId, allowed: (Long) -> Boolean): List<EventOccurrence> {
-                threads += "device@" + Thread.currentThread().name.substringBefore(" @")
-                return emptyList()
-            }
-        }
         val worker = Executors.newSingleThreadExecutor { Thread(it, WORKER) }.asCoroutineDispatcher()
         try {
-            val onWorker = SearchRepository(env.db, env.db.calendarDao(), env.db.eventDao(), exceptions, env.db.taskDao(), env.time, device, worker)
+            val onWorker = SearchRepository(env.db, env.db.calendarDao(), env.db.eventDao(), exceptions, env.db.taskDao(), env.time, worker)
 
             // runBlocking's thread stands in for the main thread that collects the results.
             val hit = onWorker.search("retro", SearchFilter()).single() as EventHit
 
             assertEquals("Retro", hit.occurrence.title)
-            assertEquals(listOf("exceptions@$WORKER", "device@$WORKER"), threads.toList())
+            assertEquals(listOf("exceptions@$WORKER"), threads.toList())
         } finally {
             worker.close()
         }

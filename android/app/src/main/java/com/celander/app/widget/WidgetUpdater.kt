@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.updateAll
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.database.CelanderDatabase
 import com.celander.app.core.di.ApplicationScope
 import com.celander.app.notifications.InjectedReceiver
@@ -45,15 +44,12 @@ class WidgetUpdater @Inject constructor(
     @ApplicationContext private val context: Context,
     private val db: CelanderDatabase,
     private val settings: SettingsRepository,
-    private val device: DeviceCalendarSource,
 ) {
     @OptIn(FlowPreview::class)
     fun start(scope: CoroutineScope) {
         scope.launch {
             merge(
-                // Visibility and color of the phone's calendars live in device_calendar_prefs, which the provider does not report.
                 db.invalidationTracker.createFlow(*WIDGET_TABLES).map { },
-                device.changes,
                 settings.settings
                     .map { listOf(it.themeMode, it.accentPalette, it.widgetTransparency, it.weekStart, it.showWeekNumbers, it.timeFormat) }
                     .distinctUntilChanged()
@@ -61,15 +57,13 @@ class WidgetUpdater @Inject constructor(
             ).debounce(UPDATE_DEBOUNCE_MILLIS).collect { updateAll(context) }
         }
         scope.launch { scheduleNextDay(context) }
-        // Outside the app, a content trigger refreshes the widgets on changes in the phone's calendars.
-        scope.launch { device.status.distinctUntilChanged().collect { DeviceCalendarRefreshWorker.enqueueIfNeeded(context) } }
     }
 
     companion object {
         const val ACTION_REFRESH = "com.celander.app.action.REFRESH_WIDGETS"
 
         /** The tables whose changes the widgets show. */
-        internal val WIDGET_TABLES = arrayOf("calendars", "device_calendar_prefs", "events", "event_exceptions", "tasks")
+        internal val WIDGET_TABLES = arrayOf("calendars", "events", "event_exceptions", "tasks")
         private const val UPDATE_DEBOUNCE_MILLIS = 500L
         private const val MIDNIGHT_DELAY_SECONDS = 5L
         private const val MIDNIGHT_WINDOW_MILLIS = 10 * 60 * 1000L
@@ -93,7 +87,6 @@ class WidgetUpdater @Inject constructor(
          */
         suspend fun scheduleNextDay(context: Context) {
             if (!anyPlaced(context)) return
-            DeviceCalendarRefreshWorker.enqueueIfNeeded(context)
             val time = context.widgetDeps().time()
             val next = time.today().plusDays(1).atStartOfDay(time.zone()).plusSeconds(MIDNIGHT_DELAY_SECONDS).toInstant()
             context.getSystemService(AlarmManager::class.java).setWindow(AlarmManager.RTC, next.toEpochMilli(), MIDNIGHT_WINDOW_MILLIS, refreshIntent(context, MIDNIGHT_REQUEST))

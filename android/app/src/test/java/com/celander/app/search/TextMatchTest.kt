@@ -1,4 +1,4 @@
-package com.celander.app.core.device
+package com.celander.app.search
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

@@ -19,16 +19,13 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.celander.app.calendar.CalendarIntents
 import com.celander.app.calendar.EditorRequest
-import com.celander.app.calendar.EventLinks
 import com.celander.app.calendar.HomeDestination
 import com.celander.app.calendar.HomeSheet
 import com.celander.app.calendar.KeyboardShortcuts
 import com.celander.app.calendar.LaunchRequests
 import com.celander.app.calendar.LocalKeyboardShortcuts
 import com.celander.app.calendar.ViewRequest
-import com.celander.app.core.time.TimeSource
 import com.celander.app.ui.theme.CelanderTheme
 import com.celander.app.notifications.ReminderKind
 import com.celander.app.notifications.ReminderNotifier
@@ -46,10 +43,6 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var settingsRepository: SettingsRepository
 
     @Inject lateinit var launchRequests: LaunchRequests
-
-    @Inject lateinit var time: TimeSource
-
-    @Inject lateinit var eventLinks: EventLinks
 
     private val keyboardShortcuts = KeyboardShortcuts()
 
@@ -101,16 +94,9 @@ class MainActivity : ComponentActivity() {
         handle(intent)
     }
 
-    /**
-     * A tapped reminder or widget opens its event, task, view or a new entry; another app asking the
-     * calendar app for a new event, a day or an event gets the editor, that day or the event.
-     */
+    /** A tapped reminder or widget opens its event, task, view or a new entry. */
     private fun handle(intent: Intent) {
         when (intent.action) {
-            Intent.ACTION_INSERT -> CalendarIntents.insertRequest(intent)?.let { launchRequests.open(HomeSheet.Editor(it)) }
-            Intent.ACTION_VIEW -> CalendarIntents.eventLink(intent)?.let(eventLinks::open)
-                ?: CalendarIntents.viewDay(intent, time.zone())?.let { launchRequests.show(ViewRequest(HomeDestination.DAY, it)) }
-            Intent.ACTION_EDIT -> CalendarIntents.eventLink(intent)?.let(eventLinks::open)
             ACTION_OPEN_REMINDER, ACTION_OPEN_ENTRY -> {
                 val reminder = intent.reminder() ?: return
                 // The notification's "Details" button does not dismiss it by itself, unlike a tap on it.

@@ -2,13 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Reminders: notifications, exact alarms (calendar apps may use USE_EXACT_ALARM from Android 13),
-         replanning after a reboot. -->
-    <uses-permission android:name="android.permission.READ_CALENDAR" />
-    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <!-- "Calendar sync is off for …" turns it on for that account right from Settings. -->
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <!-- Reminders: notifications, exact alarms, replanning after a reboot. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission
@@ -19,14 +13,6 @@
     <!-- Google Tasks sync; only used after the user connected an account. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- The reminder hint needs to see the installed calendar apps. -->
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.APP_CALENDAR" />
-        </intent>
-    </queries>
 
     <application
         android:name=".CelanderApp"
@@ -49,39 +35,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <!-- Launchers and other apps find Celander as a calendar app through APP_CALENDAR. -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.APP_CALENDAR" />
-            </intent-filter>
-            <!-- "Add to calendar" from other apps, e.g. a date tapped in an e-mail: opens the editor. -->
-            <intent-filter>
-                <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/event" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/event" />
-            </intent-filter>
-            <!-- A day to show: content://com.android.calendar/time/<millis>. -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:mimeType="time/epoch" />
-                <data android:scheme="content" />
-                <data android:host="com.android.calendar" />
-            </intent-filter>
-            <!-- An event to show or edit: content://com.android.calendar/events/<id>. -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/event" />
             </intent-filter>
         </activity>
 

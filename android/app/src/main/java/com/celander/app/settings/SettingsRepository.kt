@@ -58,8 +58,6 @@ class SettingsRepository @Inject constructor(
         val defaultTaskCalendar = longPreferencesKey("default_task_calendar")
         val lastUsedTaskCalendar = longPreferencesKey("last_used_task_calendar")
         /** Earlier versions stored an untouched switch as false, so only true is taken over. */
-        val legacyDeviceCalendars = booleanPreferencesKey("device_calendars")
-        val deviceCalendars = booleanPreferencesKey("device_calendars_choice")
         val defaultDuration = intPreferencesKey("default_duration")
         val startView = stringPreferencesKey("start_view")
         val eventReminders = stringPreferencesKey("event_reminders")
@@ -115,7 +113,6 @@ class SettingsRepository @Inject constructor(
             lastUsedCalendarId = this[Keys.lastUsedCalendar],
             defaultTaskCalendarId = this[Keys.defaultTaskCalendar],
             lastUsedTaskCalendarId = this[Keys.lastUsedTaskCalendar],
-            deviceCalendarsEnabled = this[Keys.deviceCalendars] ?: this[Keys.legacyDeviceCalendars]?.takeIf { it } ?: d.deviceCalendarsEnabled,
             defaultDurationMinutes = this[Keys.defaultDuration] ?: d.defaultDurationMinutes,
             startView = this[Keys.startView].toEnum(d.startView),
             eventReminders = this[Keys.eventReminders].toMinutes(d.eventReminders),
@@ -145,8 +142,6 @@ class SettingsRepository @Inject constructor(
         if (s.lastUsedCalendarId != null) this[Keys.lastUsedCalendar] = s.lastUsedCalendarId else remove(Keys.lastUsedCalendar)
         if (s.defaultTaskCalendarId != null) this[Keys.defaultTaskCalendar] = s.defaultTaskCalendarId else remove(Keys.defaultTaskCalendar)
         if (s.lastUsedTaskCalendarId != null) this[Keys.lastUsedTaskCalendar] = s.lastUsedTaskCalendarId else remove(Keys.lastUsedTaskCalendar)
-        if (s.deviceCalendarsEnabled != null) this[Keys.deviceCalendars] = s.deviceCalendarsEnabled else remove(Keys.deviceCalendars)
-        remove(Keys.legacyDeviceCalendars)
         this[Keys.defaultDuration] = s.defaultDurationMinutes
         this[Keys.startView] = s.startView.name
         this[Keys.eventReminders] = s.eventReminders.joinToString(",")
@@ -198,7 +193,7 @@ class SettingsRepository @Inject constructor(
     }
 
     private companion object {
-        /** Ids of this phone's calendars and the choice about showing them: not part of a backup. */
+        /** Ids of this phone's calendars (and the removed choice about showing the system calendars, still filtered from old backups): not part of a backup. */
         val PhoneBound = setOf(
             "default_calendar", "last_used_calendar", "default_task_calendar", "last_used_task_calendar",
             "device_calendars", "device_calendars_choice",

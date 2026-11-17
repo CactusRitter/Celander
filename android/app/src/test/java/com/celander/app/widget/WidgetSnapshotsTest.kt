@@ -2,7 +2,6 @@ package com.celander.app.widget
 
 import com.celander.app.calendar.data.CalendarContentRepository
 import com.celander.app.calendar.data.CalendarsRepository
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.model.Task
 import com.celander.app.core.time.TimeSource
 import com.celander.app.settings.SettingsRepository
@@ -39,14 +38,13 @@ class WidgetSnapshotsTest {
     fun setUp() = runBlocking {
         env = TestEnvironment(folder.root)
         env.calendars.ensureDefault("Personal")
-        val content = CalendarContentRepository(env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), DeviceCalendarSource.None, Dispatchers.Default)
+        val content = CalendarContentRepository(env.db.calendarDao(), env.db.eventDao(), env.db.exceptionDao(), env.db.taskDao(), Dispatchers.Default)
         deps = object : WidgetEntryPoint {
             override fun content(): CalendarContentRepository = content
             override fun calendars(): CalendarsRepository = env.calendars
             override fun tasks(): TaskRepository = env.tasks
             override fun settings(): SettingsRepository = env.settings
             override fun time(): TimeSource = env.time
-            override fun device(): DeviceCalendarSource = DeviceCalendarSource.None
         }
     }
 

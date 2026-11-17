@@ -13,9 +13,6 @@ enum class CalendarSource {
     /** Celander's own database. */
     LOCAL,
 
-    /** Android's calendar provider, e.g. Google Calendar synced by the phone. */
-    DEVICE,
-
     /** A Google Tasks list mirrored into Celander's database. */
     GOOGLE_TASKS,
 
@@ -39,7 +36,7 @@ data class CalendarInfo(
     /** The calendar's own reminders for new entries; null uses the app-wide defaults. */
     val reminderDefaults: ReminderDefaults? = null,
 ) {
-    /** Device calendars hold events only, Google Tasks lists tasks only, local calendars both. */
+    /** Google Tasks lists hold tasks only, local calendars both, account calendars events only. */
     val holdsEvents: Boolean get() = source != CalendarSource.GOOGLE_TASKS
     val holdsTasks: Boolean get() = source == CalendarSource.LOCAL || source == CalendarSource.GOOGLE_TASKS
 

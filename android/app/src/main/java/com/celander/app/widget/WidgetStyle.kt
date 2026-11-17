@@ -52,7 +52,6 @@ import androidx.glance.unit.ColorProvider
 import com.celander.app.R
 import com.celander.app.calendar.data.CalendarContentRepository
 import com.celander.app.calendar.data.CalendarsRepository
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.time.TimeSource
 import com.celander.app.ui.CalendarColor
 import com.celander.app.ui.glass.GlassTokens
@@ -81,8 +80,6 @@ interface WidgetEntryPoint {
     fun settings(): SettingsRepository
 
     fun time(): TimeSource
-
-    fun device(): DeviceCalendarSource
 }
 
 internal fun Context.widgetDeps(): WidgetEntryPoint = EntryPointAccessors.fromApplication(applicationContext, WidgetEntryPoint::class.java)

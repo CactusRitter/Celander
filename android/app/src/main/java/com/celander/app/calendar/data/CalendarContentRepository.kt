@@ -1,7 +1,6 @@
 package com.celander.app.calendar.data
 
 import com.celander.app.calendar.CalendarWindow
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.database.CalendarDao
 import com.celander.app.core.database.EventDao
 import com.celander.app.core.database.ExceptionDao
@@ -27,7 +26,6 @@ class CalendarContentRepository @Inject constructor(
     private val eventDao: EventDao,
     private val exceptionDao: ExceptionDao,
     private val taskDao: TaskDao,
-    private val device: DeviceCalendarSource,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     fun window(start: LocalDate, endExclusive: LocalDate, zone: ZoneId): Flow<CalendarWindow> {
@@ -41,8 +39,7 @@ class CalendarContentRepository @Inject constructor(
             eventDao.observeCandidates(startUtc, endUtc, firstDay, lastDay, includeHidden = false),
             exceptionDao.observeAll(),
             taskDao.observeOpenDue(start.toEpochDay(), endExclusive.toEpochDay() - 1, includeHidden = false),
-            device.occurrences(start, endExclusive, zone),
-        ) { calendars, eventEntities, exceptionEntities, taskEntities, deviceOccurrences ->
+        ) { calendars, eventEntities, exceptionEntities, taskEntities ->
             val visible = calendars.filter { it.visible }.associate { it.id to it.toModel() }
             val events = eventEntities.map { it.toModel() }
             val zones = events.associate { it.id to it.zone }
@@ -51,12 +48,10 @@ class CalendarContentRepository @Inject constructor(
                 .groupBy({ it.eventId }, { it.toModel(zones.getValue(it.eventId)) })
             val occurrences = OccurrenceCalculator.expand(events, exceptions, visible, start, endExclusive, zone)
             val tasks = taskEntities.mapNotNull { t -> visible[t.calendarId]?.let { TaskItem(t.toModel(), it) } }
-            CalendarWindow(start, endExclusive, occurrences + deviceOccurrences, tasks, zone)
+            CalendarWindow(start, endExclusive, occurrences, tasks, zone)
         }.flowOn(dispatcher)
     }
 
     /** False until the first event or task exists; drives the welcome state. */
-    val hasEntries: Flow<Boolean> = combine(eventDao.observeCount(), taskDao.observeCount(), device.calendars) { events, tasks, deviceCalendars ->
-        events + tasks > 0 || deviceCalendars.isNotEmpty()
-    }
+    val hasEntries: Flow<Boolean> = combine(eventDao.observeCount(), taskDao.observeCount()) { events, tasks -> events + tasks > 0 }
 }

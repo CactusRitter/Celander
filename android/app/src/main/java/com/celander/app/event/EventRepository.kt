@@ -1,9 +1,6 @@
 package com.celander.app.event
 
 import androidx.room.withTransaction
-import com.celander.app.calendar.device.DeviceCalendarSource
-import com.celander.app.calendar.device.DeviceEventStore
-import com.celander.app.calendar.device.DeviceWriteException
 import com.celander.app.core.database.CelanderDatabase
 import com.celander.app.core.database.EventDao
 import com.celander.app.core.database.EventEntity
@@ -16,8 +13,6 @@ import com.celander.app.core.model.EventAccess
 import com.celander.app.core.model.EventException
 import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.SeriesCapabilities
-import com.celander.app.core.model.SourceIds
-import com.celander.app.core.recurrence.SeriesScope
 import com.celander.app.core.time.TimeSource
 import java.time.ZoneId
 import javax.inject.Inject
@@ -41,46 +36,30 @@ class EventRepository @Inject constructor(
     private val events: EventDao,
     private val exceptions: ExceptionDao,
     private val time: TimeSource,
-    private val device: DeviceCalendarSource,
-    private val deviceStore: DeviceEventStore,
 ) {
-    suspend fun get(id: Long): Event? = if (SourceIds.isDevice(id)) device.getEvent(id)?.event else events.getById(id)?.toModel()
+    suspend fun get(id: Long): Event? = events.getById(id)?.toModel()
 
-    fun observe(id: Long): Flow<EventWithExceptions?> = if (SourceIds.isDevice(id)) {
-        device.observeEvent(id)
-    } else {
+    fun observe(id: Long): Flow<EventWithExceptions?> =
         combine(events.observeById(id), exceptions.observeForEvent(id)) { entity, list ->
             entity?.toModel()?.let { event -> EventWithExceptions(event, list.map { it.toModel(event.zone) }) }
         }
-    }
 
     suspend fun getWithExceptions(id: Long): EventWithExceptions? {
-        if (SourceIds.isDevice(id)) return device.getEvent(id)
         val event = get(id) ?: return null
         return EventWithExceptions(event, exceptions.getForEvent(id).map { it.toModel(event.zone) })
     }
 
-    /** Events in the phone's calendars go to the calendar provider; a failed write throws [DeviceWriteException]. */
     suspend fun create(event: Event): Long {
-        if (SourceIds.isDevice(event.calendarId)) return deviceStore.create(event)
         val now = time.now().toEpochMilli()
         return events.insert(event.copy(id = 0, createdAt = now, updatedAt = now).toEntity())
     }
 
     suspend fun update(event: Event) {
-        if (SourceIds.isDevice(event.id)) return deviceStore.update(event)
         events.update(event.copy(updatedAt = time.now().toEpochMilli()).toEntity())
     }
 
-    /** A series edit of an event in the phone's calendars. */
-    suspend fun saveDeviceSeries(masterId: Long, key: Long, edited: Event, scope: SeriesScope) = deviceStore.save(masterId, key, edited, scope)
-
-    /** Deletes from the phone's calendars right away; callers hold it back for undo first. */
-    suspend fun deleteDevice(eventId: Long, key: Long, scope: SeriesScope) = deviceStore.delete(eventId, key, scope)
-
     /** Deletes the event (and its exceptions) and returns what is needed to restore it. */
     suspend fun delete(id: Long): EventSnapshot? = db.withTransaction {
-        require(!SourceIds.isDevice(id))
         val entity = events.getById(id) ?: return@withTransaction null
         val snapshot = EventSnapshot(entity, exceptions.getForEvent(id))
         events.delete(id)

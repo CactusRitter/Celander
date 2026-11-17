@@ -1,7 +1,6 @@
 package com.celander.app.task.google
 
 import android.content.Context
-import com.celander.app.core.database.DeviceCalendarPrefEntity
 import com.celander.app.core.database.TaskEntity
 import com.celander.app.core.googletasks.GoogleTaskMapper
 import com.celander.app.core.model.CalendarSource
@@ -508,11 +507,10 @@ class GoogleTasksSyncTest {
     }
 
     @Test
-    fun dataResetDisconnectsAndKeepsDeviceCalendarSettings() = runBlocking {
+    fun dataResetDisconnectsGoogleTasks() = runBlocking {
         server.serverAdd("L1", "Remote")
         sync.run()
-        env.db.devicePrefsDao().upsert(DeviceCalendarPrefEntity("com.google|me|cal", visible = false, colorKey = "teal"))
-        env.settings.update { it.copy(deviceCalendarsEnabled = true, defaultTaskCalendarId = personal, lastUsedTaskCalendarId = personal) }
+        env.settings.update { it.copy(defaultTaskCalendarId = personal, lastUsedTaskCalendarId = personal) }
         tasks.create(Task(calendarId = personal, title = "Local"))
         val reset = DataReset(env.db, env.db.calendarDao(), env.db.snoozeDao(), env.calendars, env.settings, connection)
 
@@ -522,9 +520,7 @@ class GoogleTasksSyncTest {
         assertEquals(1, calendars.size)
         assertEquals(CalendarSource.LOCAL.name, calendars.single().source)
         assertTrue(taskDao.getAll().isEmpty())
-        assertNotNull(env.db.devicePrefsDao().get("com.google|me|cal"))
         val settings = env.settings.current()
-        assertEquals(true, settings.deviceCalendarsEnabled)
         assertNull(settings.defaultTaskCalendarId)
         assertNull(settings.lastUsedTaskCalendarId)
         assertEquals(calendars.single().id, settings.defaultCalendarId)

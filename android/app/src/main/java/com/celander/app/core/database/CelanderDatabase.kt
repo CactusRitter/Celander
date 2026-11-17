@@ -3,10 +3,12 @@ package com.celander.app.core.database
 import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteTable
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +24,10 @@ class Converters {
     fun toMinutes(value: String): List<Int> = if (value.isBlank()) emptyList() else value.split(',').mapNotNull { it.trim().toIntOrNull() }
 }
 
+/** Version 5: the system calendar is no longer read, so its per-calendar settings table goes. */
+@DeleteTable(tableName = "device_calendar_prefs")
+class DropDeviceCalendarPrefs : AutoMigrationSpec
+
 @Database(
     entities = [
         CalendarEntity::class,
@@ -31,7 +37,6 @@ class Converters {
         EventFts::class,
         TaskFts::class,
         SnoozeEntity::class,
-        DeviceCalendarPrefEntity::class,
         GoogleTaskListEntity::class,
         GoogleTaskLinkEntity::class,
         AccountEntity::class,
@@ -39,9 +44,9 @@ class Converters {
         EventLinkEntity::class,
         ExceptionLinkEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4)],
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4), AutoMigration(from = 4, to = 5, spec = DropDeviceCalendarPrefs::class)],
 )
 @TypeConverters(Converters::class)
 abstract class CelanderDatabase : RoomDatabase() {
@@ -50,7 +55,6 @@ abstract class CelanderDatabase : RoomDatabase() {
     abstract fun exceptionDao(): ExceptionDao
     abstract fun taskDao(): TaskDao
     abstract fun snoozeDao(): SnoozeDao
-    abstract fun devicePrefsDao(): DevicePrefsDao
     abstract fun googleTasksDao(): GoogleTasksDao
 
     abstract fun accountDao(): AccountDao
@@ -78,8 +82,6 @@ object DatabaseModule {
     @Provides fun taskDao(db: CelanderDatabase) = db.taskDao()
 
     @Provides fun snoozeDao(db: CelanderDatabase) = db.snoozeDao()
-
-    @Provides fun devicePrefsDao(db: CelanderDatabase) = db.devicePrefsDao()
 
     @Provides fun googleTasksDao(db: CelanderDatabase) = db.googleTasksDao()
 

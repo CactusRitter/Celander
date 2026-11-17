@@ -1,7 +1,6 @@
 package com.celander.app.calendar.data
 
 import androidx.room.withTransaction
-import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.database.CalendarDao
 import com.celander.app.core.database.CalendarEntity
 import com.celander.app.core.database.CelanderDatabase
@@ -17,7 +16,6 @@ import com.celander.app.core.model.CalendarInfo
 import com.celander.app.core.model.CalendarSource
 import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.ReminderDefaults
-import com.celander.app.core.model.SourceIds
 import com.celander.app.core.time.TimeSource
 import com.celander.app.ui.CalendarColor
 import com.celander.app.settings.AppSettings
@@ -48,15 +46,13 @@ class CalendarsRepository @Inject constructor(
     private val taskDao: TaskDao,
     private val settings: SettingsRepository,
     private val time: TimeSource,
-    private val device: DeviceCalendarSource,
 ) {
-    /** Own calendars, then the phone's calendars, then those of the connected accounts, then the Google Tasks lists. */
+    /** Own calendars, then those of the connected accounts, then the Google Tasks lists. */
     val calendars: Flow<List<CalendarInfo>> = combine(
         dao.observeAll(),
-        device.calendars,
         db.accountDao().observeAccounts(),
         db.accountDao().observeRemoteCalendars(),
-    ) { rows, deviceCalendars, accounts, remotes ->
+    ) { rows, accounts, remotes ->
         val room = rows.map { it.toModel() }
         val accountById = accounts.associateBy { it.id }
         val remoteByCalendar = remotes.associateBy { it.calendarId }
@@ -69,7 +65,7 @@ class CalendarsRepository @Inject constructor(
                 writable = remoteByCalendar[info.id]?.let { runCatching { com.celander.app.core.model.AccessRole.valueOf(it.accessRole).canWrite }.getOrDefault(false) } ?: false,
             )
         }
-        room.filter { it.source == CalendarSource.LOCAL } + deviceCalendars + fromAccounts + room.filter { it.source == CalendarSource.GOOGLE_TASKS }
+        room.filter { it.source == CalendarSource.LOCAL } + fromAccounts + room.filter { it.source == CalendarSource.GOOGLE_TASKS }
     }
 
     /** The configured default for events, falling back to the first calendar that holds events. */
@@ -111,11 +107,6 @@ class CalendarsRepository @Inject constructor(
 
     /** Google lists keep the name from Google; only color and visibility change in Celander. */
     suspend fun update(calendar: CalendarInfo) {
-        if (SourceIds.isDevice(calendar.id)) {
-            device.setColor(calendar.id, calendar.colorKey)
-            device.setVisible(calendar.id, calendar.visible)
-            return
-        }
         val current = dao.getById(calendar.id) ?: return
         val name = if (current.source == CalendarSource.LOCAL.name) calendar.name else current.name
         dao.update(current.copy(name = name, colorKey = calendar.colorKey, visible = calendar.visible))
@@ -123,12 +114,11 @@ class CalendarsRepository @Inject constructor(
 
     /** The calendar's own default reminders for new entries; null goes back to the app-wide ones. */
     suspend fun setReminderDefaults(id: Long, defaults: ReminderDefaults?) {
-        if (SourceIds.isDevice(id)) return device.setReminderDefaults(id, defaults)
         val current = dao.getById(id) ?: return
         dao.update(current.withReminderDefaults(defaults))
     }
 
-    suspend fun setVisible(id: Long, visible: Boolean) = if (SourceIds.isDevice(id)) device.setVisible(id, visible) else dao.setVisible(id, visible)
+    suspend fun setVisible(id: Long, visible: Boolean) = dao.setVisible(id, visible)
 
     /** Makes [id] the default for what it holds: a Google list for tasks, any other calendar for events. */
     suspend fun setDefault(id: Long) {

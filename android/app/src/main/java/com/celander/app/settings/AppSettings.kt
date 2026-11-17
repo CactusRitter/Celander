@@ -44,11 +44,6 @@ data class AppSettings(
     /** Default and last used calendar or Google list for tasks. */
     val defaultTaskCalendarId: Long? = null,
     val lastUsedTaskCalendarId: Long? = null,
-    /**
-     * Shows the calendars the phone syncs (Google Calendar through the system calendar). Null until
-     * the user switches it: then they show as soon as calendar access is granted.
-     */
-    val deviceCalendarsEnabled: Boolean? = null,
     val defaultDurationMinutes: Int = 60,
     val startView: CalendarView = CalendarView.MONTH,
     val eventReminders: List<Int> = listOf(10),

@@ -81,7 +81,6 @@ class MigrationTest {
         createVersion(2)
         SQLiteDatabase.openDatabase(context.getDatabasePath(name).path, null, SQLiteDatabase.OPEN_READWRITE).use { db ->
             db.execSQL("INSERT INTO calendars (id, name, colorKey, visible, sortOrder, isSample, createdAt, source) VALUES (1, 'Personal', 'indigo', 1, 0, 0, 0, 'LOCAL')")
-            db.execSQL("INSERT INTO device_calendar_prefs (stableKey, visible, colorKey) VALUES ('com.google|me|work', 0, 'teal')")
         }
         val db = Room.databaseBuilder(context, CelanderDatabase::class.java, name).build()
         try {
@@ -89,17 +88,31 @@ class MigrationTest {
                 val calendar = db.calendarDao().getAll().single()
                 assertEquals("Personal", calendar.name)
                 assertNull(calendar.toModel().reminderDefaults)
-                val pref = db.devicePrefsDao().get("com.google|me|work")!!
-                assertEquals("teal", pref.colorKey)
-                assertNull(pref.reminderDefaults)
                 // The new columns store and read back, empty lists apart from "not set".
                 db.calendarDao().update(calendar.copy(eventReminders = listOf(30, 5), allDayReminders = emptyList(), taskReminders = listOf(0)))
                 val stored = db.calendarDao().getById(1)!!
                 assertEquals(listOf(30, 5), stored.eventReminders)
                 assertEquals(emptyList<Int>(), stored.allDayReminders)
-                db.devicePrefsDao().upsert(pref.copy(eventReminders = listOf(15), allDayReminders = listOf(1440), taskReminders = emptyList()))
-                assertEquals(listOf(15), db.devicePrefsDao().get("com.google|me|work")!!.reminderDefaults?.event)
             }
+        } finally {
+            db.close()
+        }
+    }
+
+    @Test
+    fun version4DropsTheSystemCalendarSettingsAndKeepsTheCalendars() {
+        createVersion(4)
+        SQLiteDatabase.openDatabase(context.getDatabasePath(name).path, null, SQLiteDatabase.OPEN_READWRITE).use { db ->
+            db.execSQL("INSERT INTO calendars (id, name, colorKey, visible, sortOrder, isSample, createdAt, source) VALUES (1, 'Personal', 'indigo', 1, 0, 0, 0, 'LOCAL')")
+            db.execSQL("INSERT INTO device_calendar_prefs (stableKey, visible, colorKey) VALUES ('com.google|me|work', 0, 'teal')")
+        }
+        val db = Room.databaseBuilder(context, CelanderDatabase::class.java, name).build()
+        try {
+            runBlocking { assertEquals("Personal", db.calendarDao().getAll().single().name) }
+            val tables = db.openHelper.readableDatabase.query("SELECT name FROM sqlite_master WHERE type = 'table'").use { c ->
+                generateSequence { if (c.moveToNext()) c.getString(0) else null }.toList()
+            }
+            assertTrue(tables.toString(), "device_calendar_prefs" !in tables)
         } finally {
             db.close()
         }

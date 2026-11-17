@@ -7,18 +7,6 @@ import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
-@Dao
-interface DevicePrefsDao {
-    @Query("SELECT * FROM device_calendar_prefs")
-    fun observeAll(): Flow<List<DeviceCalendarPrefEntity>>
-
-    @Query("SELECT * FROM device_calendar_prefs WHERE stableKey = :key")
-    suspend fun get(key: String): DeviceCalendarPrefEntity?
-
-    @Upsert
-    suspend fun upsert(pref: DeviceCalendarPrefEntity)
-}
-
 /** A task that differs from what Google last confirmed, with its list and (if any) its link. */
 data class PendingUpsert(
     @Embedded val task: TaskEntity,

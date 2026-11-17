@@ -1,7 +1,6 @@
 package com.celander.app.settings
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -29,7 +28,6 @@ class SettingsRepositoryTest {
     private val dataStore by lazy { PreferenceDataStoreFactory.create(scope = scope) { File(folder.root, "settings.preferences_pb") } }
     private val repository by lazy { SettingsRepository(dataStore) }
     private val legacyGlass = stringPreferencesKey("glass")
-    private val legacyDeviceCalendars = booleanPreferencesKey("device_calendars")
     private val glassTransparency = floatPreferencesKey("glass_transparency")
     private val accentHue = floatPreferencesKey("accent_hue")
 
@@ -85,18 +83,6 @@ class SettingsRepositoryTest {
         val settings = repository.current()
         assertEquals(0, settings.transparency)
         assertEquals(145f, settings.customHue)
-    }
-
-    @Test
-    fun onlyASwitchedOnPhoneCalendarCarriesOver() = runBlocking {
-        // Earlier versions stored an untouched switch as false, so false means "not chosen".
-        for ((stored, expected) in listOf(true to true, false to null)) {
-            dataStore.edit { it.clear(); it[legacyDeviceCalendars] = stored }
-            assertEquals(expected, repository.current().deviceCalendarsEnabled)
-        }
-        repository.update { it.copy(deviceCalendarsEnabled = false) }
-        assertEquals(false, repository.current().deviceCalendarsEnabled)
-        assertNull(dataStore.data.first()[legacyDeviceCalendars])
     }
 
     @Test

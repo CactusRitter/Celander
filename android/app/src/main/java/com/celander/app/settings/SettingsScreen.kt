@@ -70,7 +70,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.celander.app.BuildConfig
 import com.celander.app.CelanderApp
 import com.celander.app.R
-import com.celander.app.calendar.device.CalendarApps
 import com.celander.app.core.model.CalendarSource
 import com.celander.app.core.model.CalendarView
 import com.celander.app.core.model.EntryKind
@@ -139,7 +138,6 @@ fun SettingsScreen(
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val calendars by viewModel.calendarRows.collectAsStateWithLifecycle()
-    val google by viewModel.googleCalendar.collectAsStateWithLifecycle()
     val googleOverview by viewModel.googleOverview.collectAsStateWithLifecycle()
     val hasSampleData by viewModel.hasSampleData.collectAsStateWithLifecycle()
     val snackbar by viewModel.snackbarMessage.collectAsStateWithLifecycle()
@@ -147,8 +145,6 @@ fun SettingsScreen(
     val formats = rememberFormats(current.timeFormat)
     val resources = LocalResources.current
     val notifications = rememberNotificationAccess()
-    val context = LocalContext.current
-    val calendarApp = remember(context) { CalendarApps.otherAppLabel(context) }
     var confirmDeleteAll by rememberSaveable { mutableStateOf(false) }
     val defaultCalendarName = stringResource(R.string.default_calendar_name)
 
@@ -229,7 +225,7 @@ fun SettingsScreen(
                         )
                         SettingsRoute.APPEARANCE -> AppearancePage(current, viewModel)
                         SettingsRoute.CALENDAR -> CalendarPage(current, viewModel, formats, calendars, onOpenCalendars)
-                        SettingsRoute.REMINDERS -> RemindersPage(current, viewModel, formats, notifications, google?.status?.readable == true, calendarApp, blocked)
+                        SettingsRoute.REMINDERS -> RemindersPage(current, viewModel, formats, notifications, blocked)
                         SettingsRoute.DATA -> DataPage(hasSampleData, viewModel) { confirmDeleteAll = true }
                         SettingsRoute.BACKUP -> BackupPage(viewModel.backup)
                         SettingsRoute.UPDATES -> UpdatesPage(current, viewModel)
@@ -284,7 +280,6 @@ private fun MainPage(
         Section(
             stringResource(R.string.settings_section_google),
             when {
-                overview.noCalendarAccess -> stringResource(R.string.settings_google_calendar_no_access)
                 troubled != null -> stringResource(R.string.google_accounts_attention, troubled.email)
                 overview.accounts.isEmpty() -> stringResource(R.string.settings_google_summary_off)
                 else -> overview.accounts.joinToString { it.email }
@@ -562,8 +557,6 @@ private fun RemindersPage(
     viewModel: SettingsViewModel,
     formats: Formats,
     notifications: com.celander.app.notifications.NotificationAccess,
-    googleReadable: Boolean,
-    calendarApp: String?,
     blocked: Boolean,
 ) {
     val status = notifications.status
@@ -579,14 +572,6 @@ private fun RemindersPage(
         SettingsDivider()
         DefaultReminders(stringResource(R.string.settings_reminder_tasks), current.taskReminders, allDay = false, task = true, formats) { list ->
             viewModel.update { it.copy(taskReminders = list) }
-        }
-        if (googleReadable) {
-            SettingsDivider()
-            SettingsRow(
-                title = stringResource(R.string.settings_reminders_google),
-                summary = calendarApp?.let { stringResource(R.string.settings_reminders_google_by_app, it) } ?: stringResource(R.string.settings_reminders_google_no_app),
-                summaryColor = if (calendarApp == null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
         SettingsDivider()
         SettingsRow(

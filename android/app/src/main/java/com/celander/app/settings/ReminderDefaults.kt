@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import com.celander.app.R
 import com.celander.app.core.model.CalendarInfo
-import com.celander.app.core.model.CalendarSource
 import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.ui.Formats
@@ -69,8 +68,7 @@ internal val ReminderDefaultsSaver: Saver<ReminderDefaults, Any> = listSaver(
 /**
  * A calendar's default reminders in its edit sheet: the app-wide ones while [useDefaults] is on,
  * otherwise its own [own] lists, only for the kinds of entries [calendar] can hold (null: a new
- * calendar of Celander's own, which holds both). The phone's calendars cap the number of reminders
- * and cannot remind on the day of an all-day event, as in the editor.
+ * calendar of Celander's own, which holds both).
  */
 @Composable
 internal fun CalendarReminderDefaults(
@@ -85,8 +83,6 @@ internal fun CalendarReminderDefaults(
     val holdsEvents = calendar?.canHold(EntryKind.EVENT) ?: true
     val holdsTasks = calendar?.canHold(EntryKind.TASK) ?: true
     if (!holdsEvents && !holdsTasks) return
-    val device = calendar?.source == CalendarSource.DEVICE
-    val maxCount = if (device) calendar?.maxReminders?.coerceIn(1, MAX_REMINDERS) ?: MAX_REMINDERS else MAX_REMINDERS
     val padding = PaddingValues()
 
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -119,8 +115,6 @@ internal fun CalendarReminderDefaults(
                         task = false,
                         formats = formats,
                         contentPadding = padding,
-                        maxCount = maxCount,
-                        allowSameDay = !device,
                     ) { onOwnChange(own.copy(event = it)) }
                     DefaultReminders(
                         stringResource(R.string.settings_calendar_reminders_all_day),
@@ -129,8 +123,6 @@ internal fun CalendarReminderDefaults(
                         task = false,
                         formats = formats,
                         contentPadding = padding,
-                        maxCount = maxCount,
-                        allowSameDay = !device,
                     ) { onOwnChange(own.copy(allDay = it)) }
                 }
                 if (holdsTasks) {
@@ -142,9 +134,6 @@ internal fun CalendarReminderDefaults(
                         formats = formats,
                         contentPadding = padding,
                     ) { onOwnChange(own.copy(task = it)) }
-                }
-                if (device) {
-                    Text(stringResource(R.string.editor_reminders_calendar_app), style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
                 }
             }
         }

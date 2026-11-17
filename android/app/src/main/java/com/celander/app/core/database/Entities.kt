@@ -17,27 +17,12 @@ data class CalendarEntity(
     val sortOrder: Int = 0,
     val isSample: Boolean = false,
     val createdAt: Long,
-    /** [com.celander.app.core.model.CalendarSource] name; device calendars never get a row. */
+    /** [com.celander.app.core.model.CalendarSource] name. */
     @ColumnInfo(defaultValue = "LOCAL") val source: String = "LOCAL",
     /**
      * The calendar's own default reminders (minutes before), set together; all null uses the app-wide
      * defaults. An empty list (stored as "") means no reminders.
      */
-    val eventReminders: List<Int>? = null,
-    val allDayReminders: List<Int>? = null,
-    val taskReminders: List<Int>? = null,
-)
-
-/**
- * Celander-only settings of a calendar the phone syncs (device calendar), keyed by [stableKey]
- * (account type, account and the provider's sync id), so they survive a re-added account.
- */
-@Entity(tableName = "device_calendar_prefs")
-data class DeviceCalendarPrefEntity(
-    @PrimaryKey val stableKey: String,
-    val visible: Boolean?,
-    val colorKey: String?,
-    /** Own default reminders as in [CalendarEntity]; all null uses the app-wide defaults. */
     val eventReminders: List<Int>? = null,
     val allDayReminders: List<Int>? = null,
     val taskReminders: List<Int>? = null,

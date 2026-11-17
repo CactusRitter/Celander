@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.celander.app.R
 import com.celander.app.calendar.data.CalendarsRepository
-import com.celander.app.calendar.device.DeviceWriteException
 import com.celander.app.core.model.EventAccess
 import com.celander.app.core.model.EventException
 import com.celander.app.core.model.EventOccurrence
@@ -94,16 +93,7 @@ class EventDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val deletion = actions.delete(occurrence.event.id, occurrence.originalStart, scope) ?: return@launch
             val message = if (occurrence.isRecurring && scope != SeriesScope.ALL) R.string.event_deleted_occurrence else R.string.event_deleted
-            val commit = deletion.commit?.let { write ->
-                suspend {
-                    try {
-                        write()
-                    } catch (_: DeviceWriteException) {
-                        snackbar.show(UiText.Res(R.string.event_delete_failed, listOf(occurrence.calendar.name)))
-                    }
-                }
-            }
-            snackbar.show(UiText.Res(message, listOf(occurrence.title)), UiText.Res(R.string.action_undo), onExpire = commit, action = deletion.undo)
+            snackbar.show(UiText.Res(message, listOf(occurrence.title)), UiText.Res(R.string.action_undo), action = deletion.undo)
         }
     }
 }

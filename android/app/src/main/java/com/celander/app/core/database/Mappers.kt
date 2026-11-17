@@ -29,10 +29,6 @@ private fun reminderDefaultsOf(event: List<Int>?, allDay: List<Int>?, task: List
 fun CalendarEntity.withReminderDefaults(defaults: ReminderDefaults?) =
     copy(eventReminders = defaults?.event, allDayReminders = defaults?.allDay, taskReminders = defaults?.task)
 
-val DeviceCalendarPrefEntity.reminderDefaults: ReminderDefaults? get() = reminderDefaultsOf(eventReminders, allDayReminders, taskReminders)
-
-fun DeviceCalendarPrefEntity.withReminderDefaults(defaults: ReminderDefaults?) =
-    copy(eventReminders = defaults?.event, allDayReminders = defaults?.allDay, taskReminders = defaults?.task)
 
 private fun timing(allDay: Boolean, startUtc: Long?, endUtc: Long?, startDay: Long?, endDay: Long?, zone: ZoneId): EventTiming? =
     if (allDay) {

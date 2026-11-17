@@ -31,3 +31,7 @@ Ver `CLAUDE.md` (compilar, emulador). Prueba con paquete `.test`: `-PidSuffix=.t
 - Los eventos de una serie se envían completos (RRULE + EXDATE de canceladas) y las ocurrencias cambiadas como PATCH de la instancia (id = serie_yyyyMMddTHHmmssZ).
 - Revertir una ocurrencia ya enviada a Google no se envía todavía.
 - Orden: escritura -> quitar core/device y permisos de calendario -> Microsoft -> .ics.
+
+## Datos reales de César: no tocar
+- En su calendario de Google y en la base local del S26 hay un evento REAL, «quedada con Gloria» (creado desde Celander y sincronizado el 2026-11-18). No borrarlo, editarlo ni moverlo en ninguna prueba. Para probar editar/borrar: un evento de prueba propio que se crea y se borra, o el servidor falso de los tests.
+- La cuenta real solo se usa para lo que César pida; los tests usan datos simulados.

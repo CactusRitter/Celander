@@ -1,9 +1,7 @@
 package com.celander.app.settings
 
-import android.content.Intent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
-import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -22,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -31,9 +28,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.celander.app.R
-import com.celander.app.calendar.device.CalendarSync
-import com.celander.app.calendar.device.DeviceCalendarStatus
-import com.celander.app.calendar.device.rememberCalendarAccessRequest
 import com.celander.app.core.ui.Formats
 import com.celander.app.core.ui.rememberFormats
 import com.celander.app.ui.AccentButton
@@ -47,8 +41,8 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 /**
- * Settings › Google accounts: the phone's calendars in Celander, then every Google account with its
- * calendar sync and its Google Tasks connection, and adding an account in one flow.
+ * Settings › Google accounts: every Google account with its Google Tasks connection, and adding an
+ * account in one flow.
  */
 @Composable
 fun GoogleAccountsScreen(
@@ -61,19 +55,16 @@ fun GoogleAccountsScreen(
     val timeFormat by viewModel.timeFormat.collectAsStateWithLifecycle()
     val formats = rememberFormats(timeFormat)
     val activity = LocalActivity.current
-    val context = LocalContext.current
     val consentLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
         viewModel.onConsent(result.resultCode, result.data)
     }
     val chooserLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         activity?.let { viewModel.onAccountChosen(it, result.resultCode, result.data) }
     }
-    val calendarRequest = rememberCalendarAccessRequest(viewModel.calendarAccess, viewModel::onCalendarAccess)
     LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
                 is GoogleAccountsEvent.Consent -> consentLauncher.launch(IntentSenderRequest.Builder(event.intent).build())
-                GoogleAccountsEvent.RequestCalendarAccess -> calendarRequest.fix()
             }
         }
     }
@@ -81,9 +72,7 @@ fun GoogleAccountsScreen(
     var removing by rememberSaveable { mutableStateOf<String?>(null) }
     var confirmRemove by rememberSaveable { mutableStateOf(false) }
     val current = state ?: return
-    val openSyncSettings = { runCatching { context.startActivity(Intent(Settings.ACTION_SYNC_SETTINGS)) } }
     val removingRow = current.accounts.firstOrNull { it.account.email == removing }
-    val phoneTitle = stringResource(R.string.settings_calendars_on_this_phone)
     val tasksTitle = stringResource(R.string.settings_google_tasks)
     val dialogOpen = confirmRemove && removingRow != null
 
@@ -120,18 +109,12 @@ fun GoogleAccountsScreen(
                 modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
             )
         }
-        settingsGroup(phoneTitle) {
-            PhoneCalendarRows(current, onShow = viewModel::setCalendarsShown, onFixAccess = calendarRequest::fix)
-        }
         current.accounts.forEach { row ->
             settingsGroup(row.account.email) {
                 AccountRows(
                     row = row,
                     state = current,
                     formats = formats,
-                    onCalendarSync = { on -> viewModel.setCalendarSync(row.account.email, on) },
-                    onShowCalendars = { viewModel.setCalendarsShown(true) },
-                    onOpenSyncSettings = { openSyncSettings() },
                     onConnectTasks = { activity?.let { viewModel.connectTasks(it, row.account.email) } },
                     onSyncNow = viewModel::syncNow,
                     onClearRescued = { viewModel.clearRescued(row.account.email) },
@@ -186,59 +169,12 @@ fun GoogleAccountsScreen(
     }
 }
 
-/** Whether Celander shows the phone's calendars, and the row that fixes missing access. */
-@Composable
-private fun PhoneCalendarRows(state: GoogleAccountsUiState, onShow: (Boolean) -> Unit, onFixAccess: () -> Unit) {
-    val on = state.calendarsShown
-    val accounts = state.accounts.filter { it.account.calendarCount > 0 }.joinToString { it.account.email }
-    SettingsSwitchRow(
-        title = stringResource(R.string.settings_google_calendar),
-        checked = on,
-        onCheckedChange = onShow,
-        summary = if (on) {
-            pluralStringResource(
-                R.plurals.settings_google_calendar_summary_on,
-                state.calendarCount,
-                state.calendarCount,
-                accounts.ifEmpty { stringResource(R.string.settings_calendars_on_this_phone) },
-            )
-        } else {
-            stringResource(R.string.settings_google_calendar_summary_off)
-        },
-    )
-    when (state.calendarStatus) {
-        DeviceCalendarStatus.NO_ACCESS -> {
-            SettingsDivider()
-            SettingsRow(
-                title = stringResource(R.string.settings_google_calendar_no_access),
-                summary = stringResource(R.string.settings_google_calendar_denied),
-                summaryColor = MaterialTheme.colorScheme.error,
-                onClick = onFixAccess,
-                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-            )
-        }
-        DeviceCalendarStatus.READ_ONLY -> {
-            SettingsDivider()
-            SettingsRow(
-                title = stringResource(R.string.settings_calendar_read_only),
-                summary = stringResource(R.string.settings_google_calendar_read_only),
-                summaryColor = MaterialTheme.colorScheme.error,
-                onClick = onFixAccess,
-            )
-        }
-        else -> Unit
-    }
-}
-
-/** One account: its calendar sync, its Google Tasks connection with notes, and removing it from Celander. */
+/** One account: its Google Tasks connection with notes, and removing it from Celander. */
 @Composable
 private fun AccountRows(
     row: GoogleAccountRow,
     state: GoogleAccountsUiState,
     formats: Formats,
-    onCalendarSync: (Boolean) -> Unit,
-    onShowCalendars: () -> Unit,
-    onOpenSyncSettings: () -> Unit,
     onConnectTasks: () -> Unit,
     onSyncNow: () -> Unit,
     onClearRescued: () -> Unit,
@@ -246,31 +182,6 @@ private fun AccountRows(
 ) {
     val account = row.account
     val danger = MaterialTheme.colorScheme.error
-    val calendarTitle = stringResource(R.string.settings_google_calendar)
-    when (val sync = account.calendarSync) {
-        null -> SettingsRow(title = calendarTitle)
-        CalendarSync.PHONE_OFF -> SettingsRow(
-            title = calendarTitle,
-            summary = stringResource(R.string.google_accounts_calendar_phone_off),
-            summaryColor = danger,
-            onClick = onOpenSyncSettings,
-        )
-        else -> if (!state.calendarsShown && sync == CalendarSync.ON) {
-            SettingsRow(title = calendarTitle, summary = stringResource(R.string.google_accounts_calendar_hidden), onClick = onShowCalendars)
-        } else {
-            SettingsSwitchRow(
-                title = calendarTitle,
-                checked = sync == CalendarSync.ON,
-                onCheckedChange = onCalendarSync,
-                summary = when {
-                    sync == CalendarSync.OFF -> stringResource(R.string.google_accounts_calendar_off)
-                    account.calendarCount > 0 -> pluralStringResource(R.plurals.google_accounts_calendar_count, account.calendarCount, account.calendarCount)
-                    else -> stringResource(R.string.google_accounts_calendar_waiting)
-                },
-            )
-        }
-    }
-    SettingsDivider()
     val tasks = account.tasks
     val tasksTitle = stringResource(R.string.settings_google_tasks)
     val polite = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
