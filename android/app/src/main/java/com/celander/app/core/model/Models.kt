@@ -18,6 +18,9 @@ enum class CalendarSource {
 
     /** A Google Tasks list mirrored into Celander's database. */
     GOOGLE_TASKS,
+
+    /** A calendar of an account or feed (Google, Microsoft, an .ics link): its events are kept in Celander's database and synced. */
+    ACCOUNT,
 }
 
 enum class EntryKind { EVENT, TASK }
@@ -38,7 +41,7 @@ data class CalendarInfo(
 ) {
     /** Device calendars hold events only, Google Tasks lists tasks only, local calendars both. */
     val holdsEvents: Boolean get() = source != CalendarSource.GOOGLE_TASKS
-    val holdsTasks: Boolean get() = source != CalendarSource.DEVICE
+    val holdsTasks: Boolean get() = source == CalendarSource.LOCAL || source == CalendarSource.GOOGLE_TASKS
 
     fun canHold(kind: EntryKind): Boolean = writable && if (kind == EntryKind.EVENT) holdsEvents else holdsTasks
 

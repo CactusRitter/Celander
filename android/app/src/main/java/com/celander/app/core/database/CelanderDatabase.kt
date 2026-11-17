@@ -34,10 +34,14 @@ class Converters {
         DeviceCalendarPrefEntity::class,
         GoogleTaskListEntity::class,
         GoogleTaskLinkEntity::class,
+        AccountEntity::class,
+        RemoteCalendarEntity::class,
+        EventLinkEntity::class,
+        ExceptionLinkEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)],
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4)],
 )
 @TypeConverters(Converters::class)
 abstract class CelanderDatabase : RoomDatabase() {
@@ -48,6 +52,8 @@ abstract class CelanderDatabase : RoomDatabase() {
     abstract fun snoozeDao(): SnoozeDao
     abstract fun devicePrefsDao(): DevicePrefsDao
     abstract fun googleTasksDao(): GoogleTasksDao
+
+    abstract fun accountDao(): AccountDao
 
     companion object {
         /** New file name: the v1 prototype used "celander.db" with an incompatible schema. */
@@ -76,4 +82,6 @@ object DatabaseModule {
     @Provides fun devicePrefsDao(db: CelanderDatabase) = db.devicePrefsDao()
 
     @Provides fun googleTasksDao(db: CelanderDatabase) = db.googleTasksDao()
+
+    @Provides fun accountDao(db: CelanderDatabase) = db.accountDao()
 }
