@@ -26,6 +26,10 @@ data class RemoteCalendar(
     val color: String?,
     val accessRole: AccessRole,
     val isPrimary: Boolean,
+    /** Whether the user has it switched on in their own calendar app; new calendars start visible only if so. */
+    val selected: Boolean,
+    /** Reminders (minutes before) that events of this calendar use when they do not carry their own. */
+    val defaultReminders: List<Int>,
     val timeZone: String?,
 )
 

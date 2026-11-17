@@ -47,6 +47,8 @@ data class RemoteCalendarEntity(
     val timeZone: String? = null,
     /** The calendar's own color at the provider (hex), if it has one. */
     val remoteColor: String? = null,
+    /** Reminders (minutes before, comma separated) for events that use the calendar's defaults. */
+    @ColumnInfo(defaultValue = "") val defaultReminders: List<Int> = emptyList(),
 )
 
 /**

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "886fea4dd75b76728edf534930b06e20",
+    "identityHash": "deb52edf36f3234f70eeaa1db20ff853",
     "entities": [
       {
         "tableName": "calendars",
@@ -902,7 +902,7 @@
       },
       {
         "tableName": "remote_calendars",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`calendarId` INTEGER NOT NULL, `accountId` INTEGER NOT NULL, `remoteId` TEXT NOT NULL, `accessRole` TEXT NOT NULL, `syncToken` TEXT, `lastFullSyncAt` INTEGER NOT NULL DEFAULT 0, `timeZone` TEXT, `remoteColor` TEXT, PRIMARY KEY(`calendarId`), FOREIGN KEY(`calendarId`) REFERENCES `calendars`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`accountId`) REFERENCES `accounts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`calendarId` INTEGER NOT NULL, `accountId` INTEGER NOT NULL, `remoteId` TEXT NOT NULL, `accessRole` TEXT NOT NULL, `syncToken` TEXT, `lastFullSyncAt` INTEGER NOT NULL DEFAULT 0, `timeZone` TEXT, `remoteColor` TEXT, `defaultReminders` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`calendarId`), FOREIGN KEY(`calendarId`) REFERENCES `calendars`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`accountId`) REFERENCES `accounts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "calendarId",
@@ -949,6 +949,13 @@
             "fieldPath": "remoteColor",
             "columnName": "remoteColor",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "defaultReminders",
+            "columnName": "defaultReminders",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
           }
         ],
         "primaryKey": {
@@ -1137,7 +1144,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '886fea4dd75b76728edf534930b06e20')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'deb52edf36f3234f70eeaa1db20ff853')"
     ]
   }
 }

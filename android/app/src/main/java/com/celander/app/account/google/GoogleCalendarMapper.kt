@@ -32,6 +32,9 @@ object GoogleCalendarMapper {
             color = json.str("backgroundColor"),
             accessRole = role(json.str("accessRole")),
             isPrimary = json.str("primary") == "true",
+            selected = json.str("selected") == "true" || json.str("primary") == "true",
+            defaultReminders = (json["defaultReminders"] as? JsonArray).orEmpty().mapNotNull { it as? JsonObject }
+                .filter { it.str("method") != "email" }.mapNotNull { (it["minutes"] as? JsonPrimitive)?.intOrNull }.distinct().sortedDescending(),
             timeZone = json.str("timeZone"),
         )
     }

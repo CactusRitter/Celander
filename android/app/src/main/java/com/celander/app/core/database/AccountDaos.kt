@@ -28,7 +28,7 @@ interface AccountDao {
     suspend fun updateAccount(account: AccountEntity)
 
     /**
-     * Removing an account takes three steps, in one transaction and in this order: [deleteEventLinksOfAccount],
+     * Removing an account takes these steps, in one transaction and in this order: [deleteEventLinksOfAccount], [deleteExceptionLinksOfAccount],
      * [deleteCalendarsOfAccount] (their events go with them) and this. Nothing is sent to the server.
      */
     @Query("DELETE FROM accounts WHERE id = :id")
@@ -36,6 +36,12 @@ interface AccountDao {
 
     @Query("DELETE FROM event_links WHERE calendarId IN (SELECT calendarId FROM remote_calendars WHERE accountId = :accountId)")
     suspend fun deleteEventLinksOfAccount(accountId: Long)
+
+    @Query("DELETE FROM exception_links WHERE eventId IN (SELECT id FROM events WHERE calendarId = :calendarId)")
+    suspend fun deleteExceptionLinksOfCalendar(calendarId: Long)
+
+    @Query("DELETE FROM exception_links WHERE eventId IN (SELECT id FROM events WHERE calendarId IN (SELECT calendarId FROM remote_calendars WHERE accountId = :accountId))")
+    suspend fun deleteExceptionLinksOfAccount(accountId: Long)
 
     @Query("DELETE FROM calendars WHERE id IN (SELECT calendarId FROM remote_calendars WHERE accountId = :accountId)")
     suspend fun deleteCalendarsOfAccount(accountId: Long)
@@ -54,6 +60,12 @@ interface AccountDao {
 
     @Query("DELETE FROM remote_calendars WHERE calendarId = :calendarId")
     suspend fun deleteRemoteCalendar(calendarId: Long)
+
+    @Query("SELECT * FROM events WHERE calendarId = :calendarId AND uid = :uid LIMIT 1")
+    suspend fun eventByUid(calendarId: Long, uid: String): EventEntity?
+
+    @Query("SELECT * FROM exception_links WHERE eventId = :eventId AND originalStart = :originalStart")
+    suspend fun exceptionLink(eventId: Long, originalStart: Long): ExceptionLinkEntity?
 
     @Query("SELECT * FROM event_links WHERE eventId = :eventId")
     suspend fun eventLink(eventId: Long): EventLinkEntity?
