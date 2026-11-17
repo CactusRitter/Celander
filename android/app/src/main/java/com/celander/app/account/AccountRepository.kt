@@ -46,7 +46,7 @@ class AccountRepository @Inject constructor(
     /** Opens Google's sign-in in the browser; hand what comes back to [addGoogle]. [loginHint] names an account to offer first. */
     fun googleSignInIntent(loginHint: String? = null): Intent? = google.signInIntent(loginHint)
 
-    suspend fun addGoogle(data: Intent?): AddAccountResult = when (val outcome = google.handleResult(data)) {
+    suspend fun addGoogle(data: Intent?): AddAccountResult = when (val outcome = google.handleResult(data).also { android.util.Log.i(TAG, "sign-in result: ${it.javaClass.simpleName}" + ((it as? SignInOutcome.Failed)?.let { f -> " (${f.reason})" } ?: "")) }) {
         SignInOutcome.Cancelled -> AddAccountResult.Cancelled
         SignInOutcome.NotConfigured -> AddAccountResult.NotConfigured
         is SignInOutcome.Failed -> AddAccountResult.Failed(outcome.reason)
@@ -65,7 +65,7 @@ class AccountRepository @Inject constructor(
         }
     }
 
-    suspend fun syncAccount(id: Long): SyncOutcome = lock.withLock { sync.sync(id) }
+    suspend fun syncAccount(id: Long): SyncOutcome = lock.withLock { sync.sync(id).also { android.util.Log.i(TAG, "sync of account $id: $it") } }
 
     /** Syncs every account (one after the other). */
     suspend fun syncAll() {
@@ -89,6 +89,7 @@ class AccountRepository @Inject constructor(
     }
 
     private companion object {
+        const val TAG = "Accounts"
         const val EVERY_MILLIS = 15L * 60 * 1000
     }
 }

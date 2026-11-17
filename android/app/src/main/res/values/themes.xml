@@ -3,4 +3,10 @@
     <style name="Theme.Celander" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/window_background</item>
     </style>
+    <!-- The sign-in return of AppAuth is an AppCompat activity: it needs an AppCompat theme, but shows nothing. -->
+    <style name="Theme.Celander.SignInReturn" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>

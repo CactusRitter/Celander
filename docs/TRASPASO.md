@@ -14,7 +14,7 @@ Rama de trabajo: `ce/estilo-ce` (local; sin push). El diseño compartido (Skin, 
 ## Pendiente (orden)
 1. (hecho) Conexión: AccountRepository, Hilt, sync al arrancar y cada 15 min (solo mientras vive el proceso; falta WorkManager en segundo plano), CalendarsRepository muestra ACCOUNT (writable=false). Pantalla account/ui y fila «Cuentas» arriba de Ajustes (probado en emulador: se ve, el login aún no).
 2. (hecho) Pantalla de cuentas.
-3. Probar el login real: el emulador va SIN ventana, así que César no puede iniciar sesión ahí; hace falta ventana, la tableta o el S26 (avisar antes de instalar; com.celander.app firmada con celander-release.jks).
+3. (hecho 2026-11-17 en el S26) Login real de Google con la cuenta de César: sincroniza calendarios y eventos sin permisos de calendario del teléfono. Bug resuelto: RedirectUriReceiverActivity de AppAuth exige tema AppCompat (Theme.Celander.SignInReturn en el manifiesto); sin él la app se cerraba al volver del navegador.
 4. Escritura offline (create/update/delete con etag, alcance de serie), luego quitar `core/device` y permisos de calendario.
 5. Microsoft (Graph delta), suscripciones/importación .ics. Yahoo: descartado por César.
 

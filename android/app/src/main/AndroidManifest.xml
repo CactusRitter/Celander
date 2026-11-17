@@ -180,6 +180,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <!-- Where the browser sign-in comes back to: only gets a theme here, AppAuth declares the rest. -->
+        <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Celander.SignInReturn"
+            tools:node="merge" />
     </application>
 
 </manifest>

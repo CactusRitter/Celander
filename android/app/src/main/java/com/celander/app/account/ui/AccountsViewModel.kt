@@ -31,6 +31,7 @@ class AccountsViewModel @Inject constructor(
 
     /** What came back from the browser sign-in. */
     fun onSignInResult(data: Intent?) {
+        android.util.Log.i("Accounts", "browser returned, data=" + (data != null))
         viewModelScope.launch {
             when (val result = repository.addGoogle(data)) {
                 is AddAccountResult.Added -> snackbar.show(UiText.Res(R.string.accounts_added, listOf(result.identifier)))
