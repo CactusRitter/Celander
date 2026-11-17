@@ -12,9 +12,9 @@ Rama de trabajo: `ce/estilo-ce` (local; sin push). El diseño compartido (Skin, 
 - Tests: AccountDaoTest, GoogleCalendarMapperTest, GoogleCalendarProviderTest, AccountSyncTest (todos pasan).
 
 ## Pendiente (orden)
-1. Conectar: `AccountRepository` (alta con el resultado de GoogleAuth, tokens, primera sync), módulo Hilt con el registro de proveedores, sync periódica (WorkManager) y al abrir, `CalendarsRepository` mostrando calendarios `ACCOUNT` (writable=false de momento).
-2. Pantalla de cuentas (añadir Google, estado, quitar) y entrada desde Ajustes (pedir a Ce Líder el hueco en `settings/`).
-3. Probar con la cuenta real de César en el emulador (instala `com.celander.app` firmada con `celander-release.jks`; el login lo hace él en el navegador).
+1. (hecho) Conexión: AccountRepository, Hilt, sync al arrancar y cada 15 min (solo mientras vive el proceso; falta WorkManager en segundo plano), CalendarsRepository muestra ACCOUNT (writable=false). Pantalla account/ui y fila «Cuentas» arriba de Ajustes (probado en emulador: se ve, el login aún no).
+2. (hecho) Pantalla de cuentas.
+3. Probar el login real: el emulador va SIN ventana, así que César no puede iniciar sesión ahí; hace falta ventana, la tableta o el S26 (avisar antes de instalar; com.celander.app firmada con celander-release.jks).
 4. Escritura offline (create/update/delete con etag, alcance de serie), luego quitar `core/device` y permisos de calendario.
 5. Microsoft (Graph delta), suscripciones/importación .ics. Yahoo: descartado por César.
 
