@@ -1,0 +1,123 @@
+package com.celander.app.event
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.dp
+import com.celander.app.designsystem.CelanderTheme
+import com.celander.app.designsystem.PillShape
+import com.celander.app.designsystem.Radii
+import com.celander.app.designsystem.Sizes
+import com.celander.app.designsystem.Spacing
+import com.celander.app.designsystem.glassTile
+import com.celander.app.designsystem.springClickable
+
+/** Borderless text field with a leading icon, used for location, description and notes. */
+@Composable
+fun EditorTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    icon: ImageVector?,
+    modifier: Modifier = Modifier,
+    singleLine: Boolean = true,
+    textStyle: TextStyle = CelanderTheme.typography.bodyLarge,
+    imeAction: ImeAction = if (singleLine) ImeAction.Next else ImeAction.Default,
+    trailing: (@Composable () -> Unit)? = null,
+) {
+    val colors = CelanderTheme.colors
+    Row(
+        modifier.fillMaxWidth().heightIn(min = Sizes.touchTarget).padding(vertical = Spacing.xs),
+        verticalAlignment = if (singleLine) Alignment.CenterVertically else Alignment.Top,
+    ) {
+        Box(Modifier.width(44.dp).padding(top = if (singleLine) 0.dp else Spacing.xxs)) {
+            if (icon != null) Icon(icon, null, tint = colors.textSecondary, modifier = Modifier.size(Sizes.icon))
+        }
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = singleLine,
+            minLines = if (singleLine) 1 else 3,
+            textStyle = textStyle.copy(color = colors.textPrimary),
+            cursorBrush = SolidColor(colors.accent),
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = imeAction),
+            modifier = Modifier.weight(1f).semantics { contentDescription = placeholder },
+            decorationBox = { inner ->
+                Box {
+                    if (value.isEmpty()) Text(placeholder, style = textStyle, color = colors.textTertiary)
+                    inner()
+                }
+            },
+        )
+        trailing?.invoke()
+    }
+}
+
+/** A tappable value chip (date, time, calendar) that opens an inline picker. */
+@Composable
+fun ValueChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, label: String? = null) {
+    val colors = CelanderTheme.colors
+    Box(
+        modifier
+            // The chip looks 40 dp high; its touch area keeps the 48 dp minimum.
+            .minimumInteractiveComponentSize()
+            .springClickable(role = Role.Button, shape = PillShape, onClick = onClick)
+            .glassTile(PillShape, tint = if (selected) colors.accentSoft else null)
+            .heightIn(min = 40.dp)
+            .then(if (label != null) Modifier.semantics { contentDescription = "$label, $text" } else Modifier)
+            .padding(horizontal = Spacing.m, vertical = Spacing.s),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(text, style = CelanderTheme.typography.labelLarge, color = if (selected) colors.accent else colors.textPrimary, maxLines = 1)
+    }
+}
+
+/** Label + content row with the standard leading icon column; without a label the content fills the row. */
+@Composable
+fun EditorRow(icon: ImageVector?, label: String?, modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
+    val colors = CelanderTheme.colors
+    Row(modifier.fillMaxWidth().heightIn(min = Sizes.touchTarget).padding(vertical = Spacing.xs), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.width(44.dp)) {
+            if (icon != null) Icon(icon, null, tint = colors.textSecondary, modifier = Modifier.size(Sizes.icon))
+        }
+        if (label != null) {
+            Text(label, style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary, modifier = Modifier.weight(1f))
+        }
+        content()
+    }
+}
+
+/** Groups related editor rows on a translucent card. */
+@Composable
+fun EditorSection(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.xs)
+            .glassTile(RoundedCornerShape(Radii.card))
+            .padding(horizontal = Spacing.m, vertical = Spacing.xs),
+    ) { content() }
+}

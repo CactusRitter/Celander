@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Local data and Celander settings yes; the Google Tasks connection no. Neither this device's
+    reminder state nor whether it already asked for a permission: on a new phone Celander asks again.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="database" path="." />
+        <include domain="sharedpref" path="." />
+        <include domain="file" path="datastore/" />
+        <exclude domain="sharedpref" path="google_tasks.xml" />
+        <exclude domain="sharedpref" path="widget_placements.xml" />
+        <exclude domain="sharedpref" path="notification_access.xml" />
+        <exclude domain="sharedpref" path="calendar_access.xml" />
+        <exclude domain="sharedpref" path="reminders.xml" />
+        <exclude domain="sharedpref" path="reminders_handled.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="database" path="." />
+        <include domain="sharedpref" path="." />
+        <include domain="file" path="datastore/" />
+        <exclude domain="sharedpref" path="google_tasks.xml" />
+        <exclude domain="sharedpref" path="widget_placements.xml" />
+        <exclude domain="sharedpref" path="notification_access.xml" />
+        <exclude domain="sharedpref" path="calendar_access.xml" />
+        <exclude domain="sharedpref" path="reminders.xml" />
+        <exclude domain="sharedpref" path="reminders_handled.xml" />
+    </device-transfer>
+</data-extraction-rules>

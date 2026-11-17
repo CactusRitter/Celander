@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Celander logo without background: a gradient "C" with a dot. Source: branding/celander-logo.svg. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="464"
+    android:viewportHeight="464">
+    <group
+        android:translateX="-279"
+        android:translateY="-250">
+        <path
+            android:pathData="M594.3,657 A185,185 0,1 1,641.4 341.7"
+            android:strokeWidth="81"
+            android:strokeLineCap="round">
+            <aapt:attr name="android:strokeColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="0"
+                    android:startY="256"
+                    android:endX="0"
+                    android:endY="708">
+                    <item android:offset="0" android:color="#FF2A72FF" />
+                    <item android:offset="0.1" android:color="#FF3B72FC" />
+                    <item android:offset="0.27" android:color="#FF6168F1" />
+                    <item android:offset="0.45" android:color="#FF8561EA" />
+                    <item android:offset="0.63" android:color="#FFAB64F0" />
+                    <item android:offset="0.76" android:color="#FFD57ABD" />
+                    <item android:offset="0.85" android:color="#FFF08B94" />
+                    <item android:offset="0.94" android:color="#FFFC9676" />
+                    <item android:offset="1" android:color="#FFFC9774" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+            android:fillColor="#FFFE9672"
+            android:pathData="M689,618.5 a35,35 0,1 1,0 70 a35,35 0,1 1,0 -70z" />
+    </group>
+</vector>

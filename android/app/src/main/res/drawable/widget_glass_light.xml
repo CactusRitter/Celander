@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The glass edge of a light widget card, as in the app: a sheen from above (the rim and shadow are drawn, see WidgetGlass). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:angle="270" android:startColor="#B3FFFFFF" android:centerColor="#00FFFFFF" android:endColor="#00FFFFFF" android:centerY="0.35" />
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+</layer-list>

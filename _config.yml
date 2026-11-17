@@ -1,0 +1,4 @@
+# GitHub Pages zeigt nur die Website; der App-Code wird nicht mitveröffentlicht.
+exclude:
+  - android
+  - README.md

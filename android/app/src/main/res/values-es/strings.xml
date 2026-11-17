@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="resource_language">es</string>
+
+    <!-- Navegación y acciones comunes -->
+    <string name="view_year">Año</string>
+    <string name="view_month">Mes</string>
+    <string name="view_day">Día</string>
+    <string name="view_agenda">Agenda</string>
+    <string name="view_tasks">Tareas</string>
+    <string name="pill_pick_date">Elegir fecha</string>
+    <string name="today">Hoy</string>
+    <string name="action_today">Hoy</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_back">Atrás</string>
+    <string name="action_close">Cerrar</string>
+    <string name="action_expand">Desplegar</string>
+    <string name="action_new_entry">Nuevo evento o tarea</string>
+    <string name="action_new_event">Nuevo evento</string>
+    <string name="action_close_day">Cerrar lista del día</string>
+    <string name="action_open_month">Abrir mes</string>
+    <string name="action_previous">Anterior</string>
+    <string name="action_next">Siguiente</string>
+    <string name="action_show_less">Mostrar menos</string>
+    <string name="jump_title">Ir a</string>
+
+    <!-- Atajos de teclado, en la ayuda de atajos del sistema -->
+    <string name="shortcut_today">Ir a hoy</string>
+    <string name="shortcut_previous">Año, mes, semana o día anterior</string>
+    <string name="shortcut_next">Año, mes, semana o día siguiente</string>
+    <string name="shortcut_group_views">Vistas</string>
+
+    <!-- Contenido del calendario -->
+    <string name="untitled">(Sin título)</string>
+    <string name="all_day">Todo el día</string>
+    <string name="time_range">%1$s – %2$s</string>
+    <string name="time_from">desde las %1$s</string>
+    <string name="time_until">hasta las %1$s</string>
+    <string name="state_running">ahora</string>
+    <string name="day_empty_title">Nada planeado</string>
+    <string name="day_empty_message">Este día todavía está libre.</string>
+    <plurals name="entries_count">
+        <item quantity="one">%d entrada</item>
+        <item quantity="many">%d entradas</item>
+        <item quantity="other">%d entradas</item>
+    </plurals>
+    <plurals name="more_entries">
+        <item quantity="one">%d más</item>
+        <item quantity="many">%d más</item>
+        <item quantity="other">%d más</item>
+    </plurals>
+    <plurals name="days_with_entries">
+        <item quantity="one">%d día con entradas</item>
+        <item quantity="many">%d días con entradas</item>
+        <item quantity="other">%d días con entradas</item>
+    </plurals>
+
+    <!-- Agenda -->
+    <string name="agenda_now">Ahora</string>
+    <string name="agenda_today_empty">Nada planeado para hoy</string>
+    <string name="agenda_gap_until">Sin eventos hasta el %1$s</string>
+    <string name="agenda_gap_single">Sin eventos el %1$s</string>
+
+    <!-- Tareas -->
+    <string name="task_mark_done">Marcar “%1$s” como hecha</string>
+    <string name="task_mark_open">Marcar “%1$s” como pendiente</string>
+    <string name="task_overdue">Vencida</string>
+    <string name="task_overdue_with_date">Vencida · %1$s</string>
+
+    <!-- Colores de calendario -->
+    <string name="color_lavender">Lavanda</string>
+    <string name="color_blue">Azul</string>
+    <string name="color_sky">Cielo</string>
+    <string name="color_teal">Verde azulado</string>
+    <string name="color_sage">Salvia</string>
+    <string name="color_green">Verde</string>
+    <string name="color_mustard">Mostaza</string>
+    <string name="color_orange">Naranja</string>
+    <string name="color_coral">Coral</string>
+    <string name="color_red">Rojo</string>
+    <string name="color_pink">Rosa</string>
+    <string name="color_graphite">Grafito</string>
+
+    <!-- Ajustes -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section_appearance">Apariencia</string>
+    <string name="settings_theme">Claro u oscuro</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_reduce_motion">Reducir animaciones</string>
+    <string name="settings_reduce_motion_summary">Solo fundidos, además del ajuste del sistema.</string>
+    <string name="settings_version">Versión %1$s</string>
+
+    <!-- Editor, detalles, datos de ejemplo -->
+    <string name="action_delete">Eliminar</string>
+    <string name="action_duplicate">Duplicar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_open_map">Abrir en mapas</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_share">Compartir</string>
+    <string name="action_show">Ver</string>
+    <string name="action_undo">Deshacer</string>
+    <string name="kind_event">Evento</string>
+    <string name="kind_task">Tarea</string>
+    <string name="editor_new_event">Nuevo evento</string>
+    <string name="editor_new_task">Nueva tarea</string>
+    <string name="editor_edit_event">Editar evento</string>
+    <string name="editor_edit_task">Editar tarea</string>
+    <string name="editor_title_event">Título</string>
+    <string name="editor_title_task">¿Qué hay que hacer?</string>
+    <string name="editor_title_required">Escribe un título.</string>
+    <string name="editor_starts">Empieza</string>
+    <string name="editor_ends">Termina</string>
+    <string name="editor_end_adjusted">El final era anterior al inicio y se ha ajustado.</string>
+    <string name="editor_end_before_start">El final tiene que ser posterior al inicio</string>
+    <string name="editor_location">Ubicación</string>
+    <string name="action_use_place">Usar este lugar</string>
+    <string name="editor_places_source">Sugerencias: © colaboradores de OpenStreetMap</string>
+    <string name="editor_description">Descripción</string>
+    <string name="editor_color">Color</string>
+    <string name="editor_color_calendar">Color del calendario</string>
+    <string name="editor_due_date">Fecha límite</string>
+    <string name="editor_due_on">Vence</string>
+    <string name="editor_due_time">Hora</string>
+    <string name="editor_note">Nota</string>
+    <string name="editor_delete_task">Eliminar tarea</string>
+    <string name="editor_discard_title">¿Descartar los cambios?</string>
+    <string name="editor_discard_message">Se perderán tus cambios.</string>
+    <string name="editor_keep_editing">Seguir editando</string>
+    <string name="editor_discard">Descartar</string>
+    <string name="picker_hour">Hora</string>
+    <string name="picker_minute">Minuto</string>
+    <string name="picker_half_day">a. m. o p. m.</string>
+    <string name="picker_exact_time">Hora exacta</string>
+    <string name="event_details">Detalles del evento</string>
+    <string name="event_created">Evento creado</string>
+    <string name="event_updated">Evento guardado</string>
+    <string name="event_deleted">Evento eliminado</string>
+    <string name="event_deleted_occurrence">Repetición eliminada</string>
+    <string name="task_created">Tarea creada</string>
+    <string name="task_updated">Tarea guardada</string>
+    <string name="task_deleted">Tarea eliminada</string>
+    <string name="task_completed_message">“%1$s” hecha</string>
+    <string name="scope_delete_title">Eliminar evento periódico</string>
+    <string name="scope_this">Este evento</string>
+    <string name="scope_following">Este y los siguientes</string>
+    <string name="scope_all">Todos los eventos de la serie</string>
+    <string name="share_title">Compartir evento</string>
+    <string name="share_as_text">Como texto</string>
+    <string name="share_as_ics">Como archivo de calendario (.ics)</string>
+    <string name="repeat_custom">Repetición personalizada</string>
+    <string name="repeat_on">%1$s el %2$s</string>
+    <string name="repeat_day_of_month">día %1$d</string>
+    <string name="repeat_last_day">último día</string>
+    <string name="repeat_until">hasta el %1$s</string>
+    <string name="repeat_every_weekday_prefix">cada</string>
+    <string name="repeat_last">último</string>
+    <string name="repeat_nth">%1$dº</string>
+    <string name="default_calendar_name">Personal</string>
+    <string name="welcome_title">Te damos la bienvenida a Celander</string>
+    <string name="welcome_message">Crea tu primer evento o prueba la app con datos de ejemplo.</string>
+    <string name="welcome_create">Crear primer evento</string>
+    <string name="welcome_samples">Cargar datos de ejemplo</string>
+    <string name="sample_loaded">Datos de ejemplo cargados</string>
+    <string name="sample_calendar_work">Trabajo</string>
+    <string name="sample_calendar_family">Familia</string>
+    <string name="sample_calendar_sport">Deporte</string>
+    <string name="sample_standup">Reunión diaria del equipo</string>
+    <string name="sample_design_review">Revisión de diseño</string>
+    <string name="sample_room">Sala 2.14</string>
+    <string name="sample_dentist">Dentista</string>
+    <string name="sample_lunch">Comida con Ana</string>
+    <string name="sample_cafe">Café Luisa</string>
+    <string name="sample_kickoff">Inicio del proyecto</string>
+    <string name="sample_running">Club de running</string>
+    <string name="sample_concert">Concierto</string>
+    <string name="sample_venue">Ayuntamiento</string>
+    <string name="sample_dinner">Cena familiar</string>
+    <string name="sample_birthday">Cumpleaños de mamá</string>
+    <string name="sample_trip">Fin de semana en la costa</string>
+    <string name="sample_task_groceries">Hacer la compra</string>
+    <string name="sample_task_report">Enviar el informe semanal</string>
+    <string name="sample_task_plants">Regar las plantas</string>
+    <string name="sample_task_gift">Comprar un regalo</string>
+    <string name="sample_task_flights">Reservar los vuelos</string>
+    <plurals name="repeat_every_days">
+        <item quantity="one">Cada día</item>
+        <item quantity="many">Cada %d días</item>
+        <item quantity="other">Cada %d días</item>
+    </plurals>
+    <plurals name="repeat_every_weeks">
+        <item quantity="one">Cada semana</item>
+        <item quantity="many">Cada %d semanas</item>
+        <item quantity="other">Cada %d semanas</item>
+    </plurals>
+    <plurals name="repeat_every_months">
+        <item quantity="one">Cada mes</item>
+        <item quantity="many">Cada %d meses</item>
+        <item quantity="other">Cada %d meses</item>
+    </plurals>
+    <plurals name="repeat_every_years">
+        <item quantity="one">Cada año</item>
+        <item quantity="many">Cada %d años</item>
+        <item quantity="other">Cada %d años</item>
+    </plurals>
+    <plurals name="repeat_times">
+        <item quantity="one">una vez</item>
+        <item quantity="many">%d veces</item>
+        <item quantity="other">%d veces</item>
+    </plurals>
+    <string-array name="repeat_ordinals">
+        <item>primer</item>
+        <item>segundo</item>
+        <item>tercer</item>
+        <item>cuarto</item>
+        <item>quinto</item>
+    </string-array>
+
+    <!-- Tareas y búsqueda -->
+    <string name="tasks_group_overdue">Vencidas</string>
+    <string name="tasks_group_today">Hoy</string>
+    <string name="tasks_group_upcoming">Próximas</string>
+    <string name="tasks_group_no_date">Sin fecha</string>
+    <string name="tasks_group_done">Hechas</string>
+    <string name="tasks_show_done">Mostrar tareas hechas</string>
+    <string name="tasks_hide_done">Ocultar tareas hechas</string>
+    <string name="tasks_quick_add">Añadir una tarea</string>
+    <string name="tasks_quick_add_send">Añadir tarea</string>
+    <string name="tasks_empty_title">Aún no hay tareas</string>
+    <string name="tasks_empty_message">Apunta lo que tengas que hacer, con o sin fecha.</string>
+    <string name="tasks_all_done_title">Todo hecho</string>
+    <string name="tasks_all_done_message">No hay nada pendiente.</string>
+    <string name="search_hint">Buscar eventos y tareas</string>
+    <string name="search_clear">Borrar búsqueda</string>
+    <string name="search_idle_title">Busca en todo</string>
+    <string name="search_idle_message">Títulos, lugares y descripciones de tus eventos y tareas.</string>
+    <string name="search_no_results">No hay resultados para “%1$s”</string>
+    <string name="search_no_results_message">Revisa la ortografía o los filtros.</string>
+    <string name="search_create_event">Crear evento “%1$s”</string>
+    <string name="search_no_date">Sin fecha</string>
+    <string name="search_range_all">Todo</string>
+    <string name="search_range_future">Próximos</string>
+    <string name="search_range_past">Pasados</string>
+    <plurals name="search_results_count">
+        <item quantity="one">%d resultado</item>
+        <item quantity="many">%d resultados</item>
+        <item quantity="other">%d resultados</item>
+    </plurals>
+
+    <!-- Repetición y recordatorios en el editor -->
+    <string name="editor_repeat">Repetir</string>
+    <string name="repeat_none">No se repite</string>
+    <string name="repeat_daily">Cada día</string>
+    <string name="repeat_weekly">Cada semana</string>
+    <string name="repeat_monthly">Cada mes</string>
+    <string name="repeat_yearly">Cada año</string>
+    <string name="repeat_other">Regla personalizada</string>
+    <string name="repeat_monthly_on_date">El día %1$d</string>
+    <string name="repeat_monthly_on_weekday">El %1$s %2$s</string>
+    <string name="repeat_ends">Termina</string>
+    <string name="repeat_end_never">Nunca</string>
+    <string name="repeat_end_on_date">En una fecha</string>
+    <string name="repeat_end_after">Tras un número de veces</string>
+    <string name="action_decrease">Menos</string>
+    <string name="action_increase">Más</string>
+    <string name="editor_reminders">Recordatorios</string>
+    <string name="reminder_add">Añadir</string>
+    <string name="reminder_none">Sin recordatorio</string>
+    <string name="reminder_remove">Quitar recordatorio %1$s</string>
+    <string name="reminder_custom">Personalizado</string>
+    <string name="reminder_custom_add">Añadir: %1$s</string>
+    <string name="reminder_at_start">Al empezar</string>
+    <string name="reminder_at_due">A la hora límite</string>
+    <string name="reminder_on_day_at">El mismo día a las %1$s</string>
+    <string name="reminder_day_before_at">El día anterior a las %1$s</string>
+    <plurals name="repeat_after_count">
+        <item quantity="one">Tras %d repetición</item>
+        <item quantity="many">Tras %d repeticiones</item>
+        <item quantity="other">Tras %d repeticiones</item>
+    </plurals>
+    <plurals name="reminder_days_before_at">
+        <item quantity="one">%1$d día antes a las %2$s</item>
+        <item quantity="many">%1$d días antes a las %2$s</item>
+        <item quantity="other">%1$d días antes a las %2$s</item>
+    </plurals>
+    <plurals name="reminder_minutes_before">
+        <item quantity="one">%d minuto antes</item>
+        <item quantity="many">%d minutos antes</item>
+        <item quantity="other">%d minutos antes</item>
+    </plurals>
+    <plurals name="reminder_hours_before">
+        <item quantity="one">%d hora antes</item>
+        <item quantity="many">%d horas antes</item>
+        <item quantity="other">%d horas antes</item>
+    </plurals>
+    <plurals name="reminder_days_before">
+        <item quantity="one">%d día antes</item>
+        <item quantity="many">%d días antes</item>
+        <item quantity="other">%d días antes</item>
+    </plurals>
+    <plurals name="reminder_weeks_before">
+        <item quantity="one">%d semana antes</item>
+        <item quantity="many">%d semanas antes</item>
+        <item quantity="other">%d semanas antes</item>
+    </plurals>
+    <plurals name="reminder_unit_minutes">
+        <item quantity="one">minuto</item>
+        <item quantity="many">minutos</item>
+        <item quantity="other">minutos</item>
+    </plurals>
+    <plurals name="reminder_unit_hours">
+        <item quantity="one">hora</item>
+        <item quantity="many">horas</item>
+        <item quantity="other">horas</item>
+    </plurals>
+    <plurals name="reminder_unit_days">
+        <item quantity="one">día</item>
+        <item quantity="many">días</item>
+        <item quantity="other">días</item>
+    </plurals>
+    <plurals name="reminder_unit_weeks">
+        <item quantity="one">semana</item>
+        <item quantity="many">semanas</item>
+        <item quantity="other">semanas</item>
+    </plurals>
+
+    <!-- Editar una serie -->
+    <string name="scope_edit_title">Cambiar evento periódico</string>
+
+    <!-- Notificaciones de recordatorio -->
+    <string name="channel_events">Recordatorios de eventos</string>
+    <string name="channel_events_description">Recordatorios antes de tus eventos</string>
+    <string name="channel_tasks">Vencimiento de tareas</string>
+    <string name="channel_tasks_description">Recordatorios cuando vencen las tareas</string>
+    <string name="notification_snooze">En 10 minutos</string>
+    <string name="notification_done">Hecha</string>
+    <string name="notification_task_due">Vence %1$s</string>
+    <string name="tomorrow">Mañana</string>
+
+    <!-- Avisos de permisos de recordatorios -->
+    <string name="reminders_blocked">Las notificaciones están desactivadas: estos recordatorios no aparecerán.</string>
+    <string name="reminders_turn_on">Activar</string>
+
+    <!-- Ajustes: calendario, recordatorios, datos, calendarios, licencias -->
+    <string name="settings_section_calendar">Calendario</string>
+    <string name="settings_section_reminders">Recordatorios</string>
+    <string name="settings_section_data">Datos</string>
+    <string name="settings_system">Sistema</string>
+    <string name="settings_week_start">Primer día de la semana</string>
+    <string name="settings_week_numbers">Mostrar números de semana</string>
+    <string name="settings_time_format">Formato de hora</string>
+    <string name="settings_time_24">24 h</string>
+    <string name="settings_time_12">12 h</string>
+    <string name="settings_default_calendar">Calendario predeterminado para eventos</string>
+    <string name="settings_default_duration">Duración predeterminada de los eventos nuevos</string>
+    <string name="settings_start_view">Vista al abrir</string>
+    <string name="settings_manage_calendars">Gestionar calendarios</string>
+    <string name="settings_reminder_events">Predeterminado para eventos</string>
+    <string name="settings_reminder_all_day">Predeterminado para eventos de todo el día</string>
+    <string name="settings_reminder_tasks">Predeterminado para tareas</string>
+    <string name="settings_notifications">Notificaciones</string>
+    <string name="settings_notifications_on">Activadas: toca para ver las categorías</string>
+    <string name="settings_notifications_off">Desactivadas: los recordatorios no aparecerán. Toca para activarlas.</string>
+    <string name="settings_timing">Puntualidad de los recordatorios</string>
+    <string name="settings_timing_exact">Puntuales</string>
+    <string name="settings_timing_inexact">Pueden llegar unos minutos tarde: las alarmas exactas no están permitidas. Toca para permitirlas.</string>
+    <string name="settings_timing_restricted">Pueden llegar tarde: la app está restringida en segundo plano. Toca para cambiarlo.</string>
+    <string name="settings_samples_load_summary">Calendarios, eventos y tareas de ejemplo en torno a hoy</string>
+    <string name="settings_samples_clear">Eliminar datos de ejemplo</string>
+    <string name="settings_samples_clear_summary">Quita todos los calendarios y entradas de ejemplo</string>
+    <string name="settings_delete_all">Eliminar todos los datos</string>
+    <string name="settings_delete_all_summary">Todos los calendarios, eventos y tareas de Celander. Los datos de Google se quedan en tu cuenta</string>
+    <string name="delete_all_title">¿Eliminar todos los datos?</string>
+    <string name="delete_all_message">Se eliminarán todos los calendarios, eventos y tareas de este dispositivo y se desconectará Google Tasks. Tus calendarios y tareas de Google se quedan en tu cuenta de Google. No se puede deshacer.</string>
+    <string name="delete_all_confirm">Eliminar todo</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="data_deleted">Todos los datos eliminados</string>
+    <string name="sample_cleared">Datos de ejemplo eliminados</string>
+    <string name="settings_licenses">Licencias de código abierto</string>
+    <string name="settings_libraries">Bibliotecas</string>
+    <string name="settings_license_apache">Apache License 2.0</string>
+    <string name="settings_license_android_sdk">Android Software Development Kit License</string>
+    <string name="settings_your_calendars">Tus calendarios</string>
+    <string name="settings_hidden_hint">Los calendarios ocultos desaparecen de todas las vistas y de la búsqueda. Sus recordatorios siguen llegando, para que no se te pase nada por error.</string>
+    <string name="settings_new_calendar">Nuevo calendario</string>
+    <string name="settings_edit_calendar">Editar calendario</string>
+    <string name="settings_calendar_name">Nombre</string>
+    <string name="settings_calendar_name_required">Escribe un nombre.</string>
+    <string name="settings_make_default">Usar como predeterminado</string>
+    <string name="settings_calendar_default_summary">Predeterminado · %1$s</string>
+    <string name="settings_calendar_visible">Mostrar %1$s</string>
+    <string name="settings_last_calendar">El último calendario no se puede eliminar.</string>
+    <string name="settings_delete_calendar_empty">Puedes deshacer la eliminación durante unos segundos.</string>
+    <string name="calendar_deleted">Calendario “%1$s” eliminado</string>
+    <plurals name="settings_calendar_count">
+        <item quantity="one">%d calendario</item>
+        <item quantity="many">%d calendarios</item>
+        <item quantity="other">%d calendarios</item>
+    </plurals>
+    <plurals name="settings_minutes">
+        <item quantity="one">%d minuto</item>
+        <item quantity="many">%d minutos</item>
+        <item quantity="other">%d minutos</item>
+    </plurals>
+    <plurals name="settings_hours">
+        <item quantity="one">%d hora</item>
+        <item quantity="many">%d horas</item>
+        <item quantity="other">%d horas</item>
+    </plurals>
+    <plurals name="settings_delete_calendar_entries">
+        <item quantity="one">Al eliminarlo también se quita su %d entrada (puedes deshacerlo durante unos segundos).</item>
+        <item quantity="many">Al eliminarlo también se quitan sus %d entradas (puedes deshacerlo durante unos segundos).</item>
+        <item quantity="other">Al eliminarlo también se quitan sus %d entradas (puedes deshacerlo durante unos segundos).</item>
+    </plurals>
+
+    <!-- Fin de mes -->
+    <string name="repeat_monthly_last_day">El último día</string>
+
+    <!-- Errores -->
+    <string name="error_loading">No se ha podido cargar el calendario.</string>
+    <string name="action_retry">Reintentar</string>
+    <string name="error_no_maps_app">No hay ninguna app para mostrar lugares.</string>
+    <string name="error_no_browser">No hay ninguna app para abrir enlaces.</string>
+
+    <!-- Ajustes › Diseño -->
+    <string name="settings_design">Diseño</string>
+    <string name="settings_design_summary">%1$s · %2$s de transparencia</string>
+    <string name="settings_appearance_summary">%1$s · %2$s de transparencia · %3$s</string>
+    <string name="design_color">Color</string>
+    <string name="design_color_summary">Para botones, selecciones y el fondo.</string>
+    <string name="design_hue">Color personalizado</string>
+    <string name="design_custom">Personalizado</string>
+    <string name="design_preview">Vista previa</string>
+    <string name="design_no_blur">El desenfoque necesita Android 12; este dispositivo muestra el cristal sin él.</string>
+    <string name="design_section_motion">Movimiento</string>
+    <string name="accent_indigo">Índigo</string>
+    <string name="accent_blue">Azul</string>
+    <string name="accent_teal">Verde azulado</string>
+    <string name="accent_green">Verde</string>
+    <string name="accent_amber">Ámbar</string>
+    <string name="accent_coral">Coral</string>
+    <string name="accent_rose">Rosa</string>
+    <string name="accent_violet">Violeta</string>
+
+    <!-- Ajustes › Diseño, grupo cristal -->
+    <string name="design_section_glass">Cristal</string>
+
+    <!-- Ajustes › Diseño, valor del tono para lectores de pantalla -->
+    <plurals name="design_hue_value">
+        <item quantity="one">%1$d grado</item>
+        <item quantity="many">%1$d grados</item>
+        <item quantity="other">%1$d grados</item>
+    </plurals>
+
+    <!-- Widgets de la pantalla de inicio -->
+    <string name="widget_month_label">Mes</string>
+    <string name="widget_month_description">El mes con tus eventos y tareas</string>
+    <string name="widget_day_label">Día</string>
+    <string name="widget_day_description">Un día de un vistazo: lo que toca ahora o a continuación, y la semana para cambiar de día</string>
+    <string name="widget_year_label">Año</string>
+    <string name="widget_year_description">Los doce meses; los días con entradas aparecen marcados</string>
+    <string name="widget_tasks_label">Tareas</string>
+    <string name="widget_tasks_description">Tareas pendientes, para marcarlas directamente en la pantalla de inicio</string>
+    <string name="widget_day_empty">Nada planeado para hoy</string>
+    <string name="widget_day_nothing">Nada previsto</string>
+    <string name="widget_next">A continuación</string>
+    <string name="widget_now">Ahora</string>
+    <string name="widget_tasks_empty">No hay tareas pendientes</string>
+    <string name="widget_tasks_done_today">Hechas hoy</string>
+    <string name="widget_task_done">Marcar “%1$s” como hecha</string>
+    <string name="widget_task_reopen">Marcar “%1$s” como pendiente</string>
+    <string name="action_previous_month">Mes anterior</string>
+    <string name="action_next_month">Mes siguiente</string>
+    <string name="action_previous_year">Año anterior</string>
+    <string name="action_next_year">Año siguiente</string>
+    <plurals name="widget_tasks_open">
+        <item quantity="one">%1$d pendiente</item>
+        <item quantity="many">%1$d pendientes</item>
+        <item quantity="other">%1$d pendientes</item>
+    </plurals>
+
+    <!-- Google Calendar a través de los calendarios del teléfono -->
+    <string name="settings_section_google">Google</string>
+    <string name="settings_google_calendar">Google Calendar</string>
+    <string name="settings_google_calendar_summary_off">Muestra los calendarios que sincroniza este teléfono, p. ej. de tu cuenta de Google</string>
+    <string name="settings_google_calendar_no_access">Sin acceso al calendario: toca para permitirlo</string>
+    <string name="settings_google_calendar_denied">Acceso denegado: toca para permitirlo en los ajustes del sistema</string>
+    <string name="settings_google_calendar_read_only">Celander solo puede leer estos calendarios: toca para permitir cambios</string>
+    <string name="settings_google_calendar_default_changed">Los eventos nuevos van ahora a %s</string>
+    <string name="settings_default_task_list">Lista predeterminada para tareas</string>
+    <string name="settings_reminders_google">Eventos de Google</string>
+    <string name="settings_reminders_google_by_app">Los recordatorios llegan desde %s</string>
+    <string name="settings_reminders_google_no_app">No hay ninguna app de calendario: los eventos de Google no te recordarán nada</string>
+    <string name="settings_calendars_on_this_phone">En este teléfono</string>
+    <string name="settings_calendar_read_only">Solo lectura</string>
+    <string name="settings_calendars_device_hint">Mostrar y ocultar solo afecta a Celander. Los recordatorios de estos eventos llegan desde tu app de calendario.</string>
+    <string name="settings_calendar_color_local">El color solo cambia en Celander.</string>
+    <string name="settings_calendar_name_from_account">El nombre viene de la cuenta.</string>
+    <string name="editor_reminders_calendar_app">Tu app de calendario muestra los recordatorios de este calendario.</string>
+    <plurals name="editor_reminders_max">
+        <item quantity="one">Este calendario solo permite %d recordatorio.</item>
+        <item quantity="many">Este calendario permite hasta %d recordatorios.</item>
+        <item quantity="other">Este calendario permite hasta %d recordatorios.</item>
+    </plurals>
+    <string name="editor_series_limited">No todas las opciones están disponibles para este evento periódico.</string>
+    <string name="event_save_failed">No se ha podido guardar en %s</string>
+    <string name="event_delete_failed">No se ha podido eliminar de %s</string>
+    <string name="event_read_only_calendar">Este calendario es de solo lectura</string>
+    <string name="event_read_only_guest">Invitación de %s: solo el organizador puede cambiarla</string>
+    <string name="event_read_only_guest_plain">Solo el organizador puede cambiar este evento</string>
+    <string name="event_read_only_permission">Celander solo puede leer este calendario</string>
+    <plurals name="settings_google_calendar_summary_on">
+        <item quantity="one">%1$d calendario · %2$s</item>
+        <item quantity="many">%1$d calendarios · %2$s</item>
+        <item quantity="other">%1$d calendarios · %2$s</item>
+    </plurals>
+
+    <!-- Lista de calendarios: predeterminado sin número de entradas -->
+    <string name="settings_calendar_default">Predeterminado</string>
+
+    <!-- Google Tasks -->
+    <string name="settings_google_tasks">Google Tasks</string>
+    <string name="settings_calendars_google_tasks">Google Tasks · %s</string>
+    <string name="google_tasks_title">Google Tasks</string>
+    <string name="google_tasks_local_only">Google Tasks solo guarda la fecha. Las horas límite y los recordatorios se quedan en este teléfono.</string>
+    <string name="google_tasks_connecting">Conectando…</string>
+    <string name="google_tasks_synced_at">Sincronizado %s</string>
+    <string name="google_tasks_not_synced">Aún sin sincronizar</string>
+    <string name="google_tasks_syncing">Sincronizando…</string>
+    <string name="google_tasks_offline">Esperando conexión a internet</string>
+    <string name="google_tasks_reauth">El acceso ha caducado: toca para volver a iniciar sesión</string>
+    <string name="google_tasks_setup_error">El inicio de sesión de Google no está configurado para esta app (falta el cliente OAuth)</string>
+    <string name="google_tasks_api_disabled">La API de Google Tasks está desactivada en el proyecto de Google Cloud de esta app</string>
+    <string name="google_tasks_failed">Error de sincronización (%d): toca para reintentar</string>
+    <string name="google_tasks_no_play_services">Necesita los servicios de Google Play</string>
+    <string name="google_tasks_sync_now">Sincronizar ahora</string>
+    <string name="google_tasks_lists">Listas y colores</string>
+    <string name="google_tasks_connect_failed">No se ha podido conectar con Google Tasks</string>
+    <string name="google_tasks_default_changed">Las tareas nuevas van ahora a %s</string>
+    <string name="editor_google_task_local_only">Google Tasks solo guarda la fecha. La hora y los recordatorios se quedan en este teléfono.</string>
+    <plurals name="google_tasks_pending">
+        <item quantity="one">%d cambio aún sin enviar</item>
+        <item quantity="many">%d cambios aún sin enviar</item>
+        <item quantity="other">%d cambios aún sin enviar</item>
+    </plurals>
+    <plurals name="google_tasks_rejected">
+        <item quantity="one">No se ha podido enviar %d tarea: edítala para reintentarlo</item>
+        <item quantity="many">No se han podido enviar %d tareas: edítalas para reintentarlo</item>
+        <item quantity="other">No se han podido enviar %d tareas: edítalas para reintentarlo</item>
+    </plurals>
+    <plurals name="google_tasks_rescued">
+        <item quantity="one">%1$d tarea de una lista eliminada se ha movido a %2$s</item>
+        <item quantity="many">%1$d tareas de una lista eliminada se han movido a %2$s</item>
+        <item quantity="other">%1$d tareas de una lista eliminada se han movido a %2$s</item>
+    </plurals>
+    <plurals name="google_tasks_disconnect_loses">
+        <item quantity="one">Se perderá %d cambio aún sin enviar</item>
+        <item quantity="many">Se perderán %d cambios aún sin enviar</item>
+        <item quantity="other">Se perderán %d cambios aún sin enviar</item>
+    </plurals>
+    <plurals name="editor_text_too_long">
+        <item quantity="one">Demasiado largo para Google Tasks (máx. %d carácter)</item>
+        <item quantity="many">Demasiado largo para Google Tasks (máx. %d caracteres)</item>
+        <item quantity="other">Demasiado largo para Google Tasks (máx. %d caracteres)</item>
+    </plurals>
+
+    <!-- Widget de agenda -->
+    <string name="widget_agenda_label">Agenda</string>
+    <string name="widget_agenda_description">Todos los próximos días con eventos y tareas</string>
+    <string name="widget_agenda_empty">Nada planeado en los próximos tres meses</string>
+
+    <!-- Ruedas de duración -->
+    <string name="settings_duration_hours">Horas de la duración predeterminada</string>
+    <string name="settings_duration_minutes">Minutos de la duración predeterminada</string>
+    <string name="settings_duration_unit_hours">h</string>
+    <string name="settings_duration_unit_minutes">min</string>
+    <string name="settings_duration_custom">Personalizada</string>
+    <string name="wheel_next">Valor siguiente</string>
+    <string name="wheel_previous">Valor anterior</string>
+
+    <!-- Secciones plegables de los ajustes -->
+    <string name="settings_section_expanded">Desplegada</string>
+    <string name="settings_section_collapsed">Plegada</string>
+    <string name="settings_section_expand">Mostrar</string>
+    <string name="settings_section_collapse">Ocultar</string>
+    <string name="settings_data_summary">Datos de ejemplo · eliminar todos los datos</string>
+    <string name="settings_google_summary_off">Sin conectar</string>
+
+    <!-- Más tareas de ejemplo -->
+    <string name="sample_task_dentist">Llamar al dentista</string>
+    <string name="sample_task_bill">Pagar la factura de la luz</string>
+    <string name="sample_task_library">Devolver los libros a la biblioteca</string>
+    <string name="sample_task_clean">Limpiar el piso</string>
+    <string name="sample_task_ideas">Apuntar ideas para las vacaciones</string>
+    <plurals name="widget_more">
+        <item quantity="one">+%1$d entrada más</item>
+        <item quantity="many">+%1$d entradas más</item>
+        <item quantity="other">+%1$d entradas más</item>
+    </plurals>
+    <!-- Sheets -->
+    <string name="sheet_drag_handle">Controlador de arrastre</string>
+    <string name="action_collapse">Contraer</string>
+    <!-- Widget transparency -->
+    <string name="design_app_transparency">Transparencia de la app</string>
+    <string name="design_app_transparency_summary">Barras de cristal, hojas y fondos de la app. %1$s usa superficies opacas para leer mejor y para dispositivos más lentos.</string>
+    <string name="design_widget_transparency">Transparencia de los widgets</string>
+    <string name="design_widget_transparency_summary">Se aplica a todos los widgets de la pantalla de inicio: mes, año, día, agenda y tareas.</string>
+    <!-- Per-calendar reminders -->
+    <string name="settings_calendar_reminders">Recordatorios</string>
+    <string name="settings_calendar_use_default_reminders">Usar recordatorios predeterminados</string>
+    <string name="settings_calendar_default_reminders_summary">Las entradas nuevas reciben los recordatorios de Ajustes › Recordatorios.</string>
+    <string name="settings_calendar_own_reminders_summary">Las entradas nuevas de este calendario empiezan con estos recordatorios.</string>
+    <string name="settings_calendar_reminders_events">Eventos</string>
+    <string name="settings_calendar_reminders_all_day">Eventos de todo el día</string>
+    <string name="settings_calendar_reminders_tasks">Tareas</string>
+    <!-- Detail, manifest, notifications -->
+    <string name="notification_details">Detalles</string>
+    <string name="settings_reminders_channel_hint">Sonido y vibración en los ajustes del sistema</string>
+
+    <!-- Google accounts -->
+    <string name="google_accounts_title">Cuentas de Google</string>
+    <string name="google_accounts_intro">Celander muestra los calendarios que tu teléfono sincroniza para estas cuentas y sincroniza sus listas de Google Tasks en ambos sentidos.</string>
+    <string name="google_accounts_empty">Aún no hay ninguna cuenta de Google. Añade una para ver sus calendarios y sincronizar sus tareas.</string>
+    <string name="google_accounts_overview_empty">Añade una cuenta para sus calendarios y tareas</string>
+    <string name="google_accounts_attention">%s necesita atención – toca para ver por qué</string>
+    <string name="google_accounts_add">Añadir cuenta de Google</string>
+    <string name="google_accounts_adding">Añadiendo %s…</string>
+    <string name="google_accounts_added">%s añadida – se sincronizan calendarios y tareas</string>
+    <string name="google_accounts_added_defaults">%s añadida – los nuevos eventos y tareas van ahora a esta cuenta</string>
+    <string name="google_accounts_added_default_events">%s añadida – los nuevos eventos van ahora a esta cuenta</string>
+    <string name="google_accounts_added_default_tasks">%s añadida – las nuevas tareas van ahora a esta cuenta</string>
+    <string name="google_accounts_added_no_tasks">%s añadida – se sincronizan los calendarios, Google Tasks no está conectado</string>
+    <string name="google_accounts_added_phone_off">%s añadida – se sincronizan las tareas; los calendarios esperan a que la sincronización automática del teléfono esté activada</string>
+    <string name="google_accounts_added_no_calendar">%s añadida – se sincronizan las tareas, no se pudo activar la sincronización del calendario</string>
+    <string name="google_accounts_add_failed">No se pudo añadir %s</string>
+    <string name="google_accounts_calendar_off">Desactivado – los calendarios de esta cuenta no se sincronizan con este teléfono</string>
+    <string name="google_accounts_calendar_waiting">Activado – esperando la primera sincronización</string>
+    <string name="google_accounts_calendar_hidden">Oculto en Celander – toca para mostrar</string>
+    <string name="google_accounts_calendar_phone_off">La sincronización automática está desactivada en este teléfono – toca para abrir los ajustes</string>
+    <string name="google_accounts_calendar_failed">No se pudo cambiar la sincronización del calendario de %s</string>
+    <string name="google_accounts_tasks_off">No conectado – toca para conectar</string>
+    <string name="google_accounts_remove">Quitar de Celander</string>
+    <string name="google_accounts_remove_summary">Desconecta Google Tasks. La cuenta se queda en este teléfono.</string>
+    <string name="google_accounts_remove_title">¿Quitar %s de Celander?</string>
+    <string name="google_accounts_remove_message">Sus listas de Google Tasks se quitan de este teléfono; tus tareas se quedan en Google Tasks. La cuenta se queda en el teléfono y sus calendarios se siguen sincronizando – quítala en los ajustes del sistema si ya no la necesitas.</string>
+    <string name="google_accounts_remove_confirm">Quitar</string>
+    <string name="google_accounts_removed">%s quitada de Celander</string>
+    <plurals name="google_accounts_count">
+        <item quantity="one">%d cuenta</item>
+        <item quantity="many">%d cuentas</item>
+        <item quantity="other">%d cuentas</item>
+    </plurals>
+    <plurals name="google_accounts_calendar_count">
+        <item quantity="one">Activado – %d calendario en este teléfono</item>
+        <item quantity="many">Activado – %d calendarios en este teléfono</item>
+        <item quantity="other">Activado – %d calendarios en este teléfono</item>
+    </plurals>
+    <!-- Widget blur -->
+    <string name="design_widget_blur">Fondo desenfocado</string>
+    <string name="design_widget_blur_summary">Los widgets muestran tu fondo de pantalla desenfocado tras su cristal. Celander lee el fondo solo en este dispositivo; Android solo lo permite con «Acceso a todos los archivos» y, hasta Android 15, también con acceso a todas las fotos. Después toca cada widget una vez.</string>
+    <string name="design_widget_blur_no_access">Necesita «Acceso a todos los archivos»: toca para permitirlo</string>
+    <string name="design_widget_blur_live">No es posible con un fondo animado</string>
+    <string name="design_widget_blur_refresh">Fondo de pantalla cambiado</string>
+    <string name="design_widget_blur_refresh_summary">Desenfoca el nuevo fondo para los widgets</string>
+    <string name="design_widget_blur_realign">Volver a alinear los widgets</string>
+    <string name="design_widget_blur_realign_summary">Tras mover un widget: toca cada widget una vez</string>
+    <string name="design_widget_blur_no_photos">Necesita acceso a todas las fotos: toca para permitirlo</string>
+    <string name="widget_blur_align">Toca para alinear el desenfoque</string>
+</resources>

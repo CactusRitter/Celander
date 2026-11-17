@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The logo with its ring in the middle of the adaptive icon (as on iOS), as large as the 66 dp safe
+     zone allows: the dot's outer edge sits just inside it. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/logo_mark"
+    android:insetLeft="22.2%"
+    android:insetRight="25.36%"
+    android:insetTop="23.39%"
+    android:insetBottom="24.17%" />
