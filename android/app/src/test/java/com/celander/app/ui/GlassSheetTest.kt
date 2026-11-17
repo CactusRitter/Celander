@@ -1,5 +1,8 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
+import com.celander.app.settings.AppSettings
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.theme.ThemeMode
 import android.app.Application
 import androidx.activity.BackEventCompat
 import androidx.activity.ComponentActivity
@@ -39,7 +42,7 @@ class GlassSheetTest {
 
     private fun showSheet(expandable: Boolean) {
         compose.setContent {
-            CelanderTheme(darkTheme = false, accentHue = 240f, glassTransparency = 0f, reduceMotion = false) {
+            CelanderTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) {
                 GlassSheet(onDismissed = { dismissed++ }, expandable = expandable, paneTitle = "Sheet") {
                     Text("Body", Modifier.testTag(BODY))
                 }

@@ -672,7 +672,7 @@
     <string name="style_title">Style</string>
     <string name="style_body">The background and the tint of the glass.</string>
     <string name="skin_title">Design</string>
-    <string name="skin_body">The look of the whole app. Glass is the one shared with Celander and Cemail; the others are being tried out.</string>
+    <string name="skin_body">The look of the whole app. Glass is the one shared with Cemail and Cenotes; the others are being tried out.</string>
     <string name="skin_always_dark">This design is always dark.</string>
     <string name="depth_title">3D shadow</string>
     <string name="depth_body">A soft shadow that lifts cards and buttons off the background, like glass standing above it.</string>

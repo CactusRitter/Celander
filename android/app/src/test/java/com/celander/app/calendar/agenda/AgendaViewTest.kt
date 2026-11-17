@@ -17,7 +17,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.celander.app.R
 import com.celander.app.calendar.CalendarWindow
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CelanderTheme
+import com.celander.app.settings.AppSettings
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.theme.ThemeMode
 import com.celander.app.settings.TimeFormat
 import com.celander.app.testing.BERLIN
 import com.celander.app.testing.occurrence
@@ -63,7 +65,7 @@ class AgendaViewTest {
         // The days before the first event of the first range collapse into this line.
         val gap = context.getString(R.string.agenda_gap_until, formats.capitalize(LocalDate.of(2026, 9, 19).format(formats.dayMonthShort)))
         compose.setContent {
-            CelanderTheme(darkTheme = false, accentHue = 240f, glassTransparency = 0f, reduceMotion = false) {
+            CelanderTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) {
                 AgendaView(
                     anchorDate = today,
                     today = today,

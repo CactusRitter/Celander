@@ -703,7 +703,7 @@
     <string name="style_title">Estilo</string>
     <string name="style_body">El fondo y el tinte del cristal.</string>
     <string name="skin_title">Diseño</string>
-    <string name="skin_body">El aspecto de toda la app. Cristal es el que comparte con Celander y Cemail; los demás están en pruebas.</string>
+    <string name="skin_body">El aspecto de toda la app. Cristal es el que comparte con Cemail y Cenotes; los demás están en pruebas.</string>
     <string name="skin_always_dark">Este diseño siempre es oscuro.</string>
     <string name="depth_title">Sombra 3D</string>
     <string name="depth_body">Una sombra suave que eleva tarjetas y botones sobre el fondo, como un cristal por encima.</string>

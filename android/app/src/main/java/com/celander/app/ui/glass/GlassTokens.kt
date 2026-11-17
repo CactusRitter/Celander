@@ -52,14 +52,22 @@ object GlassTokens {
      * cannot blur the wallpaper; up to the default, secondary text stays at WCAG AA on a black or
      * white wallpaper, at 1 only the glass rim, sheen and shadow remain.
      */
-    fun widgetAlpha(transparency: Float, dark: Boolean): Float =
-        opacity(transparency, if (dark) 0.857f else 0.870f).coerceAtLeast(WIDGET_MIN_ALPHA)
+    fun widgetAlpha(transparency: Float, dark: Boolean): Float {
+        val atDefault = if (dark) 0.857f else 0.870f
+        val t = transparency.coerceIn(0f, 1f)
+        return if (t <= DEFAULT_TRANSPARENCY) {
+            1f - t / DEFAULT_TRANSPARENCY * (1f - atDefault)
+        } else {
+            // From the default down to the floor, so the whole slider shows.
+            atDefault + (WIDGET_MIN_ALPHA - atDefault) * (t - DEFAULT_TRANSPARENCY) / (1f - DEFAULT_TRANSPARENCY)
+        }
+    }
 
     /**
      * A widget cannot blur the wallpaper behind it, so even at 100 % its card keeps this much of its
      * color: without it text lies straight on whatever the wallpaper shows and cannot be read.
      */
-    const val WIDGET_MIN_ALPHA = 0.30f
+    const val WIDGET_MIN_ALPHA = 0.50f
 
     /** Opacity of translucent tiles inside content (cells, cards) that never blur. */
     fun tileAlpha(transparency: Float, dark: Boolean): Float = opacity(transparency, if (dark) 0.480f else 0.5645f)

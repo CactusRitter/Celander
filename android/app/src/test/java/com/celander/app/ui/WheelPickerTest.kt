@@ -1,5 +1,8 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
+import com.celander.app.settings.AppSettings
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.theme.ThemeMode
 import android.app.Application
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.OverscrollEffect
@@ -74,7 +77,7 @@ class WheelPickerTest {
         reduceMotion: Boolean = false,
         edge: RecordingEdge? = null,
     ) {
-        CelanderTheme(darkTheme = false, accentHue = 240f, glassTransparency = 0f, reduceMotion = reduceMotion) {
+        CelanderTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) { CalendarEnvironment(reduceMotion) {
             if (edge == null) {
                 WheelOf(values, selected, onSelect)
             } else {
@@ -84,7 +87,7 @@ class WheelPickerTest {
                     WheelOf(values, selected, onSelect)
                 }
             }
-        }
+        } }
     }
 
     @Composable
@@ -193,7 +196,7 @@ class WheelPickerTest {
     fun swipingTheWheelInASheetTurnsTheWheelNotTheSheet() {
         var selected by mutableStateOf(2)
         compose.setContent {
-            CelanderTheme(darkTheme = false, accentHue = 240f, glassTransparency = 0f, reduceMotion = false) {
+            CelanderTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) {
                 // Half open, so the sheet would take an upward drag to open fully.
                 GlassSheet(onDismissed = {}, expandable = true) {
                     WheelOf(minutes, selected, onSelect = { selected = it })

@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import com.celander.app.core.ui.Formats
 import java.time.DayOfWeek

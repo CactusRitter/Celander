@@ -13,7 +13,9 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
-import com.celander.app.designsystem.CelanderTheme
+import com.celander.app.settings.AppSettings
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.theme.ThemeMode
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +34,7 @@ class PeriodPagerTest {
 
     private fun showPager() {
         compose.setContent {
-            CelanderTheme(darkTheme = false, accentHue = 240f, glassTransparency = 0f, reduceMotion = false) {
+            CelanderTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) {
                 PeriodPager(
                     index = index,
                     onIndexChange = { reported += it; index = it },

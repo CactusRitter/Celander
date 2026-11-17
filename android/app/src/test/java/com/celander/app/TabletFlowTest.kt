@@ -65,7 +65,7 @@ class TabletFlowTest {
         hilt.inject()
         runBlocking {
             calendars.ensureDefault("Personal")
-            settings.update { it.copy(glassTransparency = 0f, reduceMotion = true) }
+            settings.update { it.copy(transparency = 0, reduceMotion = true) }
         }
     }
 

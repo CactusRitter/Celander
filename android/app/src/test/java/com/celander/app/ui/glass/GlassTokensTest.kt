@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui.glass
 
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
@@ -65,8 +65,15 @@ class GlassTokensTest {
     @Test
     fun widgetsKeepAFloorOfOpacityBecauseTheyCannotBlur() {
         for (dark in listOf(false, true)) {
-            assertEquals(GlassTokens.WIDGET_MIN_ALPHA, GlassTokens.widgetAlpha(1f, dark))
+            assertEquals(GlassTokens.WIDGET_MIN_ALPHA, GlassTokens.widgetAlpha(1f, dark), 0.001f)
             assertEquals(1f, GlassTokens.widgetAlpha(0f, dark))
+            // The whole slider shows: each 5 % step above the default makes the card a little clearer.
+            var before = GlassTokens.widgetAlpha(GlassTokens.DEFAULT_TRANSPARENCY, dark)
+            for (percent in 70..100 step 5) {
+                val now = GlassTokens.widgetAlpha(percent / 100f, dark)
+                assertTrue("$percent %", now < before)
+                before = now
+            }
         }
     }
 

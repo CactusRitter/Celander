@@ -1,5 +1,8 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
+import com.celander.app.settings.AppSettings
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.theme.ThemeMode
 import android.app.Application
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -26,7 +29,7 @@ class SegmentedControlTest {
     fun segmentsAreFullTouchTargets() {
         var picked = 0
         compose.setContent {
-            CelanderTheme(darkTheme = false, accentHue = 240f, glassTransparency = 0f, reduceMotion = false) {
+            CelanderTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) {
                 SegmentedControl(listOf("Event", "Task"), selectedIndex = picked, onSelect = { picked = it }, modifier = Modifier.testTag("segments"))
             }
         }
