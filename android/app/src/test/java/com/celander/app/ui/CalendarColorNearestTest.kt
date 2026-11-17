@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.ui.graphics.toArgb
 import org.junit.Assert.assertEquals

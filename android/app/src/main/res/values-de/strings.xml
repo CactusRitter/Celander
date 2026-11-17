@@ -667,7 +667,7 @@
     <string name="style_title">Stil</string>
     <string name="style_body">Der Hintergrund und die Tönung des Glases.</string>
     <string name="skin_title">Design</string>
-    <string name="skin_body">Das Aussehen der ganzen App. Glas ist das gemeinsame Design mit Celander und Cemail; die anderen werden noch ausprobiert.</string>
+    <string name="skin_body">Das Aussehen der ganzen App. Glas ist das gemeinsame Design mit Cemail und Cenotes; die anderen werden noch ausprobiert.</string>
     <string name="skin_always_dark">Dieses Design ist immer dunkel.</string>
     <string name="depth_title">3D-Schatten</string>
     <string name="depth_body">Ein weicher Schatten, der Karten und Schaltflächen vom Hintergrund abhebt, wie Glas darüber.</string>

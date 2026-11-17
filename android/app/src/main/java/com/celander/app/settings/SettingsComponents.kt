@@ -85,8 +85,9 @@ fun SettingsScaffold(
     CompositionLocalProvider(LocalHazeState provides hazeState) {
         Box(Modifier.fillMaxSize()) {
             val hiddenWhileModal = if (modalOpen) Modifier.clearAndSetSemantics { } else Modifier
-            GlassBackground(Modifier.hazeSource(hazeState, zIndex = GlassLayers.BACKGROUND).then(hiddenWhileModal)) {
-                Box(Modifier.fillMaxSize().hazeSource(hazeState, zIndex = GlassLayers.CONTENT)) {
+            GlassBackground(Modifier.hazeSource(hazeState, zIndex = GlassLayers.BACKGROUND).then(hiddenWhileModal)) {}
+            run {
+                Box(Modifier.fillMaxSize().hazeSource(hazeState, zIndex = GlassLayers.CONTENT).then(hiddenWhileModal)) {
                     LazyColumn(
                         Modifier
                             .fillMaxSize()
@@ -96,7 +97,7 @@ fun SettingsScaffold(
                         // The first card starts under the pill; the cards' shadows spill into the side padding instead of being cut.
                         contentPadding = PaddingValues(
                             top = WindowInsets.statusBars.asTop() + Sizes.topBar + 20.dp,
-                            bottom = WindowInsets.navigationBars.asBottom() + 24.dp,
+                            bottom = WindowInsets.navigationBars.asBottom() + 56.dp,
                         ),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         content = content,

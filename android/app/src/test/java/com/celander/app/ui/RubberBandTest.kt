@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

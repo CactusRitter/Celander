@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
@@ -27,7 +27,7 @@ class WindowLayoutTest {
         assertEquals(WidthClass.MEDIUM, portrait.widthClass)
         assertTrue(portrait.isWide)
         assertFalse(portrait.isLandscape)
-        assertEquals(Spacing.l, portrait.extraGutter)
+        assertEquals(16.dp, portrait.extraGutter)
 
         val landscape = WindowLayout(1280.dp, 800.dp)
         assertEquals(WidthClass.EXPANDED, landscape.widthClass)

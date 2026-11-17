@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui.glass
 
 import androidx.compose.ui.unit.dp
 import org.junit.Assert.assertEquals
