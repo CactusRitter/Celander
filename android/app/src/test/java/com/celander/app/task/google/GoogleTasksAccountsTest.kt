@@ -101,7 +101,7 @@ class GoogleTasksAccountsTest {
         assertEquals(setOf("Report"), titlesIn("B1"))
         assertEquals(setOf(EMAIL, OTHER), dao.lists().map { it.account }.toSet())
 
-        auth.perAccount[OTHER] = { AuthResult.NeedsConsent(null) }
+        auth.perAccount[OTHER] = { AuthResult.Failed(GoogleTasksStatus.NeedsReauth) }
         first.serverAdd("A1", "Bread")
         clock.advance(1_000)
         tasks.create(Task(calendarId = calendarOf("A1"), title = "Call mum"))

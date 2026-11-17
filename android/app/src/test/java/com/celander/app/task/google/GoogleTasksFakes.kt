@@ -1,7 +1,5 @@
 package com.celander.app.task.google
 
-import android.app.Activity
-import android.content.Intent
 import com.celander.app.core.googletasks.GTask
 import com.celander.app.core.googletasks.GTaskList
 import com.celander.app.core.googletasks.GTaskListPage
@@ -189,16 +187,10 @@ class FakeTasksRemote(private val clock: MutableTimeSource, private val idPrefix
 
 /** Hands out "token-1", and "token-2" once "token-1" was cleared; [perAccount] answers for other accounts. */
 class FakeAuthorizer : GoogleAuthorizer {
-    var available = true
     var background: () -> AuthResult = { AuthResult.Granted(if ("token-1" in cleared) "token-2" else "token-1") }
     val perAccount = mutableMapOf<String, () -> AuthResult>()
     val cleared = mutableListOf<String>()
 
-    override fun playServicesAvailable(): Boolean = available
-    override fun chooseAccountIntent(preselect: String?): Intent = Intent("choose")
-    override fun accountFromChooser(resultCode: Int, data: Intent?): String? = data?.getStringExtra("account")
-    override suspend fun authorize(activity: Activity, email: String): AuthResult = backgroundToken(email)
-    override fun consentResult(resultCode: Int, data: Intent?): AuthResult = background()
     override suspend fun backgroundToken(email: String): AuthResult = perAccount[email]?.invoke() ?: background()
     override suspend fun clearToken(token: String) {
         cleared += token

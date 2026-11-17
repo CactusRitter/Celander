@@ -364,7 +364,6 @@
     <string name="settings_licenses">Open-source licenses</string>
     <string name="settings_libraries">Libraries</string>
     <string name="settings_license_apache">Apache License 2.0</string>
-    <string name="settings_license_android_sdk">Android Software Development Kit License</string>
     <string name="settings_your_calendars">Your calendars</string>
     <string name="settings_hidden_hint">Hidden calendars disappear from all views and the search. Their reminders still come, so nothing is missed by accident.</string>
     <string name="settings_new_calendar">New calendar</string>
@@ -459,7 +458,6 @@
     </plurals>
 
     <!-- Google accounts (Google Tasks) -->
-    <string name="settings_section_google">Google</string>
     <string name="settings_default_task_list">Default list for tasks</string>
     <string name="settings_calendar_read_only">Read only</string>
     <string name="settings_calendar_color_local">The color only changes in Celander.</string>
@@ -473,41 +471,19 @@
     <!-- Calendar list: default without entry count -->
 
     <!-- Google Tasks -->
-    <string name="settings_google_tasks">Google Tasks</string>
     <string name="settings_calendars_google_tasks">Google Tasks · %s</string>
     <string name="google_tasks_title">Google Tasks</string>
-    <string name="google_tasks_local_only">Google Tasks only stores the date. Due times and reminders stay on this phone.</string>
-    <string name="google_tasks_connecting">Connecting…</string>
     <string name="google_tasks_synced_at">Synced %s</string>
     <string name="google_tasks_not_synced">Not synced yet</string>
     <string name="google_tasks_syncing">Syncing…</string>
     <string name="google_tasks_offline">Waiting for an internet connection</string>
-    <string name="google_tasks_reauth">Access expired – tap to sign in again</string>
+    <string name="google_tasks_reauth">Access expired – sign in to the account again</string>
     <string name="google_tasks_setup_error">Google sign-in isn\'t set up for this app (OAuth client missing)</string>
     <string name="google_tasks_api_disabled">The Google Tasks API is turned off in this app\'s Google Cloud project</string>
-    <string name="google_tasks_failed">Sync failed (%d) – tap to try again</string>
-    <string name="google_tasks_no_play_services">Needs Google Play services</string>
-    <string name="google_tasks_sync_now">Sync now</string>
-    <string name="google_tasks_lists">Lists and colors</string>
+    <string name="google_tasks_failed">Sync failed (%d) – it is tried again later</string>
     <string name="google_tasks_connect_failed">Couldn\'t connect to Google Tasks</string>
     <string name="google_tasks_default_changed">New tasks now go to %s</string>
     <string name="editor_google_task_local_only">Google Tasks only stores the date. Time and reminders stay on this phone.</string>
-    <plurals name="google_tasks_pending">
-        <item quantity="one">%d change not sent yet</item>
-        <item quantity="other">%d changes not sent yet</item>
-    </plurals>
-    <plurals name="google_tasks_rejected">
-        <item quantity="one">%d task couldn\'t be sent – edit it to try again</item>
-        <item quantity="other">%d tasks couldn\'t be sent – edit them to try again</item>
-    </plurals>
-    <plurals name="google_tasks_rescued">
-        <item quantity="one">%1$d task from a deleted list was moved to %2$s</item>
-        <item quantity="other">%1$d tasks from a deleted list were moved to %2$s</item>
-    </plurals>
-    <plurals name="google_tasks_disconnect_loses">
-        <item quantity="one">%d change not sent yet will be lost</item>
-        <item quantity="other">%d changes not sent yet will be lost</item>
-    </plurals>
     <plurals name="editor_text_too_long">
         <item quantity="one">Too long for Google Tasks (max. %d character)</item>
         <item quantity="other">Too long for Google Tasks (max. %d characters)</item>
@@ -533,7 +509,6 @@
     <string name="settings_section_expand">Show</string>
     <string name="settings_section_collapse">Hide</string>
     <string name="settings_data_summary">Sample data · delete all data</string>
-    <string name="settings_google_summary_off">Not connected</string>
 
     <!-- More sample tasks -->
     <string name="sample_task_dentist">Call the dentist</string>
@@ -566,27 +541,6 @@
     <string name="settings_reminders_channel_hint">Sound and vibration in the system settings</string>
 
     <!-- Google accounts -->
-    <string name="google_accounts_title">Google accounts</string>
-    <string name="google_accounts_intro">Celander syncs the Google Tasks lists of these accounts both ways.</string>
-    <string name="google_accounts_empty">No Google account yet. Add one to sync its tasks.</string>
-    <string name="google_accounts_overview_empty">Add an account for its calendars and tasks</string>
-    <string name="google_accounts_attention">%s needs attention – tap to see why</string>
-    <string name="google_accounts_add">Add Google account</string>
-    <string name="google_accounts_adding">Adding %s…</string>
-    <string name="google_accounts_added">%s added – tasks sync</string>
-    <string name="google_accounts_added_default_tasks">%s added – new tasks now go to this account</string>
-    <string name="google_accounts_add_failed">Couldn\'t add %s</string>
-    <string name="google_accounts_tasks_off">Not connected – tap to connect</string>
-    <string name="google_accounts_remove">Remove from Celander</string>
-    <string name="google_accounts_remove_summary">Disconnects Google Tasks. The account stays on this phone.</string>
-    <string name="google_accounts_remove_title">Remove %s from Celander?</string>
-    <string name="google_accounts_remove_message">Its Google Tasks lists are removed from this phone; your tasks stay in Google Tasks. The account itself stays on this phone – remove it in the system settings if you no longer need it.</string>
-    <string name="google_accounts_remove_confirm">Remove</string>
-    <string name="google_accounts_removed">%s removed from Celander</string>
-    <plurals name="google_accounts_count">
-        <item quantity="one">%d account</item>
-        <item quantity="other">%d accounts</item>
-    </plurals>
     <!-- Widget blur -->
 
     <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
@@ -682,5 +636,6 @@
     <string name="accounts_added">%1$s connected</string>
     <string name="accounts_add_button">Add</string>
     <string name="accounts_provider_google">Google</string>
+    <string name="accounts_tasks_summary">Syncs the task lists of this account both ways.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
 </resources>

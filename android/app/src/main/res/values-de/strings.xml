@@ -361,7 +361,6 @@
     <string name="settings_licenses">Open-Source-Lizenzen</string>
     <string name="settings_libraries">Bibliotheken</string>
     <string name="settings_license_apache">Apache License 2.0</string>
-    <string name="settings_license_android_sdk">Android Software Development Kit License</string>
     <string name="settings_your_calendars">Deine Kalender</string>
     <string name="settings_hidden_hint">Ausgeblendete Kalender verschwinden aus allen Ansichten und der Suche. Ihre Erinnerungen kommen weiterhin, damit nichts versehentlich untergeht.</string>
     <string name="settings_new_calendar">Neuer Kalender</string>
@@ -456,7 +455,6 @@
     </plurals>
 
     <!-- Google-Konten (Google Tasks) -->
-    <string name="settings_section_google">Google</string>
     <string name="settings_default_task_list">Standardliste für Aufgaben</string>
     <string name="settings_calendar_read_only">Nur lesen</string>
     <string name="settings_calendar_color_local">Die Farbe gilt nur in Celander.</string>
@@ -470,41 +468,19 @@
     <!-- Calendar list: default without entry count -->
 
     <!-- Google Tasks -->
-    <string name="settings_google_tasks">Google Tasks</string>
     <string name="settings_calendars_google_tasks">Google Tasks · %s</string>
     <string name="google_tasks_title">Google Tasks</string>
-    <string name="google_tasks_local_only">Google Tasks speichert nur das Datum. Uhrzeiten und Erinnerungen bleiben auf diesem Telefon.</string>
-    <string name="google_tasks_connecting">Wird verbunden …</string>
     <string name="google_tasks_synced_at">Synchronisiert %s</string>
     <string name="google_tasks_not_synced">Noch nicht synchronisiert</string>
     <string name="google_tasks_syncing">Wird synchronisiert …</string>
     <string name="google_tasks_offline">Wartet auf eine Internetverbindung</string>
-    <string name="google_tasks_reauth">Zugriff abgelaufen – tippen, um dich erneut anzumelden</string>
+    <string name="google_tasks_reauth">Zugriff abgelaufen – melde dich erneut beim Konto an</string>
     <string name="google_tasks_setup_error">Die Google-Anmeldung ist für diese App nicht eingerichtet (OAuth-Client fehlt)</string>
     <string name="google_tasks_api_disabled">Die Google-Tasks-API ist im Google-Cloud-Projekt dieser App ausgeschaltet</string>
-    <string name="google_tasks_failed">Synchronisierung fehlgeschlagen (%d) – tippen zum Wiederholen</string>
-    <string name="google_tasks_no_play_services">Benötigt Google-Play-Dienste</string>
-    <string name="google_tasks_sync_now">Jetzt synchronisieren</string>
-    <string name="google_tasks_lists">Listen und Farben</string>
+    <string name="google_tasks_failed">Synchronisierung fehlgeschlagen (%d) – wird später erneut versucht</string>
     <string name="google_tasks_connect_failed">Verbindung mit Google Tasks fehlgeschlagen</string>
     <string name="google_tasks_default_changed">Neue Aufgaben landen jetzt in %s</string>
     <string name="editor_google_task_local_only">Google Tasks speichert nur das Datum. Uhrzeit und Erinnerungen bleiben auf diesem Telefon.</string>
-    <plurals name="google_tasks_pending">
-        <item quantity="one">%d Änderung noch nicht übertragen</item>
-        <item quantity="other">%d Änderungen noch nicht übertragen</item>
-    </plurals>
-    <plurals name="google_tasks_rejected">
-        <item quantity="one">%d Aufgabe konnte nicht übertragen werden – bearbeite sie, um es erneut zu versuchen</item>
-        <item quantity="other">%d Aufgaben konnten nicht übertragen werden – bearbeite sie, um es erneut zu versuchen</item>
-    </plurals>
-    <plurals name="google_tasks_rescued">
-        <item quantity="one">%1$d Aufgabe aus einer gelöschten Liste wurde nach %2$s verschoben</item>
-        <item quantity="other">%1$d Aufgaben aus einer gelöschten Liste wurden nach %2$s verschoben</item>
-    </plurals>
-    <plurals name="google_tasks_disconnect_loses">
-        <item quantity="one">%d noch nicht übertragene Änderung geht verloren</item>
-        <item quantity="other">%d noch nicht übertragene Änderungen gehen verloren</item>
-    </plurals>
     <plurals name="editor_text_too_long">
         <item quantity="one">Zu lang für Google Tasks (max. %d Zeichen)</item>
         <item quantity="other">Zu lang für Google Tasks (max. %d Zeichen)</item>
@@ -530,7 +506,6 @@
     <string name="settings_section_expand">Einblenden</string>
     <string name="settings_section_collapse">Ausblenden</string>
     <string name="settings_data_summary">Beispieldaten · alle Daten löschen</string>
-    <string name="settings_google_summary_off">Nicht verbunden</string>
 
     <!-- More sample tasks -->
     <string name="sample_task_dentist">Zahnarzt anrufen</string>
@@ -563,27 +538,6 @@
     <string name="settings_reminders_channel_hint">Ton und Vibration in den Systemeinstellungen</string>
 
     <!-- Google accounts -->
-    <string name="google_accounts_title">Google-Konten</string>
-    <string name="google_accounts_intro">Celander gleicht die Google-Tasks-Listen dieser Konten in beide Richtungen ab.</string>
-    <string name="google_accounts_empty">Noch kein Google-Konto. Füge eines hinzu, um seine Aufgaben abzugleichen.</string>
-    <string name="google_accounts_overview_empty">Konto für Kalender und Aufgaben hinzufügen</string>
-    <string name="google_accounts_attention">%s braucht Aufmerksamkeit – tippen für Details</string>
-    <string name="google_accounts_add">Google-Konto hinzufügen</string>
-    <string name="google_accounts_adding">%s wird hinzugefügt…</string>
-    <string name="google_accounts_added">%s hinzugefügt – Aufgaben werden synchronisiert</string>
-    <string name="google_accounts_added_default_tasks">%s hinzugefügt – neue Aufgaben landen jetzt in diesem Konto</string>
-    <string name="google_accounts_add_failed">%s konnte nicht hinzugefügt werden</string>
-    <string name="google_accounts_tasks_off">Nicht verbunden – tippen zum Verbinden</string>
-    <string name="google_accounts_remove">Aus Celander entfernen</string>
-    <string name="google_accounts_remove_summary">Trennt Google Tasks. Das Konto bleibt auf dem Telefon.</string>
-    <string name="google_accounts_remove_title">%s aus Celander entfernen?</string>
-    <string name="google_accounts_remove_message">Seine Google-Tasks-Listen werden von diesem Telefon entfernt; deine Aufgaben bleiben in Google Tasks. Das Konto selbst bleibt auf dem Telefon – entferne es in den Systemeinstellungen, wenn du es nicht mehr brauchst.</string>
-    <string name="google_accounts_remove_confirm">Entfernen</string>
-    <string name="google_accounts_removed">%s aus Celander entfernt</string>
-    <plurals name="google_accounts_count">
-        <item quantity="one">%d Konto</item>
-        <item quantity="other">%d Konten</item>
-    </plurals>
     <!-- Widget blur -->
 
     <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
@@ -677,5 +631,6 @@
     <string name="accounts_added">%1$s verbunden</string>
     <string name="accounts_add_button">Hinzufügen</string>
     <string name="accounts_provider_google">Google</string>
+    <string name="accounts_tasks_summary">Synchronisiert die Aufgabenlisten dieses Kontos in beide Richtungen.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
 </resources>

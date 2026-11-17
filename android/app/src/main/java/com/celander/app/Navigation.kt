@@ -20,7 +20,6 @@ import com.celander.app.ui.theme.CelanderTheme
 import com.celander.app.ui.MotionTokens
 import com.celander.app.account.ui.AccountsScreen
 import com.celander.app.settings.CalendarsScreen
-import com.celander.app.settings.GoogleAccountsScreen
 import com.celander.app.settings.LicensesScreen
 import com.celander.app.settings.SettingsScreen
 import kotlinx.serialization.Serializable
@@ -36,9 +35,6 @@ object CalendarsRoute
 
 @Serializable
 object LicensesRoute
-
-@Serializable
-object GoogleAccountsRoute
 
 @Serializable
 object AccountsRoute
@@ -79,16 +75,12 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
                     onBack = back,
                     onOpenCalendars = { navController.navigate(CalendarsRoute) },
                     onOpenLicenses = { navController.navigate(LicensesRoute) },
-                    onOpenGoogleAccounts = { navController.navigate(GoogleAccountsRoute) },
                     onOpenAccounts = { navController.navigate(AccountsRoute) },
                 )
             }
         }
         composable<CalendarsRoute> {
             Page(navController) { back -> CalendarsScreen(onBack = back) }
-        }
-        composable<GoogleAccountsRoute> {
-            Page(navController) { back -> GoogleAccountsScreen(onBack = back, onOpenLists = { navController.navigate(CalendarsRoute) }) }
         }
         composable<AccountsRoute> {
             Page(navController) { back -> AccountsScreen(onBack = back) }

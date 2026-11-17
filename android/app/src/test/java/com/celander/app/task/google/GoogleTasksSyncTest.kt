@@ -437,13 +437,10 @@ class GoogleTasksSyncTest {
         assertEquals(SyncOutcome.Retry(GoogleTasksStatus.Offline), sync.run())
         server.fault = { null }
 
-        auth.background = { AuthResult.NeedsConsent(null) }
+        auth.background = { AuthResult.Failed(GoogleTasksStatus.NeedsReauth) }
         assertEquals(SyncOutcome.Stopped(GoogleTasksStatus.NeedsReauth), sync.run())
         auth.background = { AuthResult.Failed(GoogleTasksStatus.SetupError) }
         assertEquals(SyncOutcome.Stopped(GoogleTasksStatus.SetupError), sync.run())
-        auth.available = false
-        assertEquals(SyncOutcome.Stopped(GoogleTasksStatus.NoPlayServices), sync.run())
-        assertEquals(GoogleTasksStatus.NoPlayServices, state.status)
         assertTrue(server.writes.isEmpty())
     }
 

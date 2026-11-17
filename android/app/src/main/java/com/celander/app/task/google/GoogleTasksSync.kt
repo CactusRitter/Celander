@@ -102,14 +102,12 @@ class GoogleTasksSync @Inject constructor(
     private suspend fun runAccount(email: String): AccountRun = mutex.withLock {
         // Removed while waiting for the lock.
         if (accounts[email] == null) return AccountRun(SyncOutcome.NotConnected)
-        if (!authorizer.playServicesAvailable()) return AccountRun(stop(email, GoogleTasksStatus.NoPlayServices, retry = false))
         accounts.setSyncing(email, true)
         val handedOver = mutableSetOf<String>()
         val outcome = try {
             val token = when (val auth = authorizer.backgroundToken(email)) {
                 is AuthResult.Granted -> auth.token
                 is AuthResult.Failed -> return AccountRun(stop(email, auth.status, retry = auth.status.isTransient()))
-                is AuthResult.NeedsConsent, AuthResult.Cancelled -> return AccountRun(stop(email, GoogleTasksStatus.NeedsReauth, retry = false))
             }
             val session = Session(email, token, handedOver)
             val lists = syncLists(session)
@@ -478,7 +476,6 @@ class GoogleTasksSync @Inject constructor(
             token = when (val auth = authorizer.backgroundToken(email)) {
                 is AuthResult.Granted -> auth.token
                 is AuthResult.Failed -> throw StopSync(auth.status, auth.status.isTransient())
-                else -> throw StopSync(GoogleTasksStatus.NeedsReauth, retry = false)
             }
             try {
                 call(token)

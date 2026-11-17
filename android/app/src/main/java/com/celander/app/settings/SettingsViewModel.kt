@@ -27,6 +27,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/** The Google Tasks accounts for the calendar list; [email] only while there is exactly one. */
+data class GoogleTasksSummary(val emails: List<String>) {
+    val email: String? get() = emails.singleOrNull()
+}
+
 /** A calendar in the settings list with how many entries it holds. */
 data class CalendarRow(val calendar: CalendarInfo, val entries: Int, val isDefault: Boolean, val isTaskDefault: Boolean = false)
 
@@ -39,7 +44,6 @@ class SettingsViewModel @Inject constructor(
     private val samples: SampleDataRepository,
     private val reset: DataReset,
     private val snackbar: SnackbarManager,
-    googleAccounts: GoogleAccounts,
     googleTasksAccounts: GoogleTasksAccounts,
 ) : ViewModel() {
     val googleTasks: StateFlow<GoogleTasksSummary> = googleTasksAccounts.state.map { list -> GoogleTasksSummary(list.map { it.email }) }
@@ -57,9 +61,6 @@ class SettingsViewModel @Inject constructor(
         list.map { CalendarRow(it, counts[it.id] ?: 0, it.id == defaultId, it.id == taskDefaultId) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    /** Summary of the Google accounts for the overview; the page itself has its own view model. */
-    val googleOverview: StateFlow<GoogleOverview?> = googleAccounts.accounts().map { GoogleOverview(it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val hasSampleData: StateFlow<Boolean?> = samples.hasSampleData.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 

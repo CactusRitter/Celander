@@ -132,13 +132,11 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onOpenCalendars: () -> Unit,
     onOpenLicenses: () -> Unit,
-    onOpenGoogleAccounts: () -> Unit,
     onOpenAccounts: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val calendars by viewModel.calendarRows.collectAsStateWithLifecycle()
-    val googleOverview by viewModel.googleOverview.collectAsStateWithLifecycle()
     val hasSampleData by viewModel.hasSampleData.collectAsStateWithLifecycle()
     val snackbar by viewModel.snackbarMessage.collectAsStateWithLifecycle()
     val current = settings ?: return
@@ -211,7 +209,6 @@ fun SettingsScreen(
                             settings = current,
                             formats = formats,
                             calendarCount = calendars?.size,
-                            googleOverview = googleOverview,
                             remindersSummary = when {
                                 blocked -> stringResource(R.string.settings_notifications_off)
                                 status.mayBeLate -> stringResource(if (!status.exactAlarms) R.string.settings_timing_inexact else R.string.settings_timing_restricted)
@@ -219,7 +216,6 @@ fun SettingsScreen(
                                     .ifEmpty { stringResource(R.string.reminder_none) }
                             },
                             onRoute = { route = it },
-                            onOpenGoogleAccounts = onOpenGoogleAccounts,
                             onOpenAccounts = onOpenAccounts,
                             onOpenLicenses = onOpenLicenses,
                         )
@@ -243,10 +239,8 @@ private fun MainPage(
     settings: AppSettings,
     formats: Formats,
     calendarCount: Int?,
-    googleOverview: GoogleOverview?,
     remindersSummary: String,
     onRoute: (String) -> Unit,
-    onOpenGoogleAccounts: () -> Unit,
     onOpenAccounts: () -> Unit,
     onOpenLicenses: () -> Unit,
 ) {
@@ -275,20 +269,6 @@ private fun MainPage(
         PaletteIcon,
     ) { onRoute(SettingsRoute.APPEARANCE) }
     Section(stringResource(R.string.settings_section_calendar), calendarSummary, Icons.Outlined.CalendarMonth) { onRoute(SettingsRoute.CALENDAR) }
-    googleOverview?.let { overview ->
-        val troubled = overview.troubled
-        Section(
-            stringResource(R.string.settings_section_google),
-            when {
-                troubled != null -> stringResource(R.string.google_accounts_attention, troubled.email)
-                overview.accounts.isEmpty() -> stringResource(R.string.settings_google_summary_off)
-                else -> overview.accounts.joinToString { it.email }
-            },
-            Icons.Outlined.Sync,
-            attention = overview.attention,
-            onClick = onOpenGoogleAccounts,
-        )
-    }
     Section(stringResource(R.string.settings_section_reminders), remindersSummary, Icons.Outlined.Notifications) { onRoute(SettingsRoute.REMINDERS) }
     Section(stringResource(R.string.settings_section_data), stringResource(R.string.settings_data_summary), Icons.Outlined.Storage) { onRoute(SettingsRoute.DATA) }
     Section(stringResource(R.string.backup), stringResource(R.string.backup_summary), BackupIcon) { onRoute(SettingsRoute.BACKUP) }

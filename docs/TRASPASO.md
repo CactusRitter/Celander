@@ -43,3 +43,15 @@ Ver `CLAUDE.md` (compilar, emulador). Prueba con paquete `.test`: `-PidSuffix=.t
 - Widgets y recordatorios se actualizan solos: observan las tablas que escribe el sync.
 - Deslizar para refrescar: CANCELADO por César (no lo quiere en ningún sitio). Con la app visible se pregunta por cambios cada 60 s (parado en segundo plano), además del pull al abrir (mín. 30 s) y el periódico de 15 min; «Sincronizar ahora» queda en Ajustes › Cuentas.
 - Medido en el S26 con la cuenta real (evento de prueba propio, creado y borrado): Guardar -> creado en Google en ~4,5 s (3 s de espera para agrupar cambios + ~1,5 s); Eliminar -> borrado en Google en ~4,5 s.
+
+## Google Cloud (informado por Ce Líder, 2026-11-18)
+- Proyecto `crested-talon-512623-f3`: pantalla de consentimiento «En producción», sin verificar (3 de 100 usuarios): no hay caducidad de refresh tokens a los 7 días; al iniciar sesión sale el aviso «Google no ha verificado esta aplicación» (Avanzado › Ir a Celander).
+- El retardo de 3 s antes de enviar un cambio local se queda (agrupa ediciones y deja margen al deshacer); total medido ~4,5 s hasta Google.
+
+## Pendiente aprobado por César para más adelante (después de Microsoft y .ics)
+- Push de calendario reutilizando lo de Cemail: Worker de Cloudflare + Firebase (`Cemail/docs/PUSH.md`; `Ce/docs/NUBE.md`, «Push de Cemail»). Implica servidor propio (Cloudflare) y FCM: hay que actualizar la política de privacidad (hoy dice que no hay servidor) antes de publicarlo. NO empezar ahora.
+- Norma: antes de decir «no se puede» o diseñar algo, mirar si otra app Ce ya lo resuelve (Cemail tiene Microsoft Graph, AppAuth y push) y copiarlo; para Microsoft partir de `MicrosoftAuth.kt`/`GraphApi` de Cemail.
+
+## Google Tasks con AppAuth (2026-11-18)
+- Tasks usa los tokens AppAuth de las cuentas (task/google/AccountAuthorizer); play-services-auth y kotlinx-coroutines-play-services eliminados (punto 7 de la lista de privacidad: sin SDK de terceros que llame a casa). El interruptor «Google Tasks» está en la página de cada cuenta; quitar la cuenta desconecta Tasks. Probado en el S26 con la cuenta real: sincroniza.
+- Desaparecieron los avisos de «tareas rescatadas» y «cambios pendientes» (sin UI); los datos siguen en GoogleTasksAccounts.

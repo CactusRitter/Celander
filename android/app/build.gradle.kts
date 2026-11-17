@@ -137,8 +137,6 @@ dependencies {
     // Glance brings WorkManager 2.7 transitively; pinned to a current release.
     implementation(libs.androidx.work.runtime.ktx)
     // Google Tasks sync: sign-in and consent, the REST client, foreground detection.
-    implementation(libs.play.services.auth)
-    implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.okhttp)
     implementation(libs.androidx.lifecycle.process)
 

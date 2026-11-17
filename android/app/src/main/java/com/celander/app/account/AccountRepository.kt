@@ -8,6 +8,7 @@ import com.celander.app.core.database.AccountDao
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountStatus
 import com.celander.app.core.model.AccountType
+import com.celander.app.task.google.GoogleTasksConnection
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,7 @@ class AccountRepository @Inject constructor(
     private val tokens: TokenStore,
     private val google: GoogleAuth,
     private val scheduler: AccountSyncScheduler,
+    private val googleTasks: GoogleTasksConnection,
 ) {
     val accounts: Flow<List<AccountEntity>> = dao.observeAccounts()
 
@@ -79,8 +81,9 @@ class AccountRepository @Inject constructor(
         return retry
     }
 
-    /** Removes an account with its calendars and events on this device and its tokens. The server is not touched. */
+    /** Removes an account with its calendars, events and Google Tasks lists on this device and its tokens. The server is not touched. */
     suspend fun remove(id: Long) = lock.withLock {
+        dao.account(id)?.takeIf { it.type == AccountType.GOOGLE.name }?.let { googleTasks.disconnect(it.identifier) }
         sync.remove(id)
         tokens.clear(AccountTokens.key(id))
     }

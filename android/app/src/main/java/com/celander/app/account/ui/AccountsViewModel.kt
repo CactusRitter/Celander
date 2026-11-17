@@ -10,20 +10,44 @@ import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.ui.SnackbarManager
 import com.celander.app.core.ui.SnackbarMessage
 import com.celander.app.core.ui.UiText
+import com.celander.app.task.google.GoogleTasksAccounts
+import com.celander.app.task.google.GoogleTasksConnection
+import com.celander.app.task.google.GoogleTasksState
+import com.celander.app.task.google.SyncOutcome
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AccountsViewModel @Inject constructor(
     private val repository: AccountRepository,
     private val snackbar: SnackbarManager,
+    private val tasks: GoogleTasksAccounts,
+    private val tasksConnection: GoogleTasksConnection,
 ) : ViewModel() {
     val accounts: StateFlow<List<AccountEntity>?> = repository.accounts.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
     val snackbarMessage: StateFlow<SnackbarMessage?> = snackbar.current
+
+    /** The Google Tasks connection of each connected account, by e-mail address. */
+    val tasksStates: StateFlow<Map<String, GoogleTasksState>> = tasks.state.map { list -> list.associateBy { it.email } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), tasks.state.value.associateBy { it.email })
+
+    private val switching = MutableStateFlow(emptySet<String>())
+
+    /** Marks [email] as being switched; false when it already is, so a second tap is ignored. */
+    private fun MutableStateFlow<Set<String>>.tryAdd(email: String): Boolean {
+        while (true) {
+            val current = value
+            if (email in current) return false
+            if (compareAndSet(current, current + email)) return true
+        }
+    }
 
     val googleConfigured: Boolean get() = repository.googleConfigured
 
@@ -38,6 +62,31 @@ class AccountsViewModel @Inject constructor(
                 AddAccountResult.Cancelled -> Unit
                 AddAccountResult.NotConfigured -> snackbar.show(UiText.Res(R.string.accounts_google_missing))
                 is AddAccountResult.Failed -> snackbar.show(UiText.Res(R.string.accounts_sign_in_failed))
+            }
+        }
+    }
+
+    /**
+     * The Google Tasks switch of the account [email]: on connects and runs the first sync (new tasks go to its default list
+     * when none is set, which the message can undo); off removes its lists from this phone. Tasks at Google stay.
+     */
+    fun setTasks(email: String, on: Boolean) {
+        if (!switching.tryAdd(email)) return
+        viewModelScope.launch {
+            try {
+                if (on) connectTasks(email) else tasksConnection.disconnect(email)
+            } finally {
+                switching.update { it - email }
+            }
+        }
+    }
+
+    private suspend fun connectTasks(email: String) {
+        val result = tasksConnection.connected(email)
+        if (result.outcome is SyncOutcome.Stopped) snackbar.show(UiText.Res(R.string.google_tasks_connect_failed))
+        result.defaultChange?.let { change ->
+            snackbar.show(UiText.Res(R.string.google_tasks_default_changed, listOf(change.listName)), UiText.Res(R.string.action_undo)) {
+                tasksConnection.undoDefaultChange(change)
             }
         }
     }

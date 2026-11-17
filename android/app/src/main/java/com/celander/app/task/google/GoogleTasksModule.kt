@@ -1,5 +1,9 @@
 package com.celander.app.task.google
 
+import com.celander.app.account.AccountTokens
+import com.celander.app.account.auth.GoogleAuth
+import com.celander.app.account.auth.TokenStore
+import com.celander.app.core.database.AccountDao
 import com.celander.app.core.di.IoDispatcher
 import dagger.Binds
 import dagger.Module
@@ -15,12 +19,14 @@ import okhttp3.OkHttpClient
 @InstallIn(SingletonComponent::class)
 abstract class GoogleTasksModule {
     @Binds
-    abstract fun authorizer(impl: PlayServicesAuthorizer): GoogleAuthorizer
-
-    @Binds
     abstract fun scheduler(impl: WorkManagerTaskSyncScheduler): TaskSyncScheduler
 
     companion object {
+        @Provides
+        @Singleton
+        fun authorizer(accounts: AccountDao, store: TokenStore, google: GoogleAuth): GoogleAuthorizer =
+            AccountAuthorizer(accounts, AccountTokens(store, google))
+
         @Provides
         @Singleton
         fun okHttpClient(): OkHttpClient = OkHttpClient.Builder()

@@ -34,6 +34,7 @@ import com.celander.app.core.model.AccountStatus
 import com.celander.app.settings.SettingsDivider
 import com.celander.app.settings.SettingsRow
 import com.celander.app.settings.SettingsScaffold
+import com.celander.app.settings.SettingsSwitchRow
 import com.celander.app.settings.settingsGroup
 import com.celander.app.ui.BigRow
 import com.celander.app.ui.GlassDialog
@@ -44,6 +45,8 @@ import com.celander.app.ui.TextAction
 import com.celander.app.ui.glass.GlassKind
 import com.celander.app.ui.glass.glass
 import com.celander.app.ui.glass.pressScale
+import com.celander.app.task.google.GoogleTasksState
+import com.celander.app.task.google.GoogleTasksStatus
 
 /**
  * Settings › Accounts, laid out like Cemail's: a big row for each account that opens its page, and an "Add" button. An
@@ -53,6 +56,7 @@ import com.celander.app.ui.glass.pressScale
 fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewModel()) {
     val accounts by viewModel.accounts.collectAsStateWithLifecycle()
     val snackbar by viewModel.snackbarMessage.collectAsStateWithLifecycle()
+    val tasksStates by viewModel.tasksStates.collectAsStateWithLifecycle()
     val signIn = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         viewModel.onSignInResult(result.data)
     }
@@ -65,6 +69,7 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
     BackHandler(enabled = account != null) { selected = null }
     val startSignIn = { hint: String? -> viewModel.googleSignInIntent(hint)?.let(signIn::launch) ?: viewModel.onSignInResult(null) }
     val title = stringResource(R.string.accounts_title)
+    val tasksTitle = stringResource(R.string.google_tasks_title)
 
     SettingsScaffold(
         title = account?.displayName ?: title,
@@ -166,6 +171,15 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                     SettingsRow(title = stringResource(R.string.accounts_sync_now), onClick = { viewModel.syncNow(account.id) })
                 }
             }
+            settingsGroup(tasksTitle) {
+                val tasks = tasksStates[account.identifier]
+                SettingsSwitchRow(
+                    title = stringResource(R.string.google_tasks_title),
+                    checked = tasks != null,
+                    onCheckedChange = { viewModel.setTasks(account.identifier, it) },
+                    summary = tasks?.let { tasksSummary(it) } ?: stringResource(R.string.accounts_tasks_summary),
+                )
+            }
             item(key = "remove") {
                 TextAction(
                     text = stringResource(R.string.accounts_remove),
@@ -229,4 +243,21 @@ private fun AddButton(text: String, onClick: () -> Unit) {
 fun accountsSummary(viewModel: AccountsViewModel = hiltViewModel()): String {
     val accounts by viewModel.accounts.collectAsStateWithLifecycle()
     return accounts?.joinToString { it.identifier }?.ifEmpty { null } ?: stringResource(R.string.accounts_summary_none)
+}
+
+/** The state of a connected Google Tasks account: running, the problem, or when it last synced. */
+@Composable
+private fun tasksSummary(state: GoogleTasksState): String = when (val status = state.status) {
+    GoogleTasksStatus.Syncing -> stringResource(R.string.google_tasks_syncing)
+    GoogleTasksStatus.Offline -> stringResource(R.string.google_tasks_offline)
+    GoogleTasksStatus.NeedsReauth -> stringResource(R.string.google_tasks_reauth)
+    GoogleTasksStatus.SetupError -> stringResource(R.string.google_tasks_setup_error)
+    GoogleTasksStatus.ApiDisabled -> stringResource(R.string.google_tasks_api_disabled)
+    is GoogleTasksStatus.Failed -> stringResource(R.string.google_tasks_failed, status.code)
+    GoogleTasksStatus.Ok -> state.lastSyncAt?.let {
+        stringResource(
+            R.string.google_tasks_synced_at,
+            DateUtils.getRelativeTimeSpanString(it, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString(),
+        )
+    } ?: stringResource(R.string.google_tasks_not_synced)
 }

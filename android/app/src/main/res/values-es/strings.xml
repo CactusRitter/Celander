@@ -381,7 +381,6 @@
     <string name="settings_licenses">Licencias de código abierto</string>
     <string name="settings_libraries">Bibliotecas</string>
     <string name="settings_license_apache">Apache License 2.0</string>
-    <string name="settings_license_android_sdk">Android Software Development Kit License</string>
     <string name="settings_your_calendars">Tus calendarios</string>
     <string name="settings_hidden_hint">Los calendarios ocultos desaparecen de todas las vistas y de la búsqueda. Sus recordatorios siguen llegando, para que no se te pase nada por error.</string>
     <string name="settings_new_calendar">Nuevo calendario</string>
@@ -482,7 +481,6 @@
     </plurals>
 
     <!-- Cuentas de Google (Google Tasks) -->
-    <string name="settings_section_google">Google</string>
     <string name="settings_default_task_list">Lista predeterminada para tareas</string>
     <string name="settings_calendar_read_only">Solo lectura</string>
     <string name="settings_calendar_color_local">El color solo cambia en Celander.</string>
@@ -496,45 +494,19 @@
     <!-- Lista de calendarios: predeterminado sin número de entradas -->
 
     <!-- Google Tasks -->
-    <string name="settings_google_tasks">Google Tasks</string>
     <string name="settings_calendars_google_tasks">Google Tasks · %s</string>
     <string name="google_tasks_title">Google Tasks</string>
-    <string name="google_tasks_local_only">Google Tasks solo guarda la fecha. Las horas límite y los recordatorios se quedan en este teléfono.</string>
-    <string name="google_tasks_connecting">Conectando…</string>
     <string name="google_tasks_synced_at">Sincronizado %s</string>
     <string name="google_tasks_not_synced">Aún sin sincronizar</string>
     <string name="google_tasks_syncing">Sincronizando…</string>
     <string name="google_tasks_offline">Esperando conexión a internet</string>
-    <string name="google_tasks_reauth">El acceso ha caducado: toca para volver a iniciar sesión</string>
+    <string name="google_tasks_reauth">El acceso ha caducado: vuelve a iniciar sesión en la cuenta</string>
     <string name="google_tasks_setup_error">El inicio de sesión de Google no está configurado para esta app (falta el cliente OAuth)</string>
     <string name="google_tasks_api_disabled">La API de Google Tasks está desactivada en el proyecto de Google Cloud de esta app</string>
-    <string name="google_tasks_failed">Error de sincronización (%d): toca para reintentar</string>
-    <string name="google_tasks_no_play_services">Necesita los servicios de Google Play</string>
-    <string name="google_tasks_sync_now">Sincronizar ahora</string>
-    <string name="google_tasks_lists">Listas y colores</string>
+    <string name="google_tasks_failed">Error de sincronización (%d): se reintentará más tarde</string>
     <string name="google_tasks_connect_failed">No se ha podido conectar con Google Tasks</string>
     <string name="google_tasks_default_changed">Las tareas nuevas van ahora a %s</string>
     <string name="editor_google_task_local_only">Google Tasks solo guarda la fecha. La hora y los recordatorios se quedan en este teléfono.</string>
-    <plurals name="google_tasks_pending">
-        <item quantity="one">%d cambio aún sin enviar</item>
-        <item quantity="many">%d cambios aún sin enviar</item>
-        <item quantity="other">%d cambios aún sin enviar</item>
-    </plurals>
-    <plurals name="google_tasks_rejected">
-        <item quantity="one">No se ha podido enviar %d tarea: edítala para reintentarlo</item>
-        <item quantity="many">No se han podido enviar %d tareas: edítalas para reintentarlo</item>
-        <item quantity="other">No se han podido enviar %d tareas: edítalas para reintentarlo</item>
-    </plurals>
-    <plurals name="google_tasks_rescued">
-        <item quantity="one">%1$d tarea de una lista eliminada se ha movido a %2$s</item>
-        <item quantity="many">%1$d tareas de una lista eliminada se han movido a %2$s</item>
-        <item quantity="other">%1$d tareas de una lista eliminada se han movido a %2$s</item>
-    </plurals>
-    <plurals name="google_tasks_disconnect_loses">
-        <item quantity="one">Se perderá %d cambio aún sin enviar</item>
-        <item quantity="many">Se perderán %d cambios aún sin enviar</item>
-        <item quantity="other">Se perderán %d cambios aún sin enviar</item>
-    </plurals>
     <plurals name="editor_text_too_long">
         <item quantity="one">Demasiado largo para Google Tasks (máx. %d carácter)</item>
         <item quantity="many">Demasiado largo para Google Tasks (máx. %d caracteres)</item>
@@ -561,7 +533,6 @@
     <string name="settings_section_expand">Mostrar</string>
     <string name="settings_section_collapse">Ocultar</string>
     <string name="settings_data_summary">Datos de ejemplo · eliminar todos los datos</string>
-    <string name="settings_google_summary_off">Sin conectar</string>
 
     <!-- Más tareas de ejemplo -->
     <string name="sample_task_dentist">Llamar al dentista</string>
@@ -595,28 +566,6 @@
     <string name="settings_reminders_channel_hint">Sonido y vibración en los ajustes del sistema</string>
 
     <!-- Google accounts -->
-    <string name="google_accounts_title">Cuentas de Google</string>
-    <string name="google_accounts_intro">Celander sincroniza en ambos sentidos las listas de Google Tasks de estas cuentas.</string>
-    <string name="google_accounts_empty">Aún no hay ninguna cuenta de Google. Añade una para sincronizar sus tareas.</string>
-    <string name="google_accounts_overview_empty">Añade una cuenta para sus calendarios y tareas</string>
-    <string name="google_accounts_attention">%s necesita atención – toca para ver por qué</string>
-    <string name="google_accounts_add">Añadir cuenta de Google</string>
-    <string name="google_accounts_adding">Añadiendo %s…</string>
-    <string name="google_accounts_added">%s añadida – se sincronizan las tareas</string>
-    <string name="google_accounts_added_default_tasks">%s añadida – las nuevas tareas van ahora a esta cuenta</string>
-    <string name="google_accounts_add_failed">No se pudo añadir %s</string>
-    <string name="google_accounts_tasks_off">No conectado – toca para conectar</string>
-    <string name="google_accounts_remove">Quitar de Celander</string>
-    <string name="google_accounts_remove_summary">Desconecta Google Tasks. La cuenta se queda en este teléfono.</string>
-    <string name="google_accounts_remove_title">¿Quitar %s de Celander?</string>
-    <string name="google_accounts_remove_message">Sus listas de Google Tasks se quitan de este teléfono; tus tareas se quedan en Google Tasks. La cuenta se queda en el teléfono – quítala en los ajustes del sistema si ya no la necesitas.</string>
-    <string name="google_accounts_remove_confirm">Quitar</string>
-    <string name="google_accounts_removed">%s quitada de Celander</string>
-    <plurals name="google_accounts_count">
-        <item quantity="one">%d cuenta</item>
-        <item quantity="many">%d cuentas</item>
-        <item quantity="other">%d cuentas</item>
-    </plurals>
     <!-- Widget blur -->
 
     <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
@@ -710,5 +659,6 @@
     <string name="accounts_added">%1$s conectada</string>
     <string name="accounts_add_button">Añadir</string>
     <string name="accounts_provider_google">Google</string>
+    <string name="accounts_tasks_summary">Sincroniza en ambos sentidos las listas de tareas de esta cuenta.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
 </resources>

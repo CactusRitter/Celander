@@ -16,7 +16,6 @@ import com.celander.app.R
 private data class Library(val name: String, val author: String, val url: String, @StringRes val license: Int = R.string.settings_license_apache)
 
 private const val APACHE_2 = "https://www.apache.org/licenses/LICENSE-2.0"
-private const val ANDROID_SDK_TERMS = "https://developer.android.com/studio/terms"
 
 private val LIBRARIES = listOf(
     Library(
@@ -29,7 +28,7 @@ private val LIBRARIES = listOf(
     Library("Kotlin, kotlinx.coroutines, kotlinx.serialization", "JetBrains", "https://kotlinlang.org"),
     Library("Haze", "Chris Banes", "https://github.com/chrisbanes/haze"),
     Library("OkHttp, Okio", "Square", "https://square.github.io/okhttp/"),
-    Library("Google Play services Auth", "Google", ANDROID_SDK_TERMS, R.string.settings_license_android_sdk),
+    Library("AppAuth for Android", "OpenID Foundation", "https://github.com/openid/AppAuth-android"),
 )
 
 /** Settings › Licenses: the libraries in the app with their licenses. */
@@ -45,7 +44,6 @@ fun LicensesScreen(onBack: () -> Unit, viewModel: SettingsViewModel = hiltViewMo
         }
     }
     val apache = stringResource(R.string.settings_license_apache)
-    val androidSdk = stringResource(R.string.settings_license_android_sdk)
     val groupTitle = stringResource(R.string.settings_libraries)
     SettingsScaffold(
         title = stringResource(R.string.settings_licenses),
@@ -61,8 +59,6 @@ fun LicensesScreen(onBack: () -> Unit, viewModel: SettingsViewModel = hiltViewMo
             }
             SettingsDivider()
             SettingsRow(title = apache, onClick = { open(APACHE_2) })
-            SettingsDivider()
-            SettingsRow(title = androidSdk, onClick = { open(ANDROID_SDK_TERMS) })
         }
     }
 }

@@ -27,14 +27,13 @@ sealed interface GoogleTasksStatus {
     /** The grant expired or was revoked; the user has to sign in again (UI only, never a worker). */
     data object NeedsReauth : GoogleTasksStatus
 
-    /** No OAuth client for this app's package and signature (DEVELOPER_ERROR). */
+    /** No OAuth client for this app's package and signature. */
     data object SetupError : GoogleTasksStatus
 
     /** The Tasks API is disabled in the Google Cloud project. */
     data object ApiDisabled : GoogleTasksStatus
-    data object NoPlayServices : GoogleTasksStatus
 
-    /** Any other failure; [code] is the HTTP or Play services status code. */
+    /** Any other failure; [code] is the HTTP status code. */
     data class Failed(val code: Int) : GoogleTasksStatus
 
     /** Anything but a finished or running sync; shown as a problem. */
@@ -208,7 +207,6 @@ class GoogleTasksAccounts internal constructor(private val prefs: SharedPreferen
             GoogleTasksStatus.NeedsReauth -> "NEEDS_REAUTH"
             GoogleTasksStatus.SetupError -> "SETUP_ERROR"
             GoogleTasksStatus.ApiDisabled -> "API_DISABLED"
-            GoogleTasksStatus.NoPlayServices -> "NO_PLAY_SERVICES"
             is GoogleTasksStatus.Failed -> "FAILED"
         }
 
@@ -217,7 +215,6 @@ class GoogleTasksAccounts internal constructor(private val prefs: SharedPreferen
             "NEEDS_REAUTH" -> GoogleTasksStatus.NeedsReauth
             "SETUP_ERROR" -> GoogleTasksStatus.SetupError
             "API_DISABLED" -> GoogleTasksStatus.ApiDisabled
-            "NO_PLAY_SERVICES" -> GoogleTasksStatus.NoPlayServices
             "FAILED" -> GoogleTasksStatus.Failed(code)
             else -> GoogleTasksStatus.Ok
         }
