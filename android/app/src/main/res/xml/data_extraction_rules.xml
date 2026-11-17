@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Local data and Celander settings yes; the Google Tasks connection no. Neither this device's
+    Local data and Celander settings yes; the Google Tasks connection and the tokens of the accounts no (they are encrypted with a key of this device). Neither this device's
     reminder state nor whether it already asked for a permission: on a new phone Celander asks again.
 -->
 <data-extraction-rules>
@@ -9,7 +9,7 @@
         <include domain="sharedpref" path="." />
         <include domain="file" path="datastore/" />
         <exclude domain="sharedpref" path="google_tasks.xml" />
-        <exclude domain="sharedpref" path="widget_placements.xml" />
+        <exclude domain="sharedpref" path="account_tokens.xml" />
         <exclude domain="sharedpref" path="notification_access.xml" />
         <exclude domain="sharedpref" path="calendar_access.xml" />
         <exclude domain="sharedpref" path="reminders.xml" />
@@ -20,7 +20,7 @@
         <include domain="sharedpref" path="." />
         <include domain="file" path="datastore/" />
         <exclude domain="sharedpref" path="google_tasks.xml" />
-        <exclude domain="sharedpref" path="widget_placements.xml" />
+        <exclude domain="sharedpref" path="account_tokens.xml" />
         <exclude domain="sharedpref" path="notification_access.xml" />
         <exclude domain="sharedpref" path="calendar_access.xml" />
         <exclude domain="sharedpref" path="reminders.xml" />

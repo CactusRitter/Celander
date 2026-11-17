@@ -9,6 +9,13 @@ plugins {
     alias(libs.plugins.room)
 }
 
+// Client IDs of the OAuth registrations live in local.properties (not in git).
+val localProps = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+fun localProp(key: String): String = localProps.getProperty(key, "")
+
 val keystoreProps = Properties().apply {
     val file = rootProject.file("keystore.properties")
     if (file.exists()) file.inputStream().use { load(it) }
@@ -24,6 +31,12 @@ android {
         targetSdk = 37
         versionCode = 11
         versionName = "1.08"
+        // The client ID is "<ID>.apps.googleusercontent.com"; empty until set in local.properties.
+        val googleClientId = localProp("celander.oauth.google.clientId")
+        buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleClientId\"")
+        // Google asks Android clients for the client ID reversed as the redirect scheme.
+        manifestPlaceholders["appAuthRedirectScheme"] =
+            if (googleClientId.isBlank()) "com.celander.app" else "com.googleusercontent.apps." + googleClientId.removeSuffix(".apps.googleusercontent.com")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -109,6 +122,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    implementation(libs.appauth)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
