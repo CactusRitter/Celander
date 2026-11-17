@@ -1,6 +1,9 @@
 package com.celander.app.event
 
 import androidx.compose.animation.AnimatedContent
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.Animatable
@@ -83,27 +86,24 @@ import com.celander.app.calendar.components.TimeWheelPicker
 import com.celander.app.core.model.CalendarInfo
 import com.celander.app.core.model.EntryKind
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.AccentButton
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.ColorSwatch
-import com.celander.app.designsystem.GlassSheet
-import com.celander.app.designsystem.HairlineDivider
-import com.celander.app.designsystem.MotionTokens
-import com.celander.app.designsystem.PlainIconButton
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.SegmentedControl
-import com.celander.app.designsystem.SelectableChip
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.SkeletonRows
-import com.celander.app.designsystem.SoftButton
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.TextAction
-import com.celander.app.designsystem.color
-import com.celander.app.designsystem.glassTile
-import com.celander.app.designsystem.rememberEntranceWindow
-import com.celander.app.designsystem.rememberGlassSheetController
-import com.celander.app.designsystem.staggeredEntrance
+import com.celander.app.ui.AccentButton
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.ColorSwatch
+import com.celander.app.ui.GlassSheet
+import com.celander.app.ui.HairlineDivider
+import com.celander.app.ui.MotionTokens
+import com.celander.app.ui.PlainIconButton
+import com.celander.app.ui.SegmentedControl
+import com.celander.app.ui.SelectableChip
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.SkeletonRows
+import com.celander.app.ui.SoftButton
+import com.celander.app.ui.TextAction
+import com.celander.app.ui.color
+import com.celander.app.ui.rememberEntranceWindow
+import com.celander.app.ui.rememberGlassSheetController
+import com.celander.app.ui.staggeredEntrance
 import com.celander.app.notifications.NotificationAccess
 import com.celander.app.notifications.ReminderWarning
 import com.celander.app.notifications.rememberNotificationAccess
@@ -169,7 +169,7 @@ fun EditorSheet(
         },
     ) {
         if (draft == null) {
-            SkeletonRows(4, Modifier.padding(Spacing.xl))
+            SkeletonRows(4, Modifier.padding(20.dp))
         } else {
             EditorContent(
                 state = state,
@@ -272,11 +272,11 @@ private fun EditorHeader(
     onSave: () -> Unit,
 ) {
     Row(
-        Modifier.fillMaxWidth().padding(start = Spacing.s, end = Spacing.l, bottom = Spacing.s),
+        Modifier.fillMaxWidth().padding(start = 8.dp, end = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         PlainIconButton(Icons.Rounded.Close, stringResource(R.string.action_close), onClose)
-        Box(Modifier.weight(1f).padding(horizontal = Spacing.s), contentAlignment = Alignment.Center) {
+        Box(Modifier.weight(1f).padding(horizontal = 8.dp), contentAlignment = Alignment.Center) {
             if (canSwitchKind) {
                 SegmentedControl(
                     options = listOf(stringResource(R.string.kind_event), stringResource(R.string.kind_task)),
@@ -287,8 +287,8 @@ private fun EditorHeader(
             } else {
                 Text(
                     stringResource(headerTitle(draft)),
-                    style = CelanderTheme.typography.titleMedium,
-                    color = CelanderTheme.colors.textPrimary,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                 )
             }
@@ -299,8 +299,8 @@ private fun EditorHeader(
 
 @Composable
 private fun DiscardBanner(visible: Boolean, onKeepEditing: () -> Unit, onDiscard: () -> Unit) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     AnimatedVisibility(
         visible,
         enter = motion.expandIn(),
@@ -309,16 +309,16 @@ private fun DiscardBanner(visible: Boolean, onKeepEditing: () -> Unit, onDiscard
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Spacing.l, vertical = Spacing.xs)
-                .glassTile(RoundedCornerShape(Radii.card), tint = colors.danger.copy(alpha = 0.14f))
-                .padding(start = Spacing.l, end = Spacing.xs, top = Spacing.m)
+                .padding(horizontal = 16.dp, vertical = 4.dp)
+                .glassTile(RoundedCornerShape(18.dp), tint = colors.error.copy(alpha = 0.14f))
+                .padding(start = 16.dp, end = 4.dp, top = 12.dp)
                 .semantics { liveRegion = LiveRegionMode.Polite },
         ) {
-            Text(stringResource(R.string.editor_discard_title), style = CelanderTheme.typography.titleSmall, color = colors.textPrimary)
-            Text(stringResource(R.string.editor_discard_message), style = CelanderTheme.typography.bodyMedium, color = colors.textSecondary)
+            Text(stringResource(R.string.editor_discard_title), style = MaterialTheme.typography.titleSmall, color = colors.onSurface)
+            Text(stringResource(R.string.editor_discard_message), style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextAction(stringResource(R.string.editor_keep_editing), onKeepEditing)
-                TextAction(stringResource(R.string.editor_discard), onDiscard, color = colors.danger)
+                TextAction(stringResource(R.string.editor_discard), onDiscard, color = colors.error)
             }
         }
     }
@@ -336,7 +336,7 @@ private fun ColumnScope.EditorBody(
     notifications: NotificationAccess,
     viewModel: EditorViewModel,
 ) {
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     val focusManager = LocalFocusManager.current
     var picker by rememberSaveable { mutableStateOf<PickerTarget?>(null) }
     val togglePicker: (PickerTarget) -> Unit = { target ->
@@ -357,8 +357,8 @@ private fun ColumnScope.EditorBody(
         Modifier
             .weight(1f, fill = false)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = Spacing.l)
-            .padding(bottom = Spacing.xl),
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 20.dp),
     ) {
         TitleField(
             value = draft.title,
@@ -399,8 +399,8 @@ private fun TitleField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     val density = LocalDensity.current
     val shake = remember { Animatable(0f) }
     val placeholder = stringResource(if (kind == EntryKind.TASK) R.string.editor_title_task else R.string.editor_title_event)
@@ -410,13 +410,13 @@ private fun TitleField(
             for (dx in listOf(10f, -8f, 6f, -3f, 0f)) shake.animateTo(dx, tween(50))
         }
     }
-    val style = CelanderTheme.typography.headlineSmall
-    Column(modifier.padding(top = Spacing.s, bottom = Spacing.m)) {
+    val style = MaterialTheme.typography.headlineSmall
+    Column(modifier.padding(top = 8.dp, bottom = 12.dp)) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            textStyle = style.copy(color = colors.textPrimary),
-            cursorBrush = SolidColor(colors.accent),
+            textStyle = style.copy(color = colors.onSurface),
+            cursorBrush = SolidColor(colors.primary),
             maxLines = 3,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next),
             modifier = Modifier
@@ -429,7 +429,7 @@ private fun TitleField(
                 },
             decorationBox = { inner ->
                 Box {
-                    if (value.isEmpty()) Text(placeholder, style = style, color = colors.textTertiary)
+                    if (value.isEmpty()) Text(placeholder, style = style, color = colors.onSurfaceVariant)
                     inner()
                 }
             },
@@ -437,9 +437,9 @@ private fun TitleField(
         AnimatedVisibility(error, enter = motion.expandIn(), exit = motion.shrinkOut()) {
             Text(
                 errorText,
-                style = CelanderTheme.typography.bodySmall,
-                color = colors.danger,
-                modifier = Modifier.padding(top = Spacing.xs).semantics { liveRegion = LiveRegionMode.Polite },
+                style = MaterialTheme.typography.bodySmall,
+                color = colors.error,
+                modifier = Modifier.padding(top = 4.dp).semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
     }
@@ -448,8 +448,8 @@ private fun TitleField(
 @Composable
 private fun CalendarChooser(calendars: List<CalendarInfo>, selectedId: Long?, onSelect: (Long) -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(bottom = Spacing.s),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+        modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(bottom = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         calendars.forEach { calendar ->
@@ -478,8 +478,8 @@ private fun EventFields(
     viewModel: EditorViewModel,
     entrance: Boolean,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     EditorSection(Modifier.staggeredEntrance(2, entrance)) {
         SwitchRow(Icons.Outlined.Schedule, stringResource(R.string.all_day), draft.allDay, viewModel::setAllDay)
         HairlineDivider()
@@ -524,17 +524,17 @@ private fun EventFields(
         ) {
             Text(
                 stringResource(R.string.editor_end_adjusted),
-                style = CelanderTheme.typography.bodySmall,
-                color = colors.textSecondary,
-                modifier = Modifier.padding(start = 44.dp, bottom = Spacing.s).semantics { liveRegion = LiveRegionMode.Polite },
+                style = MaterialTheme.typography.bodySmall,
+                color = colors.onSurfaceVariant,
+                modifier = Modifier.padding(start = 44.dp, bottom = 8.dp).semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
         AnimatedVisibility(draft.endsTooEarly, enter = motion.expandIn(), exit = motion.shrinkOut()) {
             Text(
                 stringResource(R.string.editor_end_before_start),
-                style = CelanderTheme.typography.bodySmall,
-                color = colors.danger,
-                modifier = Modifier.padding(start = 44.dp, bottom = Spacing.s).semantics { liveRegion = LiveRegionMode.Polite },
+                style = MaterialTheme.typography.bodySmall,
+                color = colors.error,
+                modifier = Modifier.padding(start = 44.dp, bottom = 8.dp).semantics { liveRegion = LiveRegionMode.Polite },
             )
         }
         HairlineDivider()
@@ -589,7 +589,7 @@ private fun EventFields(
         val places by viewModel.placeSuggestions.collectAsStateWithLifecycle()
         // The last list stays while it folds away.
         val shownPlaces = rememberLastNonNull(places.takeIf { it.isNotEmpty() })
-        AnimatedVisibility(places.isNotEmpty(), enter = CelanderTheme.motion.expandIn(), exit = CelanderTheme.motion.shrinkOut()) {
+        AnimatedVisibility(places.isNotEmpty(), enter = LocalMotion.current.expandIn(), exit = LocalMotion.current.shrinkOut()) {
             PlaceSuggestions(shownPlaces.orEmpty(), onPick = viewModel::pickPlace)
         }
         HairlineDivider()
@@ -617,9 +617,9 @@ private fun EventFields(
 private fun TooLong(max: Int) {
     Text(
         pluralStringResource(R.plurals.editor_text_too_long, max, max),
-        style = CelanderTheme.typography.bodySmall,
-        color = CelanderTheme.colors.danger,
-        modifier = Modifier.padding(horizontal = Spacing.s).semantics { liveRegion = LiveRegionMode.Polite },
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.error,
+        modifier = Modifier.padding(horizontal = 8.dp).semantics { liveRegion = LiveRegionMode.Polite },
     )
 }
 
@@ -636,8 +636,8 @@ private fun TaskFields(
     viewModel: EditorViewModel,
     entrance: Boolean,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     EditorSection(Modifier.staggeredEntrance(2, entrance)) {
         SwitchRow(Icons.Outlined.Event, stringResource(R.string.editor_due_date), draft.hasDueDate, viewModel::setHasDueDate)
         AnimatedVisibility(
@@ -669,7 +669,7 @@ private fun TaskFields(
                             selected = picker == PickerTarget.DUE_TIME,
                             onClick = { togglePicker(PickerTarget.DUE_TIME) },
                             label = stringResource(R.string.editor_due_time),
-                            modifier = Modifier.padding(end = Spacing.s),
+                            modifier = Modifier.padding(end = 8.dp),
                         )
                     }
                 }
@@ -694,12 +694,12 @@ private fun TaskFields(
         if (state.noteTooLong) TooLong(EditorUiState.GOOGLE_NOTE_MAX)
     }
     if (!draft.isNew) {
-        Spacer(Modifier.height(Spacing.m))
+        Spacer(Modifier.height(12.dp))
         SoftButton(
             stringResource(R.string.editor_delete_task),
             onClick = viewModel::deleteTask,
             icon = Icons.Outlined.Delete,
-            contentColor = colors.danger,
+            contentColor = colors.error,
         )
     }
 }
@@ -721,7 +721,7 @@ private fun SwitchRow(
         Switch(
             checked = checked,
             onCheckedChange = null,
-            colors = SwitchDefaults.colors(checkedTrackColor = CelanderTheme.colors.accent),
+            colors = SwitchDefaults.colors(checkedTrackColor = MaterialTheme.colorScheme.primary),
         )
     }
 }
@@ -740,24 +740,24 @@ private fun DateTimeRow(
     timeTarget: PickerTarget,
     onToggle: (PickerTarget) -> Unit,
 ) {
-    Row(Modifier.fillMaxWidth().heightIn(min = Sizes.touchTarget).padding(vertical = Spacing.xs), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().heightIn(min = Sizes.touchTarget).padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         Spacer(Modifier.width(44.dp))
         FlowRow(
             Modifier.weight(1f),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
                 label,
-                style = CelanderTheme.typography.bodyLarge,
-                color = CelanderTheme.colors.textPrimary,
-                modifier = Modifier.align(Alignment.CenterVertically).padding(end = Spacing.s),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.align(Alignment.CenterVertically).padding(end = 8.dp),
             )
             Row(Modifier.align(Alignment.CenterVertically), verticalAlignment = Alignment.CenterVertically) {
                 val dateText = formats.capitalize(date.format(if (date.year == today.year) formats.dayMonthShort else formats.dateMedium))
                 ValueChip(dateText, selected = picker == dateTarget, onClick = { onToggle(dateTarget) }, label = label)
                 if (time != null) {
-                    Spacer(Modifier.size(Spacing.s))
+                    Spacer(Modifier.size(8.dp))
                     ValueChip(time.format(formats.time), selected = picker == timeTarget, onClick = { onToggle(timeTarget) }, label = label)
                 }
             }
@@ -767,21 +767,21 @@ private fun DateTimeRow(
 
 @Composable
 private fun PickerPanel(visible: Boolean, content: @Composable () -> Unit) {
-    val motion = CelanderTheme.motion
+    val motion = LocalMotion.current
     AnimatedVisibility(
         visible,
         enter = motion.expandIn(),
         exit = motion.shrinkOut(),
     ) {
-        Box(Modifier.padding(bottom = Spacing.s)) { content() }
+        Box(Modifier.padding(bottom = 8.dp)) { content() }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ColorChooser(colorKey: String?, calendarColorKey: String?, onSelect: (String?) -> Unit, modifier: Modifier = Modifier) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     var open by rememberSaveable { mutableStateOf(false) }
     val chosen = colorKey?.let(CalendarColor::fromKey)
     val shown = chosen ?: CalendarColor.fromKey(calendarColorKey)
@@ -792,11 +792,11 @@ private fun ColorChooser(colorKey: String?, calendarColorKey: String?, onSelect:
             modifier = Modifier.toggleable(value = open, role = Role.Button, onValueChange = { open = it }),
         ) {
             Box(Modifier.size(14.dp).background(shown.color(), CircleShape))
-            Spacer(Modifier.size(Spacing.s))
+            Spacer(Modifier.size(8.dp))
             Text(
                 if (chosen == null) stringResource(R.string.editor_color_calendar) else stringResource(chosen.label),
-                style = CelanderTheme.typography.bodyMedium,
-                color = colors.textSecondary,
+                style = MaterialTheme.typography.bodyMedium,
+                color = colors.onSurfaceVariant,
             )
         }
         AnimatedVisibility(
@@ -804,13 +804,13 @@ private fun ColorChooser(colorKey: String?, calendarColorKey: String?, onSelect:
             enter = motion.expandIn(),
             exit = motion.shrinkOut(),
         ) {
-            FlowRow(Modifier.fillMaxWidth().padding(bottom = Spacing.s), verticalArrangement = Arrangement.Center) {
+            FlowRow(Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalArrangement = Arrangement.Center) {
                 SelectableChip(
                     text = stringResource(R.string.editor_color_calendar),
                     selected = chosen == null,
                     onClick = { onSelect(null) },
                     leading = { Box(Modifier.size(10.dp).background(CalendarColor.fromKey(calendarColorKey).color(), CircleShape)) },
-                    modifier = Modifier.padding(end = Spacing.xs).align(Alignment.CenterVertically),
+                    modifier = Modifier.padding(end = 4.dp).align(Alignment.CenterVertically),
                 )
                 CalendarColor.entries.forEach { option ->
                     ColorSwatch(

@@ -1,6 +1,14 @@
 package com.celander.app.calendar.day
 
 import androidx.compose.foundation.background
+import com.celander.app.ui.CalendarCheckbox
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.isDark
+import com.celander.app.ui.today
+import com.celander.app.ui.onToday
+import com.celander.app.ui.sunday
+import com.celander.app.ui.nowLine
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -69,19 +77,15 @@ import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.LimitedFontScale
-import com.celander.app.designsystem.ChipTextStyle
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.SkeletonBlock
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.TaskCheckbox
-import com.celander.app.designsystem.TextAction
-import com.celander.app.designsystem.glassTile
-import com.celander.app.designsystem.pulseOn
-import com.celander.app.designsystem.rememberHaptics
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.LimitedFontScale
+import com.celander.app.ui.ChipTextStyle
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.SkeletonBlock
+import com.celander.app.ui.TextAction
+import com.celander.app.ui.pulseOn
+import com.celander.app.ui.rememberHaptics
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -102,7 +106,7 @@ private const val ALL_DAY_VISIBLE = 3
 private const val DEFAULT_SCROLL_HOUR = 8
 
 /** Whether the day view shows the whole week in a view of [width]: seven columns of readable width. */
-fun dayViewShowsWeek(width: Dp): Boolean = WeekColumns.fits(width - Gutter - Spacing.m, Sizes.minDayColumnWidth)
+fun dayViewShowsWeek(width: Dp): Boolean = WeekColumns.fits(width - Gutter - 12.dp, Sizes.minDayColumnWidth)
 
 /**
  * One day on a timeline below the strip of its week; with [showsWeek] (wide windows, see
@@ -165,7 +169,7 @@ fun DayView(
                     todayPulse = todayPulse,
                     formats = formats,
                     onSelect = onSelectDate,
-                    modifier = Modifier.padding(horizontal = Spacing.s),
+                    modifier = Modifier.padding(horizontal = 8.dp),
                 )
                 PeriodPager(
                     index = selectedDate.toEpochDay(),
@@ -211,11 +215,11 @@ private fun WeekStrip(
     asHeader: Boolean = false,
     onCreateOn: (LocalDate) -> Unit = {},
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val haptics = rememberHaptics()
     val resources = LocalResources.current
     val createLabel = stringResource(R.string.action_new_event)
-    Row(modifier.fillMaxWidth().padding(vertical = Spacing.xs)) {
+    Row(modifier.fillMaxWidth().padding(vertical = 4.dp)) {
         days.forEach { date ->
             val isSelected = date == selected
             val content = window?.day(date)
@@ -225,8 +229,8 @@ private fun WeekStrip(
             Column(
                 Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(Radii.card))
-                    .background(if (isSelected) colors.accentSoft else Color.Transparent)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(if (isSelected) colors.primaryContainer else Color.Transparent)
                     .clickable {
                         if (date == today) haptics.tick()
                         onSelect(date)
@@ -237,15 +241,15 @@ private fun WeekStrip(
                         onClick { onSelect(date); true }
                         if (asHeader) customActions = listOf(CustomAccessibilityAction(createLabel) { onCreateOn(date); true })
                     }
-                    .padding(vertical = Spacing.s),
+                    .padding(vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     formats.weekdayShort(date.dayOfWeek),
-                    style = CelanderTheme.typography.labelSmall,
-                    color = if (date.dayOfWeek == DayOfWeek.SUNDAY) colors.sunday else colors.textSecondary,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (date.dayOfWeek == DayOfWeek.SUNDAY) colors.sunday else colors.onSurfaceVariant,
                 )
-                Spacer(Modifier.height(Spacing.xxs))
+                Spacer(Modifier.height(2.dp))
                 Box(
                     Modifier
                         .size(30.dp)
@@ -254,12 +258,12 @@ private fun WeekStrip(
                 ) {
                     Text(
                         date.dayOfMonth.toString(),
-                        style = CelanderTheme.typography.titleSmall,
-                        color = if (date == today) colors.onToday else colors.textPrimary,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = if (date == today) colors.onToday else colors.onSurface,
                     )
                 }
                 if (!asHeader) {
-                    Spacer(Modifier.height(Spacing.xs))
+                    Spacer(Modifier.height(4.dp))
                     Row(Modifier.height(Sizes.dot), horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                         markers.forEach { key ->
                             Box(Modifier.size(Sizes.dot).background(CalendarColor.fromKey(key).base(colors.isDark), CircleShape))
@@ -285,14 +289,14 @@ private fun DayPage(
     onOpenTask: (TaskItem) -> Unit,
     onToggleTask: (TaskItem, Boolean) -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val dayLength = remember(date, zone) { CalendarMath.dayLengthMinutes(date, zone) }
     val hourMarks = remember(date, zone) { CalendarMath.hourMarks(date, zone) }
     val scroll = rememberScrollState()
 
     Column(Modifier.fillMaxSize()) {
         if (content == null) {
-            SkeletonBlock(Modifier.fillMaxWidth().padding(horizontal = Spacing.l, vertical = Spacing.s), height = 28.dp)
+            SkeletonBlock(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), height = 28.dp)
         } else {
             val untimedTasks = content.tasks.filter { it.task.dueTime == null }
             if (content.allDay.isNotEmpty() || untimedTasks.isNotEmpty()) {
@@ -313,9 +317,9 @@ private fun DayPage(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(totalHeight + bottomPadding + Spacing.l),
+                    .height(totalHeight + bottomPadding + 16.dp),
             ) {
-                val lineColor = colors.divider
+                val lineColor = colors.outlineVariant
                 // Hour labels and grid lines
                 hourMarks.forEach { mark ->
                     if (mark.minuteOffset > 0) HourLabel(mark.label.format(formats.hour), mark.minuteOffset)
@@ -323,7 +327,7 @@ private fun DayPage(
                 val createLabel = stringResource(R.string.action_new_event)
                 Box(
                     Modifier
-                        .padding(start = Gutter, end = Spacing.m)
+                        .padding(start = Gutter, end = 12.dp)
                         .fillMaxWidth()
                         .height(totalHeight)
                         .drawBehind {
@@ -383,9 +387,9 @@ private fun WeekPage(
     onOpenTask: (TaskItem) -> Unit,
     onToggleTask: (TaskItem, Boolean) -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val scroll = rememberScrollState()
-    val columns = Modifier.padding(start = Gutter, end = Spacing.m)
+    val columns = Modifier.padding(start = Gutter, end = 12.dp)
 
     Column(Modifier.fillMaxSize()) {
         WeekStrip(
@@ -401,7 +405,7 @@ private fun WeekPage(
             onCreateOn = { date -> onCreateAt(date, LocalTime.of(DEFAULT_SCROLL_HOUR, 0), null) },
         )
         if (window == null) {
-            SkeletonBlock(columns.fillMaxWidth().padding(vertical = Spacing.s), height = 28.dp)
+            SkeletonBlock(columns.fillMaxWidth().padding(vertical = 8.dp), height = 28.dp)
         } else {
             AllDayBand(days.first(), window, now, zone, formats, onOpenOccurrence, onOpenTask, onToggleTask, columns)
         }
@@ -418,8 +422,8 @@ private fun WeekPage(
 
         Box(Modifier.weight(1f).fillMaxWidth().verticalScroll(scroll)) {
             val totalHeight = MinuteHeight * WeekColumns.MINUTES_PER_DAY.toFloat()
-            Box(Modifier.fillMaxWidth().height(totalHeight + bottomPadding + Spacing.l)) {
-                val lineColor = colors.divider
+            Box(Modifier.fillMaxWidth().height(totalHeight + bottomPadding + 16.dp)) {
+                val lineColor = colors.outlineVariant
                 for (hour in 1 until 24) HourLabel(LocalTime.of(hour, 0).format(formats.hour), hour * 60L)
                 Row(
                     columns
@@ -496,12 +500,12 @@ private fun InitialScroll(scroll: ScrollState, page: LocalDate, ready: Boolean, 
 private fun HourLabel(text: String, minute: Long) {
     Text(
         text,
-        style = CelanderTheme.typography.labelSmall.copy(fontSize = 10.sp),
-        color = CelanderTheme.colors.textTertiary,
+        style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.End,
         modifier = Modifier
             .offset(y = MinuteHeight * minute.toFloat() - 7.dp)
-            .width(Gutter - Spacing.s)
+            .width(Gutter - 8.dp)
             .clearAndSetSemantics { },
     )
 }
@@ -549,7 +553,7 @@ private fun AllDayBand(
     var expanded by rememberSaveable(weekStart) { mutableStateOf(false) }
     val lanes = if (expanded) layout.laneCount else minOf(layout.laneCount, ALL_DAY_VISIBLE)
     val hidden = layout.segments.count { it.lane >= lanes }
-    Column(modifier.fillMaxWidth().padding(bottom = Spacing.xs)) {
+    Column(modifier.fillMaxWidth().padding(bottom = 4.dp)) {
         BoxWithConstraints(Modifier.fillMaxWidth().height(BandLane * lanes)) {
             val column = maxWidth / WeekColumns.DAYS
             layout.segments.filter { it.lane < lanes }.forEach { segment ->
@@ -559,7 +563,7 @@ private fun AllDayBand(
                         .offset(x = column * segment.startCol, y = BandLane * segment.lane)
                         .width(column * span)
                         .height(BandLane)
-                        .padding(horizontal = Sizes.hairline, vertical = Spacing.xxs / 2),
+                        .padding(horizontal = Sizes.hairline, vertical = 2.dp / 2),
                 ) {
                     when (val entry = segment.entry) {
                         is MonthEntry.Event -> BandEvent(entry.occurrence, segment, weekStart.plusDays(segment.startCol.toLong()), zone, formats) { onOpenOccurrence(entry.occurrence) }
@@ -580,9 +584,9 @@ private fun AllDayBand(
 /** An all-day or multi-day event in the band, open on the sides where it runs into another week. */
 @Composable
 private fun BandEvent(occurrence: EventOccurrence, segment: WeekSegment, date: LocalDate, zone: ZoneId, formats: Formats, onClick: () -> Unit) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val color = CalendarColor.fromKey(occurrence.colorKey)
-    val corner = Radii.chip + 2.dp
+    val corner = 6.dp + 2.dp
     val shape = RoundedCornerShape(
         topStart = if (segment.continuesBefore) 0.dp else corner,
         bottomStart = if (segment.continuesBefore) 0.dp else corner,
@@ -601,10 +605,10 @@ private fun BandEvent(occurrence: EventOccurrence, segment: WeekSegment, date: L
                 contentDescription = listOf(title, time, occurrence.calendar.name).joinToString(", ")
                 onClick { onClick(); true }
             }
-            .padding(horizontal = Spacing.s - 2.dp),
+            .padding(horizontal = 8.dp - 2.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
-        Text(title, style = ChipTextStyle.copy(fontSize = 12.sp, lineHeight = 15.sp), color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(title, style = ChipTextStyle.copy(fontSize = 12.sp, lineHeight = 15.sp), color = colors.onSurface, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -620,13 +624,13 @@ private fun AllDayArea(
     onOpenTask: (TaskItem) -> Unit,
     onToggleTask: (TaskItem, Boolean) -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     var expanded by rememberSaveable(date) { mutableStateOf(false) }
     val total = events.size + tasks.size
     val limit = if (expanded) total else ALL_DAY_VISIBLE
     Column(
-        Modifier.fillMaxWidth().padding(start = Gutter, end = Spacing.m, bottom = Spacing.xs),
-        verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+        Modifier.fillMaxWidth().padding(start = Gutter, end = 12.dp, bottom = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         events.take(limit).forEach { occurrence ->
             val color = CalendarColor.fromKey(occurrence.colorKey)
@@ -635,26 +639,26 @@ private fun AllDayArea(
                 Modifier
                     .fillMaxWidth()
                     .heightIn(min = 32.dp)
-                    .clip(RoundedCornerShape(Radii.chip + 2.dp))
+                    .clip(RoundedCornerShape(6.dp + 2.dp))
                     .background(color.container(colors.isDark, colors.surface))
                     .clickable { onOpenOccurrence(occurrence) }
                     .clearAndSetSemantics {
                         contentDescription = listOf(occurrence.title, time, occurrence.calendar.name).joinToString(", ")
                         onClick { onOpenOccurrence(occurrence); true }
                     }
-                    .padding(horizontal = Spacing.s, vertical = Spacing.xs),
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     occurrence.title.ifBlank { stringResource(R.string.untitled) },
-                    style = CelanderTheme.typography.labelLarge,
-                    color = colors.textPrimary,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = colors.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f),
                 )
                 if (occurrence.timing.spansMultipleDays(zone)) {
-                    Text(time, style = CelanderTheme.typography.labelSmall, color = colors.textSecondary)
+                    Text(time, style = MaterialTheme.typography.labelSmall, color = colors.onSurfaceVariant)
                 }
             }
         }
@@ -672,7 +676,7 @@ private fun AllDayArea(
 
 @Composable
 private fun CompactTask(item: TaskItem, now: Instant, zone: ZoneId, onOpenTask: (TaskItem) -> Unit, onToggleTask: (TaskItem, Boolean) -> Unit) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val title = item.task.title.ifBlank { stringResource(R.string.untitled) }
     val checked = item.task.done || item.task.id in LocalCompletingTasks.current
     val toggleLabel = stringResource(if (checked) R.string.task_mark_open else R.string.task_mark_done, title)
@@ -680,12 +684,12 @@ private fun CompactTask(item: TaskItem, now: Instant, zone: ZoneId, onOpenTask: 
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(Radii.chip + 2.dp))
-            .glassTile(RoundedCornerShape(Radii.chip + 2.dp))
+            .clip(RoundedCornerShape(6.dp + 2.dp))
+            .glassTile(RoundedCornerShape(6.dp + 2.dp))
             .clickable { onOpenTask(item) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TaskCheckbox(
+        CalendarCheckbox(
             checked = checked,
             onCheckedChange = { onToggleTask(item, it) },
             color = CalendarColor.fromKey(item.colorKey).base(colors.isDark),
@@ -694,11 +698,11 @@ private fun CompactTask(item: TaskItem, now: Instant, zone: ZoneId, onOpenTask: 
         )
         Text(
             title,
-            style = CelanderTheme.typography.labelLarge,
-            color = if (overdue) colors.danger else colors.textPrimary,
+            style = MaterialTheme.typography.labelLarge,
+            color = if (overdue) colors.error else colors.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f).padding(end = Spacing.s),
+            modifier = Modifier.weight(1f).padding(end = 8.dp),
         )
     }
 }
@@ -767,9 +771,9 @@ private fun EventBlock(
     modifier: Modifier,
     onClick: () -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val color = CalendarColor.fromKey(occurrence.colorKey)
-    val shape = RoundedCornerShape(Radii.chip + 2.dp)
+    val shape = RoundedCornerShape(6.dp + 2.dp)
     val past = !occurrence.timing.endInstant(zone).isAfter(now)
     val time = occurrenceTimeLabel(occurrence, date, formats, zone)
     val title = occurrence.title.ifBlank { stringResource(R.string.untitled) }
@@ -785,14 +789,14 @@ private fun EventBlock(
             },
     ) {
         Box(Modifier.width(3.dp).fillMaxSize().background(color.base(colors.isDark)))
-        Column(Modifier.padding(horizontal = Spacing.s - 2.dp, vertical = Spacing.xxs + 1.dp)) {
+        Column(Modifier.padding(horizontal = 8.dp - 2.dp, vertical = 2.dp + 1.dp)) {
             val lines = if (height < 40.dp || narrow) 1 else 2
-            Text(title, style = ChipTextStyle.copy(fontSize = 12.sp, lineHeight = 15.sp), color = colors.textPrimary, maxLines = lines, overflow = TextOverflow.Ellipsis)
+            Text(title, style = ChipTextStyle.copy(fontSize = 12.sp, lineHeight = 15.sp), color = colors.onSurface, maxLines = lines, overflow = TextOverflow.Ellipsis)
             if (height >= 40.dp) {
-                Text(time, style = ChipTextStyle, color = colors.textSecondary, maxLines = 1)
+                Text(time, style = ChipTextStyle, color = colors.onSurfaceVariant, maxLines = 1)
             }
             if (height >= 64.dp && occurrence.location.isNotBlank()) {
-                Text(occurrence.location, style = ChipTextStyle, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(occurrence.location, style = ChipTextStyle, color = colors.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
@@ -800,7 +804,7 @@ private fun EventBlock(
 
 @Composable
 private fun NowLine(minute: Long) {
-    val color = CelanderTheme.colors.nowLine
+    val color = MaterialTheme.colorScheme.nowLine
     val y = MinuteHeight * minute.toFloat()
     Box(Modifier.offset(y = y - 1.dp).fillMaxWidth().height(2.dp).background(color).clearAndSetSemantics { })
     Box(Modifier.offset(x = (-5).dp, y = y - 5.dp).size(10.dp).background(color, CircleShape).clearAndSetSemantics { })

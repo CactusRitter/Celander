@@ -1,6 +1,8 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.foundation.MutatePriority
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.OverscrollEffect
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.DragScope
@@ -73,14 +75,14 @@ fun <T> WheelPicker(
     modifier: Modifier = Modifier,
     visibleItems: Int = VISIBLE_ITEMS,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val haptics = rememberHaptics()
     val scope = rememberCoroutineScope()
     val state = rememberLazyListState(initialFirstVisibleItemIndex = values.indexOf(selected).coerceAtLeast(0))
     val currentValues by rememberUpdatedState(values)
     val currentSelected by rememberUpdatedState(selected)
     val currentOnSelect by rememberUpdatedState(onSelect)
-    val reduced by rememberUpdatedState(CelanderTheme.motion.reduced)
+    val reduced by rememberUpdatedState(LocalMotion.current.reduced)
     val itemPx = with(LocalDensity.current) { WheelItemHeight.toPx() }
     val overscroll = rememberOverscrollEffect()
     val snapFling = rememberSnapFlingBehavior(state)
@@ -182,7 +184,7 @@ fun <T> WheelPicker(
         contentAlignment = Alignment.Center,
     ) {
         // The selection band behind the middle value.
-        Box(Modifier.fillMaxWidth().height(WheelItemHeight).background(colors.accent.copy(alpha = BAND_ALPHA), PillShape))
+        Box(Modifier.fillMaxWidth().height(WheelItemHeight).background(colors.primary.copy(alpha = BAND_ALPHA), CircleShape))
         LazyColumn(
             state = state,
             contentPadding = PaddingValues(vertical = WheelItemHeight * (visibleItems / 2)),
@@ -194,8 +196,8 @@ fun <T> WheelPicker(
             itemsIndexed(values) { index, value ->
                 Text(
                     label(value),
-                    style = CelanderTheme.typography.titleLarge,
-                    color = if (index == center) colors.textPrimary else colors.textSecondary,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = if (index == center) colors.onSurface else colors.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()

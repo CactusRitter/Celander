@@ -19,7 +19,7 @@ import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.model.SourceIds
 import com.celander.app.core.time.TimeSource
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 import com.celander.app.settings.AppSettings
 import com.celander.app.settings.SettingsRepository
 import javax.inject.Inject

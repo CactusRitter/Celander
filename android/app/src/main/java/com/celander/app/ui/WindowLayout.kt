@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -27,7 +27,7 @@ data class WindowLayout(val width: Dp, val height: Dp) {
     val isLandscape: Boolean get() = width > height
 
     /** Margin wide windows add around the home views, on top of the views' own padding. */
-    val extraGutter: Dp get() = if (isWide) Spacing.l else 0.dp
+    val extraGutter: Dp get() = if (isWide) 16.dp else 0.dp
 
     companion object {
         /** Used before the window is measured and in previews: a typical phone. */

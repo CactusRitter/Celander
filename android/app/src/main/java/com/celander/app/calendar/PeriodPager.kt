@@ -1,6 +1,7 @@
 package com.celander.app.calendar
 
 import androidx.compose.foundation.pager.HorizontalPager
+import com.celander.app.ui.LocalMotion
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,7 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import com.celander.app.designsystem.CelanderTheme
+import com.celander.app.ui.theme.CelanderTheme
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.isActive
 import kotlin.math.abs
@@ -47,7 +48,7 @@ fun PeriodPager(
     if (abs(index - anchor.index) > MAX_ANCHOR_DISTANCE) anchor.index = index
     val currentIndex by rememberUpdatedState(index)
     val currentOnChange by rememberUpdatedState(onIndexChange)
-    val reduced = CelanderTheme.motion.reduced
+    val reduced = LocalMotion.current.reduced
 
     key(anchor.index) {
         val base = anchor.index

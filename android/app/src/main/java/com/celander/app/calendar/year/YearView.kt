@@ -1,6 +1,13 @@
 package com.celander.app.calendar.year
 
 import androidx.compose.foundation.Canvas
+import com.celander.app.ui.glass.fadingTopEdge
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.isDark
+import com.celander.app.ui.today
+import com.celander.app.ui.onToday
+import com.celander.app.ui.sunday
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -42,15 +49,12 @@ import com.celander.app.calendar.CalendarWindow
 import com.celander.app.calendar.PeriodPager
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.LimitedFontScale
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.elastic
-import com.celander.app.designsystem.fadingTopEdge
-import com.celander.app.designsystem.glassTile
-import com.celander.app.designsystem.rememberHaptics
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.LimitedFontScale
+import com.celander.app.ui.elastic
+import com.celander.app.ui.glass.fadingTopEdge
+import com.celander.app.ui.rememberHaptics
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -109,12 +113,12 @@ fun YearView(
             val start = LocalDate.of(year.toInt(), 1, 1)
             val window = windowFor(start, start.plusYears(1))
             BoxWithConstraints(Modifier.fillMaxSize()) {
-                val gridWidth = maxWidth - Spacing.m * 2
+                val gridWidth = maxWidth - 12.dp * 2
                 val gridHeight = maxHeight - contentPadding.calculateTopPadding() - contentPadding.calculateBottomPadding()
-                val columns = YearGrid.columns(gridWidth, gridHeight, Spacing.s, MinMonthHeight)
+                val columns = YearGrid.columns(gridWidth, gridHeight, 8.dp, MinMonthHeight)
                 val rows = 12 / columns
-                val monthHeight = maxOf((gridHeight - Spacing.s * (rows - 1)) / rows, MinMonthHeight)
-                val monthWidth = (gridWidth - Spacing.s * (columns - 1)) / columns
+                val monthHeight = maxOf((gridHeight - 8.dp * (rows - 1)) / rows, MinMonthHeight)
+                val monthWidth = (gridWidth - 8.dp * (columns - 1)) / columns
                 val scale = YearGrid.textScale(monthWidth, monthHeight)
                 Column(
                     Modifier
@@ -123,11 +127,11 @@ fun YearView(
                         .fadingTopEdge(contentPadding.calculateTopPadding() * 0.6f)
                         .elastic()
                         .verticalScroll(rememberScrollState())
-                        .padding(top = contentPadding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding(), start = Spacing.m, end = Spacing.m),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.s),
+                        .padding(top = contentPadding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding(), start = 12.dp, end = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     for (row in 0 until rows) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(Spacing.s)) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             for (col in 0 until columns) {
                                 val month = YearMonth.of(year.toInt(), row * columns + col + 1)
                                 MiniMonth(
@@ -164,7 +168,7 @@ private fun MiniMonth(
     scale: Float,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val haptics = rememberHaptics()
     val measurer = rememberTextMeasurer(cacheSize = 96)
     val isCurrentMonth = YearMonth.from(today) == month
@@ -183,29 +187,29 @@ private fun MiniMonth(
     val numberStyle = TextStyle(fontSize = 10.sp * scale, fontWeight = FontWeight.Medium)
     val weekdayStyle = TextStyle(fontSize = 8.sp * scale, fontWeight = FontWeight.Medium)
     val titleScale = minOf(scale, YearGrid.MAX_TITLE_SCALE)
-    val titleStyle = CelanderTheme.typography.labelLarge.let { it.copy(fontSize = it.fontSize * titleScale, lineHeight = it.lineHeight * titleScale) }
+    val titleStyle = MaterialTheme.typography.labelLarge.let { it.copy(fontSize = it.fontSize * titleScale, lineHeight = it.lineHeight * titleScale) }
     val weekdayRowHeight = WeekdayRowHeight * scale
 
     Column(
         modifier
-            .glassTile(RoundedCornerShape(Radii.card))
+            .glassTile(RoundedCornerShape(18.dp))
             .semantics(mergeDescendants = false) {
                 contentDescription = description
                 onClick(openMonthLabel) { onOpenMonth(); true }
                 customActions = listOf(CustomAccessibilityAction(openMonthLabel) { onOpenMonth(); true })
             }
-            .padding(horizontal = Spacing.s, vertical = Spacing.xs),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
         Text(
             monthName,
             style = titleStyle,
-            color = if (isCurrentMonth) colors.accent else colors.textPrimary,
+            color = if (isCurrentMonth) colors.primary else colors.onSurface,
             maxLines = 1,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(MonthTitleHeight * titleScale)
                 .clickable(onClick = onOpenMonth)
-                .padding(top = Spacing.xs),
+                .padding(top = 4.dp),
         )
         Canvas(
             Modifier
@@ -237,7 +241,7 @@ private fun MiniMonth(
             val cellH = (size.height - headerPx) / CalendarMath.GRID_WEEKS
             for (i in 0 until 7) {
                 val day = firstDay.plus(i.toLong())
-                val layout = measurer.measure(formats.weekdayNarrow(day), weekdayStyle.copy(color = if (day == DayOfWeek.SUNDAY) colors.sunday else colors.textTertiary))
+                val layout = measurer.measure(formats.weekdayNarrow(day), weekdayStyle.copy(color = if (day == DayOfWeek.SUNDAY) colors.sunday else colors.onSurfaceVariant))
                 drawText(layout, topLeft = Offset(i * cellW + (cellW - layout.size.width) / 2f, 0f))
             }
             days.forEachIndexed { index, date ->
@@ -259,7 +263,7 @@ private fun MiniMonth(
                 val color = when {
                     isToday -> colors.onToday
                     date.dayOfWeek == DayOfWeek.SUNDAY -> colors.sunday
-                    else -> colors.textPrimary
+                    else -> colors.onSurface
                 }
                 val text = measurer.measure(date.dayOfMonth.toString(), numberStyle.copy(color = color))
                 drawText(text, topLeft = Offset(cx - text.size.width / 2f, top + (cellH - text.size.height) / 2f - 1.5.dp.toPx() * scale))

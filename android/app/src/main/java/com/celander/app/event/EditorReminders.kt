@@ -1,6 +1,8 @@
 package com.celander.app.event
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -25,13 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.RemovableChip
-import com.celander.app.designsystem.SelectableChip
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.SoftButton
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.Stepper
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.RemovableChip
+import com.celander.app.ui.SelectableChip
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.SoftButton
+import com.celander.app.ui.Stepper
 
 /** At most this many reminders per entry, and as defaults per kind. */
 internal const val MAX_REMINDERS = 4
@@ -56,8 +57,8 @@ fun RemindersSection(
     /** In the settings: a plain title instead of the editor's icon row, rows without the icon indent. */
     title: String? = null,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     val resources = LocalResources.current
     var adding by rememberSaveable { mutableStateOf(false) }
     val label = { minutes: Int -> ReminderText.label(resources, minutes, allDay, task, formats) }
@@ -65,10 +66,10 @@ fun RemindersSection(
     if (title == null) {
         EditorRow(icon = Icons.Outlined.Notifications, label = stringResource(R.string.editor_reminders)) {}
     } else {
-        Text(title, style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary, modifier = Modifier.padding(bottom = Spacing.s))
+        Text(title, style = MaterialTheme.typography.bodyLarge, color = colors.onSurface, modifier = Modifier.padding(bottom = 8.dp))
     }
-    Column(Modifier.padding(start = if (title == null) 44.dp else 0.dp, bottom = Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+    Column(Modifier.padding(start = if (title == null) 44.dp else 0.dp, bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             reminders.forEach { minutes ->
                 val text = label(minutes)
                 RemovableChip(text, stringResource(R.string.reminder_remove, text), onRemove = { onChange(reminders - minutes) })
@@ -78,22 +79,22 @@ fun RemindersSection(
                     stringResource(R.string.reminder_add),
                     selected = adding,
                     onClick = { adding = !adding },
-                    leading = { Icon(Icons.Rounded.Add, null, tint = colors.accent, modifier = Modifier.size(Sizes.iconSmall)) },
+                    leading = { Icon(Icons.Rounded.Add, null, tint = colors.primary, modifier = Modifier.size(Sizes.iconSmall)) },
                 )
             }
         }
         if (reminders.isEmpty() && !adding) {
-            Text(stringResource(R.string.reminder_none), style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+            Text(stringResource(R.string.reminder_none), style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
         }
-        if (note != null) Text(note, style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+        if (note != null) Text(note, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
         warning?.invoke()
         AnimatedVisibility(
             adding && reminders.size < maxCount,
             enter = motion.expandIn(),
             exit = motion.shrinkOut(),
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     ReminderText.presets(allDay).filterNot { it in reminders || (!allowSameDay && it < 0) }.forEach { minutes ->
                         SelectableChip(label(minutes), selected = false, onClick = {
                             onChange(reminders + minutes)
@@ -118,9 +119,9 @@ private fun CustomReminder(allDay: Boolean, existing: List<Int>, label: (Int) ->
     var amount by rememberSaveable { mutableIntStateOf(if (allDay) 3 else 20) }
     var unit by rememberSaveable { mutableStateOf(if (allDay) ReminderUnit.DAYS else ReminderUnit.MINUTES) }
     val minutes = if (allDay) ReminderText.allDayDaysBefore(amount) else ReminderText.minutes(amount, unit)
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
-        Text(stringResource(R.string.reminder_custom), style = CelanderTheme.typography.labelMedium, color = CelanderTheme.colors.textSecondary)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.reminder_custom), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Stepper(value = amount, onValueChange = { amount = it }, range = 1..99, label = amount.toString())
             if (!allDay) {
                 ReminderUnit.entries.forEach { option ->
@@ -131,7 +132,7 @@ private fun CustomReminder(allDay: Boolean, existing: List<Int>, label: (Int) ->
         SoftButton(
             stringResource(R.string.reminder_custom_add, label(minutes)),
             onClick = { if (minutes !in existing) onAdd(minutes) },
-            modifier = Modifier.padding(top = Spacing.xxs),
+            modifier = Modifier.padding(top = 2.dp),
         )
     }
 }

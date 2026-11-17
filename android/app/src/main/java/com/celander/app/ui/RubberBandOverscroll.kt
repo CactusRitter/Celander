@@ -1,4 +1,4 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.Spring

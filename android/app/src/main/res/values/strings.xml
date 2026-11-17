@@ -625,4 +625,79 @@
         <item quantity="other">On – %d calendars on this phone</item>
     </plurals>
     <!-- Widget blur -->
+
+    <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
+    <string name="accent_pink">Raspberry</string>
+    <string name="skin_glass">Glass</string>
+    <string name="skin_modern">Modern</string>
+    <string name="skin_amoled" translatable="false">AMOLED</string>
+    <string name="skin_retro" translatable="false">Retro 98</string>
+    <string name="skin_paper">Paper</string>
+    <string name="skin_brutal">Brutalist</string>
+    <string name="style_classic">Classic</string>
+    <string name="style_neutral">Neutral</string>
+    <string name="style_aurora">Aurora</string>
+    <string name="style_sunset">Sunset</string>
+    <string name="style_ocean">Ocean</string>
+    <string name="style_neon">Neon</string>
+    <string name="whatsnew_current">What’s new in %1$s</string>
+    <string name="whatsnew_next">Coming in %1$s</string>
+    <string name="whatsnew_earlier">Earlier versions</string>
+    <string name="whatsnew_none">No notes for this version.</string>
+    <string name="update_title">Celander %1$s is available</string>
+    <string name="update_body">Download it and Android will ask you to install it. Your events, tasks and settings stay as they are.</string>
+    <string name="update_allow">First allow installing apps from Celander on the screen that opened, then come back and tap Download again.</string>
+    <string name="update_download">Download</string>
+    <string name="update_later">Not now</string>
+    <string name="update_install">Install</string>
+    <string name="update_progress">%1$s · %2$s of %3$s</string>
+    <string name="update_progress_unknown">%1$s downloaded</string>
+    <string name="update_ready">Downloaded. Tap Install and Android will ask you to confirm.</string>
+    <string name="update_failed_network">The download stopped. Check your connection and try again: it goes on where it left off.</string>
+    <string name="update_failed_incomplete">The downloaded file was not complete. Try again.</string>
+    <string name="update_cancel">Cancel</string>
+    <string name="update_retry">Try again</string>
+
+    <!-- Settings: appearance, backup and updates (as in Cemail and Celander) -->
+    <string name="backup_import">Import</string>
+    <string name="backup_create">Create backup</string>
+    <string name="backup_create_title">What do you want to back up?</string>
+    <string name="backup_create_confirm">Create</string>
+    <string name="backup_restore_title">What do you want to restore?</string>
+    <string name="backup_restore_settings">Settings</string>
+    <string name="backup_restore_confirm">Restore</string>
+    <string name="backup_too_new">That backup comes from a newer Celander. Update the app to open it.</string>
+    <string name="backup_working">One moment…</string>
+    <string name="backup_failed">Could not complete: %1$s</string>
+    <string name="style_title">Style</string>
+    <string name="style_body">The background and the tint of the glass.</string>
+    <string name="skin_title">Design</string>
+    <string name="skin_body">The look of the whole app. Glass is the one shared with Celander and Cemail; the others are being tried out.</string>
+    <string name="skin_always_dark">This design is always dark.</string>
+    <string name="depth_title">3D shadow</string>
+    <string name="depth_body">A soft shadow that lifts cards and buttons off the background, like glass standing above it.</string>
+    <string name="theme_mode_title">Light or dark</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="accent_title">Colour</string>
+    <string name="accent_body">For buttons, selections and the background.</string>
+    <string name="accent_custom">Custom colour</string>
+    <string name="preview">Preview</string>
+    <string name="settings_transparency_title">Glass transparency</string>
+    <string name="settings_transparency_body">How see-through the cards and bars are.</string>
+    <string name="settings_section_updates">Updates</string>
+    <string name="settings_updates_title">Look for new versions</string>
+    <string name="settings_updates_body">Once or twice a day Celander asks GitHub, where its versions are published, whether there is a newer one, and says so at the top of the calendar. GitHub only sees the address of your connection, nothing about you or your events.</string>
+    <string name="settings_updates_now">Look now</string>
+    <string name="update_none">You have the latest version (%1$s).</string>
+    <string name="update_found">There is a new version: it is shown at the top of the calendar.</string>
+    <string name="update_check_failed">Could not check. Check your connection.</string>
+    <string name="update_checking">Looking…</string>
+    <string name="backup">Backup</string>
+    <string name="backup_summary">Save your settings in one .zip file to move them to another device</string>
+    <string name="backup_file_settings">Celander-backup-%1$s.zip</string>
+    <string name="backup_exported_settings">Backup saved.</string>
+    <string name="backup_imported_settings">Settings restored.</string>
+    <string name="backup_not_celander">That file is not a Celander backup.</string>
 </resources>

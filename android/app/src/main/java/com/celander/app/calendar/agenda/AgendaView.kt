@@ -1,6 +1,10 @@
 package com.celander.app.calendar.agenda
 
 import androidx.compose.foundation.background
+import com.celander.app.ui.glass.fadingTopEdge
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.nowLine
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,16 +47,13 @@ import com.celander.app.calendar.components.TaskRow
 import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.PillShape
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.SkeletonRows
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.TextAction
-import com.celander.app.designsystem.centeringPadding
-import com.celander.app.designsystem.dimmed
-import com.celander.app.designsystem.fadingTopEdge
-import com.celander.app.designsystem.glassTile
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.SkeletonRows
+import com.celander.app.ui.TextAction
+import com.celander.app.ui.centeringPadding
+import com.celander.app.ui.dimmed
+import com.celander.app.ui.glass.fadingTopEdge
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -160,8 +161,8 @@ fun AgendaView(
 
     BoxWithConstraints(modifier.fillMaxSize()) {
         if (rows == null) {
-            val side = centeringPadding(maxWidth, Sizes.maxListWidth, Spacing.xl)
-            SkeletonRows(6, Modifier.padding(top = contentPadding.calculateTopPadding() + Spacing.l, start = side, end = side))
+            val side = centeringPadding(maxWidth, Sizes.maxListWidth, 20.dp)
+            SkeletonRows(6, Modifier.padding(top = contentPadding.calculateTopPadding() + 16.dp, start = side, end = side))
         } else {
             AgendaList(
                 rows = rows,
@@ -172,7 +173,7 @@ fun AgendaView(
                 formats = formats,
                 contentPadding = contentPadding,
                 // Rows stay at a readable width in wide windows; the whole width still scrolls.
-                sidePadding = centeringPadding(maxWidth, Sizes.maxListWidth, Spacing.m),
+                sidePadding = centeringPadding(maxWidth, Sizes.maxListWidth, 12.dp),
                 onCreateOn = onCreateOn,
                 onOpenOccurrence = onOpenOccurrence,
                 onOpenTask = onOpenTask,
@@ -203,9 +204,9 @@ private fun AgendaList(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = contentPadding.calculateTopPadding())
-            .fadingTopEdge(Spacing.m),
+            .fadingTopEdge(12.dp),
         contentPadding = PaddingValues(
-            bottom = contentPadding.calculateBottomPadding() + Spacing.l,
+            bottom = contentPadding.calculateBottomPadding() + 16.dp,
             start = sidePadding,
             end = sidePadding,
         ),
@@ -230,8 +231,8 @@ private fun AgendaList(
                 }
                 is AgendaRow.Now -> item(key = row.key) { NowDivider() }
                 is AgendaRow.EmptyToday -> item(key = row.key) {
-                    Row(Modifier.fillMaxWidth().padding(start = Spacing.m), verticalAlignment = Alignment.CenterVertically) {
-                        Text(stringResource(R.string.agenda_today_empty), style = CelanderTheme.typography.bodyMedium, color = CelanderTheme.colors.textSecondary, modifier = Modifier.weight(1f))
+                    Row(Modifier.fillMaxWidth().padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(R.string.agenda_today_empty), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
                         TextAction(stringResource(R.string.action_new_event), onClick = { onCreateOn(row.date) })
                     }
                 }
@@ -264,34 +265,34 @@ private fun ReportVisibility(
 
 @Composable
 private fun DayHeader(date: LocalDate, isToday: Boolean, isPast: Boolean, formats: Formats) {
-    val colors = CelanderTheme.colors
-    Box(Modifier.fillMaxWidth().padding(top = Spacing.m, bottom = Spacing.xs)) {
+    val colors = MaterialTheme.colorScheme
+    Box(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 4.dp)) {
         Row(
             Modifier
-                .glassTile(PillShape)
-                .background(if (isToday) colors.accentSoft else colors.tile.copy(alpha = 0.35f))
-                .padding(horizontal = Spacing.m, vertical = Spacing.xs + 2.dp)
+                .glassTile(CircleShape)
+                .background(if (isToday) colors.primaryContainer else colors.surface.copy(alpha = 0.35f))
+                .padding(horizontal = 12.dp, vertical = 4.dp + 2.dp)
                 .semantics(mergeDescendants = true) { heading() }
                 .dimmed(isPast),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (isToday) {
-                Text(stringResource(R.string.today), style = CelanderTheme.typography.labelLarge, color = colors.accent)
-                Text(" · ", style = CelanderTheme.typography.labelLarge, color = colors.textSecondary)
+                Text(stringResource(R.string.today), style = MaterialTheme.typography.labelLarge, color = colors.primary)
+                Text(" · ", style = MaterialTheme.typography.labelLarge, color = colors.onSurfaceVariant)
             }
-            Text(formats.capitalize(date.format(formats.dayMonthLong)), style = CelanderTheme.typography.labelLarge, color = colors.textPrimary)
+            Text(formats.capitalize(date.format(formats.dayMonthLong)), style = MaterialTheme.typography.labelLarge, color = colors.onSurface)
         }
     }
 }
 
 @Composable
 private fun NowDivider() {
-    val color = CelanderTheme.colors.nowLine
-    Row(Modifier.fillMaxWidth().padding(vertical = Spacing.xs), verticalAlignment = Alignment.CenterVertically) {
+    val color = MaterialTheme.colorScheme.nowLine
+    Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.size(8.dp).background(color, CircleShape))
         Box(Modifier.weight(1f).height(1.5.dp).background(color))
-        Spacer(Modifier.width(Spacing.s))
-        Text(stringResource(R.string.agenda_now), style = CelanderTheme.typography.labelSmall, color = color)
+        Spacer(Modifier.width(8.dp))
+        Text(stringResource(R.string.agenda_now), style = MaterialTheme.typography.labelSmall, color = color)
     }
 }
 
@@ -304,10 +305,10 @@ private fun GapRow(gap: AgendaRow.Gap, formats: Formats, today: LocalDate) {
     }
     Text(
         text,
-        style = CelanderTheme.typography.bodySmall,
-        color = CelanderTheme.colors.textTertiary,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier
-            .padding(start = Spacing.m, top = Spacing.s, bottom = Spacing.s)
+            .padding(start = 12.dp, top = 8.dp, bottom = 8.dp)
             .dimmed(gap.until.isBefore(today)),
     )
 }

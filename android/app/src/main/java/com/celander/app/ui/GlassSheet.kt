@@ -1,6 +1,9 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.activity.compose.PredictiveBackHandler
+import com.celander.app.ui.glass.GlassKind
+import com.celander.app.ui.glass.glass
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animate
 import androidx.compose.foundation.background
@@ -73,7 +76,7 @@ import kotlinx.coroutines.launch
 private const val PARTIAL_FRACTION = 0.68f
 
 /** A sheet floats as a card once the window leaves at least this much room on each side of it. */
-private val FloatingSideRoom = Spacing.xxl
+private val FloatingSideRoom = 24.dp
 
 /** Lets callers close a sheet with its exit animation. */
 @Stable
@@ -112,8 +115,8 @@ fun GlassSheet(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val density = LocalDensity.current
-    val motion = CelanderTheme.motion
-    val colors = CelanderTheme.colors
+    val motion = LocalMotion.current
+    val colors = MaterialTheme.colorScheme
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val currentConfirm by rememberUpdatedState(confirmDismiss)
@@ -126,9 +129,9 @@ fun GlassSheet(
     BoxWithConstraints(modifier.fillMaxSize()) {
         val floating = maxWidth >= Sizes.maxFormWidth + FloatingSideRoom * 2 && maxHeight >= WindowTokens.mediumHeight
         val containerPx = constraints.maxHeight.toFloat()
-        val topGapPx = WindowInsets.statusBars.getTop(density) + with(density) { (if (floating) Spacing.xxl else Spacing.s).toPx() }
+        val topGapPx = WindowInsets.statusBars.getTop(density) + with(density) { (if (floating) 24.dp else 8.dp).toPx() }
         // A floating sheet rests above the navigation bar with a margin; it slides out past both.
-        val bottomGapPx = if (floating) WindowInsets.navigationBars.getBottom(density) + with(density) { Spacing.l.toPx() } else 0f
+        val bottomGapPx = if (floating) WindowInsets.navigationBars.getBottom(density) + with(density) { 16.dp.toPx() } else 0f
         val maxSheetPx = (containerPx - topGapPx - bottomGapPx)
             .let { if (floating) minOf(it, with(density) { Sizes.maxFloatingSheetHeight.toPx() }) else it }
             .coerceAtLeast(1f)
@@ -289,7 +292,7 @@ fun GlassSheet(
             Modifier
                 .align(Alignment.BottomCenter)
                 .then(
-                    if (floating) Modifier.windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)).padding(bottom = Spacing.l)
+                    if (floating) Modifier.windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)).padding(bottom = 16.dp)
                     else Modifier,
                 )
                 .widthIn(max = Sizes.maxFormWidth)
@@ -315,10 +318,14 @@ fun GlassSheet(
                 )
                 .semantics { if (paneTitle != null) this.paneTitle = paneTitle },
         ) {
-            GlassSurface(
-                Modifier.fillMaxWidth().then(if (expandable) Modifier.fillMaxHeight() else Modifier),
-                shape = if (floating) RoundedCornerShape(Radii.sheet) else SheetShape,
-                dense = true,
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .then(if (expandable) Modifier.fillMaxHeight() else Modifier)
+                    .glass(
+                        if (floating) RoundedCornerShape(28.dp) else RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+                        GlassKind.Menu, elevation = 10.dp,
+                    ),
             ) {
                 Column(
                     Modifier
@@ -402,7 +409,7 @@ private fun DragHandle(
         Box(
             Modifier
                 .size(width = 36.dp, height = 4.dp)
-                .background(CelanderTheme.colors.textTertiary.copy(alpha = 0.45f), RoundedCornerShape(2.dp)),
+                .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f), RoundedCornerShape(2.dp)),
         )
     }
 }

@@ -1,6 +1,9 @@
-package com.celander.app.designsystem
+package com.celander.app.ui
 
 import androidx.activity.compose.BackHandler
+import com.celander.app.ui.glass.GlassKind
+import com.celander.app.ui.glass.glass
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -47,8 +50,8 @@ fun GlassDialog(
     onDismiss: () -> Unit,
     destructive: Boolean = false,
 ) {
-    val colors = CelanderTheme.colors
-    val motion = CelanderTheme.motion
+    val colors = MaterialTheme.colorScheme
+    val motion = LocalMotion.current
     val cancelLabel = stringResource(R.string.action_cancel)
     BackHandler(enabled = visible, onBack = onDismiss)
     AnimatedVisibility(visible, enter = fadeIn(motion.fade()), exit = fadeOut(motion.fade())) {
@@ -63,9 +66,9 @@ fun GlassDialog(
                 },
             contentAlignment = Alignment.Center,
         ) {
-            GlassSurface(
+            Box(
                 Modifier
-                    .padding(Spacing.xxl)
+                    .padding(24.dp)
                     .widthIn(max = MaxDialogWidth)
                     .fillMaxWidth()
                     .animateEnterExit(
@@ -76,24 +79,23 @@ fun GlassDialog(
                     .semantics {
                         paneTitle = title
                         dialog()
-                    },
-                shape = RoundedCornerShape(Radii.sheet),
-                dense = true,
+                    }
+                    .glass(RoundedCornerShape(28.dp), GlassKind.Menu, elevation = 10.dp),
             ) {
-                Column(Modifier.padding(start = Spacing.xxl, end = Spacing.l, top = Spacing.xxl, bottom = Spacing.m)) {
-                    Text(title, style = CelanderTheme.typography.titleLarge, color = colors.textPrimary, modifier = Modifier.padding(end = Spacing.s))
+                Column(Modifier.padding(start = 24.dp, end = 16.dp, top = 24.dp, bottom = 12.dp)) {
+                    Text(title, style = MaterialTheme.typography.titleLarge, color = colors.onSurface, modifier = Modifier.padding(end = 8.dp))
                     Text(
                         message,
-                        style = CelanderTheme.typography.bodyMedium,
-                        color = colors.textSecondary,
-                        modifier = Modifier.padding(top = Spacing.s, end = Spacing.s),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = colors.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 8.dp, end = 8.dp),
                     )
                     Row(
-                        Modifier.fillMaxWidth().padding(top = Spacing.l),
-                        horizontalArrangement = Arrangement.spacedBy(Spacing.xs, Alignment.End),
+                        Modifier.fillMaxWidth().padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
                     ) {
                         TextAction(cancelLabel, onClick = onDismiss)
-                        TextAction(confirmLabel, onClick = onConfirm, color = if (destructive) colors.danger else colors.accent)
+                        TextAction(confirmLabel, onClick = onConfirm, color = if (destructive) colors.error else colors.primary)
                     }
                 }
             }

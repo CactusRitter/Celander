@@ -1,6 +1,9 @@
 package com.celander.app.settings
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.material3.MaterialTheme
+import com.celander.app.ui.LocalMotion
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,9 +28,8 @@ import com.celander.app.core.model.CalendarSource
 import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.Sizes
 import com.celander.app.event.MAX_REMINDERS
 import com.celander.app.event.RemindersSection
 
@@ -39,7 +41,7 @@ internal fun DefaultReminders(
     allDay: Boolean,
     task: Boolean,
     formats: Formats,
-    contentPadding: PaddingValues = PaddingValues(horizontal = Spacing.l, vertical = Spacing.s),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     maxCount: Int = MAX_REMINDERS,
     allowSameDay: Boolean = true,
     onChange: (List<Int>) -> Unit,
@@ -79,7 +81,7 @@ internal fun CalendarReminderDefaults(
     onUseDefaultsChange: (Boolean) -> Unit,
     onOwnChange: (ReminderDefaults) -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val holdsEvents = calendar?.canHold(EntryKind.EVENT) ?: true
     val holdsTasks = calendar?.canHold(EntryKind.TASK) ?: true
     if (!holdsEvents && !holdsTasks) return
@@ -87,28 +89,28 @@ internal fun CalendarReminderDefaults(
     val maxCount = if (device) calendar?.maxReminders?.coerceIn(1, MAX_REMINDERS) ?: MAX_REMINDERS else MAX_REMINDERS
     val padding = PaddingValues()
 
-    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
-        Text(stringResource(R.string.settings_calendar_reminders), style = CelanderTheme.typography.labelMedium, color = colors.textSecondary)
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.settings_calendar_reminders), style = MaterialTheme.typography.labelMedium, color = colors.onSurfaceVariant)
         Row(
             Modifier
                 .fillMaxWidth()
                 .heightIn(min = Sizes.touchTarget)
                 .toggleable(value = useDefaults, role = Role.Switch, onValueChange = onUseDefaultsChange),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.m),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(Spacing.xxs)) {
-                Text(stringResource(R.string.settings_calendar_use_default_reminders), style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(stringResource(R.string.settings_calendar_use_default_reminders), style = MaterialTheme.typography.bodyLarge, color = colors.onSurface)
                 Text(
                     stringResource(if (useDefaults) R.string.settings_calendar_default_reminders_summary else R.string.settings_calendar_own_reminders_summary),
-                    style = CelanderTheme.typography.bodySmall,
-                    color = colors.textSecondary,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colors.onSurfaceVariant,
                 )
             }
-            Switch(checked = useDefaults, onCheckedChange = null, colors = SwitchDefaults.colors(checkedTrackColor = colors.accent))
+            Switch(checked = useDefaults, onCheckedChange = null, colors = SwitchDefaults.colors(checkedTrackColor = colors.primary))
         }
-        AnimatedVisibility(!useDefaults, enter = CelanderTheme.motion.expandIn(), exit = CelanderTheme.motion.shrinkOut()) {
-            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.s)) {
+        AnimatedVisibility(!useDefaults, enter = LocalMotion.current.expandIn(), exit = LocalMotion.current.shrinkOut()) {
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (holdsEvents) {
                     DefaultReminders(
                         stringResource(R.string.settings_calendar_reminders_events),
@@ -142,7 +144,7 @@ internal fun CalendarReminderDefaults(
                     ) { onOwnChange(own.copy(task = it)) }
                 }
                 if (device) {
-                    Text(stringResource(R.string.editor_reminders_calendar_app), style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+                    Text(stringResource(R.string.editor_reminders_calendar_app), style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
                 }
             }
         }

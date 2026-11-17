@@ -54,12 +54,14 @@ import com.celander.app.calendar.data.CalendarContentRepository
 import com.celander.app.calendar.data.CalendarsRepository
 import com.celander.app.calendar.device.DeviceCalendarSource
 import com.celander.app.core.time.TimeSource
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.GlassTokens
-import com.celander.app.designsystem.celanderColors
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.glass.GlassTokens
+import com.celander.app.ui.sunday
+import com.celander.app.ui.theme.glassColors
+import com.celander.app.ui.theme.glassScheme
 import com.celander.app.settings.AppSettings
 import com.celander.app.settings.SettingsRepository
-import com.celander.app.settings.ThemeMode
+import com.celander.app.ui.theme.ThemeMode
 import com.celander.app.task.TaskRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -113,8 +115,10 @@ internal object WidgetTokens {
  */
 internal class WidgetColors(settings: AppSettings) {
     private val mode = settings.themeMode
-    private val light = celanderColors(dark = false, settings.accentHue)
-    private val dark = celanderColors(dark = true, settings.accentHue)
+    private val glassLight = glassColors(dark = false, settings.transparency, settings.accentPalette)
+    private val glassDark = glassColors(dark = true, settings.transparency, settings.accentPalette)
+    private val light = glassScheme(dark = false, settings.accentPalette, glassLight)
+    private val dark = glassScheme(dark = true, settings.accentPalette, glassDark)
 
     private fun pair(day: Color, night: Color): ColorProvider = when (mode) {
         ThemeMode.SYSTEM -> DayNightColorProvider(day = day, night = night)
@@ -136,16 +140,16 @@ internal class WidgetColors(settings: AppSettings) {
         WidgetCardLight.copy(alpha = GlassTokens.widgetAlpha(transparency, dark = false)),
         WidgetCardDark.copy(alpha = GlassTokens.widgetAlpha(transparency, dark = true)),
     )
-    val ink = pair(light.textPrimary, dark.textPrimary)
-    val secondary = pair(light.textSecondary, dark.textSecondary)
-    val accent = pair(light.accent, dark.accent)
-    val onAccent = pair(light.onAccent, dark.onAccent)
+    val ink = pair(light.onSurface, dark.onSurface)
+    val secondary = pair(light.onSurfaceVariant, dark.onSurfaceVariant)
+    val accent = pair(light.primary, dark.primary)
+    val onAccent = pair(light.onPrimary, dark.onPrimary)
     val sunday = pair(light.sunday, dark.sunday)
-    val danger = pair(light.danger, dark.danger)
-    val divider = pair(light.divider, dark.divider)
+    val danger = pair(light.error, dark.error)
+    val divider = pair(light.onSurface.copy(alpha = 0.08f), dark.onSurface.copy(alpha = 0.08f))
 
     /** Tints of the card's glass masks. */
-    val rim = pair(WidgetGlass.rimColor(light.glassEdgeLight, dark = false), WidgetGlass.rimColor(dark.glassEdgeLight, dark = true))
+    val rim = pair(WidgetGlass.rimColor(glassLight.borderTop, dark = false), WidgetGlass.rimColor(glassDark.borderTop, dark = true))
 
     fun calendar(colorKey: String): ColorProvider = CalendarColor.fromKey(colorKey).let { pair(it.base(dark = false), it.base(dark = true)) }
 

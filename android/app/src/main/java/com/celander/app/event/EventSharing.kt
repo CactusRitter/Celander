@@ -68,7 +68,7 @@ object EventSharing {
             val name = occurrence.title.replace(Regex("[^\\p{L}\\p{N} _-]"), "").trim().take(40).ifBlank { "event" }
             File(dir, "$name.ics").apply { writeText(ics) }
         }
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.files", file)
         val send = Intent(Intent.ACTION_SEND)
             .setType("text/calendar")
             .putExtra(Intent.EXTRA_STREAM, uri)

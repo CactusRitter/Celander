@@ -28,7 +28,7 @@ import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.model.SourceIds
 import com.celander.app.core.recurrence.OccurrenceCalculator
-import com.celander.app.designsystem.CalendarColor
+import com.celander.app.ui.CalendarColor
 import com.celander.app.event.EventWithExceptions
 import com.celander.app.settings.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext

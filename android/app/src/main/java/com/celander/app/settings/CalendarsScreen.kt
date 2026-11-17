@@ -1,6 +1,8 @@
 package com.celander.app.settings
 
 import android.provider.CalendarContract
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,18 +55,15 @@ import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.ui.Formats
 import com.celander.app.core.ui.rememberFormats
-import com.celander.app.designsystem.AccentButton
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.ColorSwatch
-import com.celander.app.designsystem.GlassSheet
-import com.celander.app.designsystem.PillShape
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.SoftButton
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.color
-import com.celander.app.designsystem.glassTile
-import com.celander.app.designsystem.rememberGlassSheetController
+import com.celander.app.ui.AccentButton
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.ColorSwatch
+import com.celander.app.ui.GlassSheet
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.SoftButton
+import com.celander.app.ui.color
+import com.celander.app.ui.rememberGlassSheetController
 import com.celander.app.event.NewEntryReminders
 import com.celander.app.event.reminderDefaults
 
@@ -125,9 +124,9 @@ fun CalendarsScreen(
         item(key = "hint") {
             Text(
                 hint,
-                style = CelanderTheme.typography.bodySmall,
-                color = CelanderTheme.colors.textSecondary,
-                modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = Spacing.xl, vertical = Spacing.xs),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
             )
         }
         item(key = "add") {
@@ -135,7 +134,7 @@ fun CalendarsScreen(
                 stringResource(R.string.settings_new_calendar),
                 onClick = { editing = NEW_CALENDAR },
                 icon = Icons.Rounded.Add,
-                modifier = Modifier.padding(top = Spacing.l),
+                modifier = Modifier.padding(top = 16.dp),
             )
         }
         // The phone's calendars, one group per account; visibility and color apply only in Celander.
@@ -151,9 +150,9 @@ fun CalendarsScreen(
             item(key = "device-hint") {
                 Text(
                     stringResource(R.string.settings_calendars_device_hint),
-                    style = CelanderTheme.typography.bodySmall,
-                    color = CelanderTheme.colors.textSecondary,
-                    modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = Spacing.xl, vertical = Spacing.xs),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
                 )
             }
         }
@@ -171,15 +170,15 @@ fun CalendarsScreen(
 
 @Composable
 private fun CalendarListRow(row: CalendarRow, onEdit: () -> Unit, onVisibleChange: (Boolean) -> Unit) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val calendar = row.calendar
     Row(
-        Modifier.fillMaxWidth().heightIn(min = 60.dp).clickable(role = Role.Button, onClick = onEdit).padding(start = Spacing.l, end = Spacing.s),
+        Modifier.fillMaxWidth().heightIn(min = 60.dp).clickable(role = Role.Button, onClick = onEdit).padding(start = 16.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.size(14.dp).background(CalendarColor.fromKey(calendar.colorKey).color(), CircleShape))
-        Column(Modifier.weight(1f).padding(horizontal = Spacing.m, vertical = Spacing.s)) {
-            Text(calendar.name, style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary, maxLines = 2)
+        Column(Modifier.weight(1f).padding(horizontal = 12.dp, vertical = 8.dp)) {
+            Text(calendar.name, style = MaterialTheme.typography.bodyLarge, color = colors.onSurface, maxLines = 2)
             // The phone's calendars are not counted: their events stay in the calendar provider.
             val entries = if (calendar.source == CalendarSource.DEVICE) null else pluralStringResource(R.plurals.entries_count, row.entries, row.entries)
             val isDefault = if (calendar.source == CalendarSource.GOOGLE_TASKS) row.isTaskDefault else row.isDefault
@@ -189,13 +188,13 @@ private fun CalendarListRow(row: CalendarRow, onEdit: () -> Unit, onVisibleChang
                 isDefault -> stringResource(R.string.settings_calendar_default)
                 else -> entries
             }
-            if (summary != null) Text(summary, style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+            if (summary != null) Text(summary, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
         }
         val visibleLabel = stringResource(R.string.settings_calendar_visible, calendar.name)
         Switch(
             checked = calendar.visible,
             onCheckedChange = onVisibleChange,
-            colors = SwitchDefaults.colors(checkedTrackColor = colors.accent),
+            colors = SwitchDefaults.colors(checkedTrackColor = colors.primary),
             modifier = Modifier.semantics { contentDescription = visibleLabel },
         )
     }
@@ -213,7 +212,7 @@ private fun CalendarEditSheet(
     onDelete: () -> Unit,
     onDismissed: () -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val controller = rememberGlassSheetController()
     var name by rememberSaveable { mutableStateOf(row?.calendar?.name.orEmpty()) }
     var colorKey by rememberSaveable { mutableStateOf(row?.calendar?.colorKey ?: CalendarColor.DEFAULT.key) }
@@ -231,13 +230,13 @@ private fun CalendarEditSheet(
 
     GlassSheet(onDismissed = onDismissed, controller = controller, paneTitle = title) {
         Column(
-            Modifier.verticalScroll(rememberScrollState()).padding(horizontal = Spacing.xl).padding(bottom = Spacing.xl),
-            verticalArrangement = Arrangement.spacedBy(Spacing.m),
+            Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).padding(bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(title, style = CelanderTheme.typography.titleMedium, color = colors.textPrimary, modifier = Modifier.semantics { heading() })
+            Text(title, style = MaterialTheme.typography.titleMedium, color = colors.onSurface, modifier = Modifier.semantics { heading() })
             if (fromAccount) {
-                Text(name, style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary)
-                Text(stringResource(R.string.settings_calendar_name_from_account), style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+                Text(name, style = MaterialTheme.typography.bodyLarge, color = colors.onSurface)
+                Text(stringResource(R.string.settings_calendar_name_from_account), style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
             } else BasicTextField(
                 value = name,
                 onValueChange = {
@@ -245,32 +244,32 @@ private fun CalendarEditSheet(
                     if (it.isNotBlank()) nameError = false
                 },
                 singleLine = true,
-                textStyle = CelanderTheme.typography.bodyLarge.copy(color = colors.textPrimary),
-                cursorBrush = SolidColor(colors.accent),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(color = colors.onSurface),
+                cursorBrush = SolidColor(colors.primary),
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .glassTile(PillShape)
-                    .padding(horizontal = Spacing.l, vertical = Spacing.m)
+                    .glassTile(CircleShape)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
                     .semantics {
                         contentDescription = nameHint
                         if (nameError) error(nameRequired)
                     },
                 decorationBox = { inner ->
                     Box {
-                        if (name.isEmpty()) Text(nameHint, style = CelanderTheme.typography.bodyLarge, color = colors.textTertiary)
+                        if (name.isEmpty()) Text(nameHint, style = MaterialTheme.typography.bodyLarge, color = colors.onSurfaceVariant)
                         inner()
                     }
                 },
             )
-            if (nameError) Text(nameRequired, style = CelanderTheme.typography.bodySmall, color = colors.danger)
+            if (nameError) Text(nameRequired, style = MaterialTheme.typography.bodySmall, color = colors.error)
             FlowRow(Modifier.fillMaxWidth()) {
                 CalendarColor.entries.forEach { option ->
                     ColorSwatch(option.color(), selected = option.key == colorKey, label = stringResource(option.label), onClick = { colorKey = option.key })
                 }
             }
             if (fromAccount) {
-                Text(stringResource(R.string.settings_calendar_color_local), style = CelanderTheme.typography.bodySmall, color = colors.textSecondary)
+                Text(stringResource(R.string.settings_calendar_color_local), style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
             }
             CalendarReminderDefaults(
                 calendar = row?.calendar,
@@ -293,7 +292,7 @@ private fun CalendarEditSheet(
                     controller.close()
                 })
             }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Spacing.s), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 AccentButton(stringResource(R.string.action_save), onClick = {
                     if (name.isBlank()) {
                         nameError = true
@@ -307,7 +306,7 @@ private fun CalendarEditSheet(
                     SoftButton(stringResource(R.string.action_delete), onClick = {
                         onDelete()
                         controller.close()
-                    }, icon = Icons.Outlined.Delete, contentColor = colors.danger)
+                    }, icon = Icons.Outlined.Delete, contentColor = colors.error)
                 }
             }
             if (row != null && !fromAccount) {
@@ -317,8 +316,8 @@ private fun CalendarEditSheet(
                         row.entries > 0 -> pluralStringResource(R.plurals.settings_delete_calendar_entries, row.entries, row.entries)
                         else -> stringResource(R.string.settings_delete_calendar_empty)
                     },
-                    style = CelanderTheme.typography.bodySmall,
-                    color = colors.textSecondary,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colors.onSurfaceVariant,
                 )
             }
         }

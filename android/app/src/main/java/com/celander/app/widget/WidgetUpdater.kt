@@ -55,7 +55,7 @@ class WidgetUpdater @Inject constructor(
                 db.invalidationTracker.createFlow(*WIDGET_TABLES).map { },
                 device.changes,
                 settings.settings
-                    .map { listOf(it.themeMode, it.accentHue, it.widgetTransparency, it.weekStart, it.showWeekNumbers, it.timeFormat) }
+                    .map { listOf(it.themeMode, it.accentPalette, it.widgetTransparency, it.weekStart, it.showWeekNumbers, it.timeFormat) }
                     .distinctUntilChanged()
                     .map { },
             ).debounce(UPDATE_DEBOUNCE_MILLIS).collect { updateAll(context) }

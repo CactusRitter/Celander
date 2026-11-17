@@ -51,7 +51,7 @@ class AppFlowTest {
     fun setUp() {
         hilt.inject()
         runBlocking {
-            // The test application does not run CelanderApplication's first-start setup.
+            // The test application does not run CelanderApp's first-start setup.
             calendars.ensureDefault("Personal")
             settings.update { it.copy(glassTransparency = 0f, reduceMotion = true) }
         }

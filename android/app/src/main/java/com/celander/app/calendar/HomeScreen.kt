@@ -1,6 +1,10 @@
 package com.celander.app.calendar
 
 import androidx.activity.compose.BackHandler
+import com.celander.app.ui.glass.GlassBackground
+import com.celander.app.ui.glass.LocalHazeState
+import com.celander.app.ui.LocalWindowLayout
+import com.celander.app.ui.LocalMotion
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -56,17 +60,14 @@ import com.celander.app.calendar.year.YearView
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
 import com.celander.app.core.ui.rememberFormats
-import com.celander.app.designsystem.AppBackground
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.ErrorState
-import com.celander.app.designsystem.GlassLayers
-import com.celander.app.designsystem.GlassSnackbarHost
-import com.celander.app.designsystem.LocalGlass
-import com.celander.app.designsystem.MotionConfig
-import com.celander.app.designsystem.MotionTokens
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.rememberHaptics
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.ErrorState
+import com.celander.app.ui.glass.GlassLayers
+import com.celander.app.ui.GlassSnackbarHost
+import com.celander.app.ui.MotionConfig
+import com.celander.app.ui.MotionTokens
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.rememberHaptics
 import com.celander.app.event.EditorSheet
 import com.celander.app.event.EventDetailSheet
 import com.celander.app.search.SearchOverlay
@@ -86,14 +87,13 @@ fun HomeScreen(
     val now by viewModel.now.collectAsStateWithLifecycle()
     val completingTasks by viewModel.completingTasks.collectAsStateWithLifecycle()
     val hazeState = rememberHazeState()
-    val glass = LocalGlass.current.copy(hazeState = hazeState)
     val activity = LocalActivity.current
 
-    CompositionLocalProvider(LocalGlass provides glass, LocalCompletingTasks provides completingTasks) {
+    CompositionLocalProvider(LocalHazeState provides hazeState, LocalCompletingTasks provides completingTasks) {
         Box(Modifier.fillMaxSize()) {
             val loadFailed by viewModel.loadFailed.collectAsStateWithLifecycle()
             if (loadFailed) {
-                AppBackground()
+                GlassBackground {}
                 ErrorState(
                     message = stringResource(R.string.error_loading),
                     retryLabel = stringResource(R.string.action_retry),
@@ -103,7 +103,7 @@ fun HomeScreen(
                 return@Box
             }
             if (state == null) {
-                AppBackground()
+                GlassBackground {}
                 return@Box
             }
             val zone = state.zone
@@ -127,25 +127,25 @@ fun HomeScreen(
             val showWelcome = !state.hasEntries && !(state.destination == HomeDestination.MONTH && state.monthPanelOpen)
             var welcomeHeight by remember { mutableIntStateOf(0) }
             val welcomeInset by animateDpAsState(
-                if (showWelcome) with(LocalDensity.current) { welcomeHeight.toDp() } + Spacing.s else 0.dp,
-                CelanderTheme.motion.standard(),
+                if (showWelcome) with(LocalDensity.current) { welcomeHeight.toDp() } + 8.dp else 0.dp,
+                LocalMotion.current.standard(),
                 label = "welcomeInset",
             )
             val statusTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
             val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
             val contentPadding = PaddingValues(
-                top = statusTop + Sizes.topBar + Spacing.xs,
-                bottom = navBottom + Sizes.pillHeight + Spacing.m * 2 + welcomeInset,
+                top = statusTop + Sizes.topBar + 4.dp,
+                bottom = navBottom + Sizes.pillHeight + 12.dp * 2 + welcomeInset,
             )
             val horizontalInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
             // Wide windows (tablets) get a page margin around the views and the top bar.
-            val gutter = Modifier.padding(horizontal = CelanderTheme.window.extraGutter)
+            val gutter = Modifier.padding(horizontal = LocalWindowLayout.current.extraGutter)
             // Where seven timeline columns fit side by side, the day view shows the whole week.
             val layoutDirection = LocalLayoutDirection.current
             val sideInsets = horizontalInsets.asPaddingValues()
             val dayShowsWeek = dayViewShowsWeek(
-                CelanderTheme.window.width - sideInsets.calculateLeftPadding(layoutDirection) - sideInsets.calculateRightPadding(layoutDirection) -
-                    CelanderTheme.window.extraGutter * 2,
+                LocalWindowLayout.current.width - sideInsets.calculateLeftPadding(layoutDirection) - sideInsets.calculateRightPadding(layoutDirection) -
+                    LocalWindowLayout.current.extraGutter * 2,
             )
 
             BackHandler(enabled = state.destination == HomeDestination.MONTH && state.monthPanelOpen) {
@@ -153,9 +153,9 @@ fun HomeScreen(
             }
             KeyboardShortcutHandler { shortcut -> viewModel.onShortcut(shortcut, pickerOpen = jumpOpen, agendaFirst = LocalDate.ofEpochDay(agendaFirstDate), dayShowsWeek = dayShowsWeek) }
 
-            AppBackground(Modifier.hazeSource(hazeState, zIndex = GlassLayers.BACKGROUND))
+            GlassBackground(Modifier.hazeSource(hazeState, zIndex = GlassLayers.BACKGROUND)) {}
             Box(Modifier.fillMaxSize().hazeSource(hazeState, zIndex = GlassLayers.CONTENT)) {
-                val motion = CelanderTheme.motion
+                val motion = LocalMotion.current
                 AnimatedContent(
                     targetState = state.destination,
                     transitionSpec = { destinationTransition(initialState, targetState, motion) },
@@ -293,13 +293,13 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .windowInsetsPadding(horizontalInsets)
-                    .padding(horizontal = Spacing.s, vertical = Spacing.m),
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
             )
 
             AnimatedVisibility(
                 visible = state.searchOpen,
-                enter = CelanderTheme.motion.riseIn(-16),
-                exit = CelanderTheme.motion.sinkOut(-16),
+                enter = LocalMotion.current.riseIn(-16),
+                exit = LocalMotion.current.sinkOut(-16),
             ) {
                 SearchOverlay(
                     today = state.today,
@@ -321,9 +321,9 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .windowInsetsPadding(horizontalInsets)
-                    .padding(start = Spacing.m, end = Spacing.m, bottom = Sizes.pillHeight + Spacing.m * 2),
+                    .padding(start = 12.dp, end = 12.dp, bottom = Sizes.pillHeight + 12.dp * 2),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(Spacing.s),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 GlassSnackbarHost(
                     message = snackbarMessage,
@@ -332,8 +332,8 @@ fun HomeScreen(
                 )
                 AnimatedVisibility(
                     visible = showWelcome,
-                    enter = CelanderTheme.motion.riseIn(3),
-                    exit = CelanderTheme.motion.sinkOut(3),
+                    enter = LocalMotion.current.riseIn(3),
+                    exit = LocalMotion.current.sinkOut(3),
                 ) {
                     WelcomeCard(
                         onCreate = viewModel::newEntry,

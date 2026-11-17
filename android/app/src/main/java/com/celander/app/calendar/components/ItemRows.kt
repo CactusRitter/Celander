@@ -1,6 +1,8 @@
 package com.celander.app.calendar.components
 
 import android.content.res.Resources
+import com.celander.app.ui.CalendarCheckbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,15 +37,12 @@ import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.TaskCheckbox
-import com.celander.app.designsystem.color
-import com.celander.app.designsystem.dimmed
-import com.celander.app.designsystem.springClickable
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.color
+import com.celander.app.ui.dimmed
+import com.celander.app.ui.springClickable
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -85,7 +84,7 @@ fun OccurrenceRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val color = CalendarColor.fromKey(occurrence.colorKey).color()
     val start = occurrence.timing.startInstant(zone)
     val end = occurrence.timing.endInstant(zone)
@@ -101,31 +100,31 @@ fun OccurrenceRow(
         modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)
-            .springClickable(shape = RoundedCornerShape(Radii.cell), pressedScale = ROW_PRESS_SCALE, onClick = onClick)
-            .then(if (running) Modifier.background(colors.accentSoft.copy(alpha = 0.55f)) else Modifier)
+            .springClickable(shape = RoundedCornerShape(12.dp), pressedScale = ROW_PRESS_SCALE, onClick = onClick)
+            .then(if (running) Modifier.background(colors.primaryContainer.copy(alpha = 0.55f)) else Modifier)
             .clearAndSetSemantics {
                 contentDescription = description
                 onClick { onClick(); true }
             }
-            .padding(horizontal = Spacing.m, vertical = Spacing.s)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
             .dimmed(past),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.width(4.dp).height(36.dp).background(color, RoundedCornerShape(2.dp)))
-        Spacer(Modifier.width(Spacing.m))
+        Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(title, style = CelanderTheme.typography.bodyLarge, color = colors.textPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text(title, style = MaterialTheme.typography.bodyLarge, color = colors.onSurface, maxLines = 2, overflow = TextOverflow.Ellipsis)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(time, style = CelanderTheme.typography.bodySmall, color = colors.textSecondary, maxLines = 1)
+                Text(time, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant, maxLines = 1)
                 if (occurrence.isRecurring) {
-                    Spacer(Modifier.width(Spacing.xs))
-                    Icon(Icons.Outlined.Repeat, null, tint = colors.textSecondary, modifier = Modifier.width(Sizes.iconSmall - 3.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Icon(Icons.Outlined.Repeat, null, tint = colors.onSurfaceVariant, modifier = Modifier.width(Sizes.iconSmall - 3.dp))
                 }
                 if (occurrence.location.isNotBlank()) {
                     Text(
                         " · " + occurrence.location,
-                        style = CelanderTheme.typography.bodySmall,
-                        color = colors.textSecondary,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colors.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -152,7 +151,7 @@ fun TaskRow(
     modifier: Modifier = Modifier,
     showDate: Boolean = false,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val task = item.task
     val color = CalendarColor.fromKey(item.colorKey).color()
     val title = task.title.ifBlank { stringResource(R.string.untitled) }
@@ -166,22 +165,22 @@ fun TaskRow(
         modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)
-            .springClickable(shape = RoundedCornerShape(Radii.cell), pressedScale = ROW_PRESS_SCALE, onClick = onClick)
+            .springClickable(shape = RoundedCornerShape(12.dp), pressedScale = ROW_PRESS_SCALE, onClick = onClick)
             .semantics(mergeDescendants = true) {}
-            .padding(start = Spacing.xs, end = Spacing.m),
+            .padding(start = 4.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TaskCheckbox(
+        CalendarCheckbox(
             checked = checked,
             onCheckedChange = onToggle,
             color = color,
             contentDescription = toggleLabel,
         )
-        Column(Modifier.weight(1f).padding(start = Spacing.xs), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Column(Modifier.weight(1f).padding(start = 4.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
                 title,
-                style = CelanderTheme.typography.bodyLarge,
-                color = if (checked) colors.textTertiary else colors.textPrimary,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (checked) colors.onSurfaceVariant else colors.onSurface,
                 textDecoration = if (checked) TextDecoration.LineThrough else null,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -193,8 +192,8 @@ fun TaskRow(
                         due.isEmpty() -> stringResource(R.string.task_overdue)
                         else -> stringResource(R.string.task_overdue_with_date, due)
                     },
-                    style = CelanderTheme.typography.bodySmall,
-                    color = if (overdue) colors.danger else colors.textSecondary,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (overdue) colors.error else colors.onSurfaceVariant,
                     maxLines = 1,
                 )
             }

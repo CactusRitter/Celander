@@ -1,6 +1,9 @@
 package com.celander.app.notifications
 
 import androidx.compose.foundation.layout.Arrangement
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,32 +22,29 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import com.celander.app.R
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.Radii
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.TextAction
-import com.celander.app.designsystem.glassTile
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.TextAction
 
 /** Shown where reminders are set when they would not appear, with the way to turn them on. */
 @Composable
 fun ReminderWarning(access: NotificationAccess, task: Boolean, modifier: Modifier = Modifier) {
     if (!access.status.blocks(task)) return
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Column(
         modifier
             .fillMaxWidth()
-            .glassTile(RoundedCornerShape(Radii.cell), tint = colors.danger.copy(alpha = 0.12f))
-            .padding(start = Spacing.m, end = Spacing.xxs, top = Spacing.s)
+            .glassTile(RoundedCornerShape(12.dp), tint = colors.error.copy(alpha = 0.12f))
+            .padding(start = 12.dp, end = 2.dp, top = 8.dp)
             .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Spacing.s)) {
-            Icon(Icons.Outlined.NotificationsOff, null, tint = colors.danger, modifier = Modifier.size(Sizes.iconSmall + Spacing.xxs))
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(Icons.Outlined.NotificationsOff, null, tint = colors.error, modifier = Modifier.size(Sizes.iconSmall + 2.dp))
             Text(
                 stringResource(R.string.reminders_blocked),
-                style = CelanderTheme.typography.bodySmall,
-                color = colors.textPrimary,
-                modifier = Modifier.weight(1f).padding(end = Spacing.s),
+                style = MaterialTheme.typography.bodySmall,
+                color = colors.onSurface,
+                modifier = Modifier.weight(1f).padding(end = 8.dp),
             )
         }
         TextAction(stringResource(R.string.reminders_turn_on), onClick = { access.fix(task) }, modifier = Modifier.align(Alignment.End))

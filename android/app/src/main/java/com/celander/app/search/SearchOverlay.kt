@@ -1,6 +1,11 @@
 package com.celander.app.search
 
 import androidx.activity.compose.BackHandler
+import com.celander.app.ui.glass.GlassKind
+import com.celander.app.ui.glass.glass
+import com.celander.app.ui.glass.fadingTopEdge
+import com.celander.app.ui.glass.glassTile
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -76,23 +81,19 @@ import com.celander.app.core.model.CalendarInfo
 import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
-import com.celander.app.designsystem.CalendarColor
-import com.celander.app.designsystem.CelanderTheme
-import com.celander.app.designsystem.EmptyState
-import com.celander.app.designsystem.GlassSurface
-import com.celander.app.designsystem.MotionTokens
-import com.celander.app.designsystem.PillShape
-import com.celander.app.designsystem.PlainIconButton
-import com.celander.app.designsystem.SelectableChip
-import com.celander.app.designsystem.Sizes
-import com.celander.app.designsystem.Spacing
-import com.celander.app.designsystem.blockTouchesBelow
-import com.celander.app.designsystem.color
-import com.celander.app.designsystem.dimmed
-import com.celander.app.designsystem.centeringPadding
-import com.celander.app.designsystem.elastic
-import com.celander.app.designsystem.fadingTopEdge
-import com.celander.app.designsystem.glassTile
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.theme.CelanderTheme
+import com.celander.app.ui.EmptyState
+import com.celander.app.ui.MotionTokens
+import com.celander.app.ui.PlainIconButton
+import com.celander.app.ui.SelectableChip
+import com.celander.app.ui.Sizes
+import com.celander.app.ui.blockTouchesBelow
+import com.celander.app.ui.color
+import com.celander.app.ui.dimmed
+import com.celander.app.ui.centeringPadding
+import com.celander.app.ui.elastic
+import com.celander.app.ui.glass.fadingTopEdge
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -126,12 +127,12 @@ fun SearchOverlay(
     }
     BackHandler(onBack = close)
 
-    GlassSurface(modifier.fillMaxSize().blockTouchesBelow(), shape = RectangleShape, shadow = false, dense = true) {
+    Box(modifier.fillMaxSize().blockTouchesBelow().glass(RectangleShape, GlassKind.Menu)) {
         BoxWithConstraints(
             Modifier
                 .fillMaxSize()
                 // A full-screen surface carries a lot of text; tone the blurred view down further.
-                .background(CelanderTheme.colors.background.copy(alpha = 0.4f))
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.4f))
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)),
         ) {
             // In wide windows field, filters and results keep a readable width in the middle.
@@ -177,7 +178,7 @@ fun SearchOverlay(
 
 @Composable
 private fun SearchField(text: String, onTextChange: (String) -> Unit, onBack: () -> Unit, onSubmit: () -> Unit, modifier: Modifier = Modifier) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val focus = remember { FocusRequester() }
     val hint = stringResource(R.string.search_hint)
     LaunchedEffect(Unit) {
@@ -186,32 +187,32 @@ private fun SearchField(text: String, onTextChange: (String) -> Unit, onBack: ()
         runCatching { focus.requestFocus() }
     }
     Row(
-        modifier.fillMaxWidth().padding(start = Spacing.xs, end = Spacing.m, top = Spacing.xs),
+        modifier.fillMaxWidth().padding(start = 4.dp, end = 12.dp, top = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        PlainIconButton(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.action_back), onBack, tint = colors.textPrimary)
+        PlainIconButton(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.action_back), onBack, tint = colors.onSurface)
         Row(
             Modifier
                 .weight(1f)
                 .heightIn(min = Sizes.touchTarget)
-                .glassTile(PillShape)
-                .padding(start = Spacing.m, end = Spacing.xxs),
+                .glassTile(CircleShape)
+                .padding(start = 12.dp, end = 2.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(Icons.Outlined.Search, null, tint = colors.textSecondary, modifier = Modifier.size(Sizes.icon))
-            Spacer(Modifier.width(Spacing.s))
+            Icon(Icons.Outlined.Search, null, tint = colors.onSurfaceVariant, modifier = Modifier.size(Sizes.icon))
+            Spacer(Modifier.width(8.dp))
             BasicTextField(
                 value = text,
                 onValueChange = onTextChange,
                 singleLine = true,
-                textStyle = CelanderTheme.typography.bodyLarge.copy(color = colors.textPrimary),
-                cursorBrush = SolidColor(colors.accent),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(color = colors.onSurface),
+                cursorBrush = SolidColor(colors.primary),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { onSubmit() }),
                 modifier = Modifier.weight(1f).focusRequester(focus).semantics { contentDescription = hint },
                 decorationBox = { inner ->
                     Box {
-                        if (text.isEmpty()) Text(hint, style = CelanderTheme.typography.bodyLarge, color = colors.textTertiary, maxLines = 1)
+                        if (text.isEmpty()) Text(hint, style = MaterialTheme.typography.bodyLarge, color = colors.onSurfaceVariant, maxLines = 1)
                         inner()
                     }
                 },
@@ -231,20 +232,20 @@ private fun FilterRow(
     onToggleCalendar: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     Row(
         modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = Spacing.m, vertical = Spacing.s),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.s),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SearchRange.entries.forEach { range ->
             SelectableChip(stringResource(range.label), selected = filter.range == range, onClick = { onRange(range) })
         }
         if (calendars.size > 1) {
-            Box(Modifier.width(1.dp).height(24.dp).background(colors.divider))
+            Box(Modifier.width(1.dp).height(24.dp).background(colors.outlineVariant))
             calendars.forEach { calendar ->
                 SelectableChip(
                     text = calendar.name,
@@ -278,14 +279,14 @@ private fun ResultArea(
             icon = Icons.Outlined.Search,
             title = stringResource(R.string.search_idle_title),
             message = stringResource(R.string.search_idle_message),
-            modifier = Modifier.padding(top = Spacing.xxl),
+            modifier = Modifier.padding(top = 24.dp),
         )
         results is SearchResults.Found && results.hits.isEmpty() -> EmptyState(
             icon = Icons.Outlined.SearchOff,
             title = stringResource(R.string.search_no_results, results.query),
             message = stringResource(R.string.search_no_results_message),
             primaryAction = stringResource(R.string.search_create_event, results.query) to { onCreateEvent(results.query) },
-            modifier = Modifier.padding(top = Spacing.xxl).semantics { liveRegion = LiveRegionMode.Polite },
+            modifier = Modifier.padding(top = 24.dp).semantics { liveRegion = LiveRegionMode.Polite },
         )
         results is SearchResults.Found -> HitList(results, today, now, zone, formats, bottom, sidePadding, onOpenOccurrence, onOpenTask, onToggleTask)
     }
@@ -304,7 +305,7 @@ private fun HitList(
     onOpenTask: (TaskItem) -> Unit,
     onToggleTask: (TaskItem, Boolean) -> Unit,
 ) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val listState = rememberLazyListState()
     val groups = remember(results.hits) { results.hits.groupBy { it.date } }
     // New results start at the first upcoming hit (earlier ones are a scroll up away), or at the
@@ -324,14 +325,14 @@ private fun HitList(
     }
     Text(
         pluralStringResource(R.plurals.search_results_count, results.hits.size, results.hits.size),
-        style = CelanderTheme.typography.labelMedium,
-        color = colors.textSecondary,
-        modifier = Modifier.padding(horizontal = Spacing.xl + sidePadding).semantics { liveRegion = LiveRegionMode.Polite },
+        style = MaterialTheme.typography.labelMedium,
+        color = colors.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = 20.dp + sidePadding).semantics { liveRegion = LiveRegionMode.Polite },
     )
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize().fadingTopEdge(Spacing.s).elastic(),
-        contentPadding = PaddingValues(start = Spacing.m + sidePadding, end = Spacing.m + sidePadding, top = Spacing.xs, bottom = bottomPadding + Spacing.l),
+        modifier = Modifier.fillMaxSize().fadingTopEdge(8.dp).elastic(),
+        contentPadding = PaddingValues(start = 12.dp + sidePadding, end = 12.dp + sidePadding, top = 4.dp, bottom = bottomPadding + 16.dp),
     ) {
         groups.forEach { (date, hits) ->
             stickyHeader(key = "h:$date") {
@@ -364,26 +365,26 @@ private fun HitList(
 
 @Composable
 private fun DateHeader(date: LocalDate?, today: LocalDate, formats: Formats, past: Boolean) {
-    val colors = CelanderTheme.colors
+    val colors = MaterialTheme.colorScheme
     val isToday = date == today
-    Box(Modifier.fillMaxWidth().padding(top = Spacing.m, bottom = Spacing.xs)) {
+    Box(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 4.dp)) {
         Row(
             Modifier
                 .glassTile(RoundedCornerShape(50))
-                .background(if (isToday) colors.accentSoft else colors.tile.copy(alpha = 0.35f), RoundedCornerShape(50))
-                .padding(horizontal = Spacing.m, vertical = Spacing.xs + 2.dp)
+                .background(if (isToday) colors.primaryContainer else colors.surface.copy(alpha = 0.35f), RoundedCornerShape(50))
+                .padding(horizontal = 12.dp, vertical = 4.dp + 2.dp)
                 .semantics(mergeDescendants = true) { heading() }
                 .dimmed(past),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (isToday) {
-                Text(stringResource(R.string.today), style = CelanderTheme.typography.labelLarge, color = colors.accent)
-                Text(" · ", style = CelanderTheme.typography.labelLarge, color = colors.textSecondary)
+                Text(stringResource(R.string.today), style = MaterialTheme.typography.labelLarge, color = colors.primary)
+                Text(" · ", style = MaterialTheme.typography.labelLarge, color = colors.onSurfaceVariant)
             }
             Text(
                 if (date == null) stringResource(R.string.search_no_date) else formats.capitalize(date.format(if (date.year == today.year) formats.dayMonthLong else formats.dayLong)),
-                style = CelanderTheme.typography.labelLarge,
-                color = colors.textPrimary,
+                style = MaterialTheme.typography.labelLarge,
+                color = colors.onSurface,
             )
         }
     }
