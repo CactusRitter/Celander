@@ -15,7 +15,7 @@ Rama de trabajo: `ce/estilo-ce` (local; sin push). El diseño compartido (Skin, 
 1. (hecho) Conexión: AccountRepository, Hilt, sync al arrancar y cada 15 min (solo mientras vive el proceso; falta WorkManager en segundo plano), CalendarsRepository muestra ACCOUNT (writable=false). Pantalla account/ui y fila «Cuentas» arriba de Ajustes (probado en emulador: se ve, el login aún no).
 2. (hecho) Pantalla de cuentas.
 3. (hecho 2026-11-17 en el S26) Login real de Google con la cuenta de César: sincroniza calendarios y eventos sin permisos de calendario del teléfono. Bug resuelto: RedirectUriReceiverActivity de AppAuth exige tema AppCompat (Theme.Celander.SignInReturn en el manifiesto); sin él la app se cerraba al volver del navegador.
-4. Escritura offline (create/update/delete con etag, alcance de serie), luego quitar `core/device` y permisos de calendario.
+4. (hecho en código, probado con servidor falso) Escritura: disparadores SQLite (core/database/AccountTriggers) marcan NEW/DIRTY/DELETED en event_links; AccountSync.push envía antes de cada pull (create/update con etag, conflicto = gana lo local, ocurrencias con writeOccurrence, borrado con tombstone). Pendiente: probar con la cuenta real (César crea un evento), revertir una excepción, y luego quitar core/device y permisos, Microsoft y .ics.
 5. Microsoft (Graph delta), suscripciones/importación .ics. Yahoo: descartado por César.
 
 ## Decisiones de César
@@ -25,3 +25,9 @@ Rama de trabajo: `ce/estilo-ce` (local; sin push). El diseño compartido (Skin, 
 
 ## Comandos
 Ver `CLAUDE.md` (compilar, emulador). Prueba con paquete `.test`: `-PidSuffix=.test` (el login de Google no sirve ahí: el cliente OAuth es de `com.celander.app`).
+
+## Decisiones técnicas (las toma la sesión Celander; César solo decide dinero, publicar, datos de su cuenta, OPPO, diseño no acordado)
+- Escritura: local primero en Room y se envía en el siguiente sync (cada 15 min con la app abierta o «Sincronizar ahora»). Conflicto con el servidor: gana el cambio hecho aquí (calendario de una sola persona).
+- Los eventos de una serie se envían completos (RRULE + EXDATE de canceladas) y las ocurrencias cambiadas como PATCH de la instancia (id = serie_yyyyMMddTHHmmssZ).
+- Revertir una ocurrencia ya enviada a Google no se envía todavía.
+- Orden: escritura -> quitar core/device y permisos de calendario -> Microsoft -> .ics.

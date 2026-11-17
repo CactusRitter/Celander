@@ -67,7 +67,7 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun database(@ApplicationContext context: Context): CelanderDatabase =
-        Room.databaseBuilder(context, CelanderDatabase::class.java, CelanderDatabase.NAME).build()
+        Room.databaseBuilder(context, CelanderDatabase::class.java, CelanderDatabase.NAME).addCallback(AccountTriggers.callback).build()
 
     @Provides fun calendarDao(db: CelanderDatabase) = db.calendarDao()
 

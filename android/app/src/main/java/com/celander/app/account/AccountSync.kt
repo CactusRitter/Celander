@@ -13,6 +13,8 @@ import com.celander.app.core.database.ExceptionLinkEntity
 import com.celander.app.core.database.RemoteCalendarEntity
 import com.celander.app.core.database.toEntity
 import com.celander.app.core.database.toModel
+import com.celander.app.core.model.AccessRole
+import com.celander.app.event.zone
 import com.celander.app.core.ical.ICalEvent
 import com.celander.app.core.ical.IcsMapper
 import com.celander.app.core.model.AccountStatus
@@ -49,7 +51,11 @@ class AccountSync(
         val provider = providers[com.celander.app.core.model.AccountType.valueOf(account.type)] ?: return SyncOutcome.Failed("no provider")
         return try {
             val calendars = reconcileCalendars(account, provider)
-            for (calendar in calendars) pull(account, calendar, provider)
+            for (calendar in calendars) {
+                push(account, calendar, provider)
+                // Pulled after sending, so the server's answer to what was just sent is what ends up stored.
+                pull(account, calendar, provider)
+            }
             accountDao.updateAccount(account.copy(status = AccountStatus.OK.name, lastSyncAt = now(), lastError = null))
             SyncOutcome.Done
         } catch (_: NeedsSignInException) {
@@ -111,6 +117,66 @@ class AccountSync(
         val argb = hex?.removePrefix("#")?.toLongOrNull(16)?.toInt()?.let { 0xFF000000.toInt() or it } ?: return CalendarColor.DEFAULT.key
         return CalendarColor.nearest(argb).key
     }
+
+    /**
+     * Sends what changed here since the last sync (the links that are not [SyncState.CLEAN]): new events are created,
+     * changed ones updated, deleted ones deleted. A change that fails stays pending and is tried again at the next sync.
+     * If the server's version moved on in the meantime, the change made here wins: this is one person's calendar.
+     */
+    private suspend fun push(account: AccountEntity, calendar: RemoteCalendarEntity, provider: CalendarProvider) {
+        if (!provider.capabilities.canWrite || !AccessRole.valueOf(calendar.accessRole).canWrite) return
+        for (link in accountDao.pendingEventLinks(calendar.calendarId)) {
+            try {
+                pushOne(account, calendar, provider, link)
+            } catch (e: NeedsSignInException) {
+                throw e
+            } catch (e: Exception) {
+                accountDao.upsertEventLink(link.copy(lastError = e.message?.take(200)))
+            }
+        }
+    }
+
+    private suspend fun pushOne(account: AccountEntity, calendar: RemoteCalendarEntity, provider: CalendarProvider, link: EventLinkEntity) {
+        if (link.syncState == SyncState.DELETED.name) {
+            link.remoteId?.let { provider.delete(account, calendar, it, link.etag) }
+            accountDao.deleteEventLink(link.eventId)
+            accountDao.deleteExceptionLinks(link.eventId)
+            return
+        }
+        val entity = eventDao.getById(link.eventId)
+        if (entity == null) {
+            accountDao.deleteEventLink(link.eventId)
+            return
+        }
+        val event = entity.toModel()
+        val exceptions = exceptionDao.getForEvent(entity.id).map { it.toModel(event.zone) }
+        val parts = IcsMapper.toIcal(event, exceptions)
+        val master = parts.first()
+        val write = if (link.remoteId == null) {
+            provider.create(account, calendar, master, event.reminders)
+        } else {
+            try {
+                provider.update(account, calendar, link.remoteId, master, event.reminders, link.etag)
+            } catch (_: ConflictException) {
+                provider.update(account, calendar, link.remoteId, master, event.reminders, null)
+            }
+        }
+        // The server gives a series its own UID; the occurrences that come back later are matched by it.
+        if (write.uid != null && write.uid != entity.uid) eventDao.update(entity.copy(uid = write.uid))
+        for (occurrence in parts.drop(1)) {
+            val done = provider.writeOccurrence(account, calendar, write.remoteId, occurrence.copy(uid = write.uid ?: occurrence.uid), event.reminders)
+            val original = exceptions.firstOrNull { it.originalStart == keyOf(event, occurrence.recurrenceId) }?.originalStart ?: continue
+            val existing = accountDao.exceptionLink(entity.id, original)
+            accountDao.upsertExceptionLink(ExceptionLinkEntity(existing?.id ?: 0, entity.id, original, done.remoteId, done.etag, SyncState.CLEAN.name))
+        }
+        accountDao.upsertEventLink(
+            link.copy(remoteId = write.remoteId, etag = write.etag, remoteUpdated = write.updated, syncState = SyncState.CLEAN.name, lastError = null),
+        )
+    }
+
+    /** The key of an occurrence (millis, or epoch day for all-day series) from an iCalendar recurrence id in millis. */
+    private fun keyOf(event: com.celander.app.core.model.Event, recurrenceId: Long?): Long? =
+        recurrenceId?.let { if (event.allDay) Math.floorDiv(it, 86_400_000L) else it }
 
     private suspend fun pull(account: AccountEntity, calendar: RemoteCalendarEntity, provider: CalendarProvider) {
         val result = provider.syncEvents(account, calendar)
@@ -181,7 +247,10 @@ class AccountSync(
         val exception = IcsMapper.fromIcal(listOf(masterIcal, ical), calendarId).firstOrNull()?.second?.singleOrNull() ?: return
         val link = accountDao.exceptionLink(master.id, exception.originalStart)
         if (link != null && link.syncState != SyncState.CLEAN.name) return
+        val masterLink = accountDao.eventLink(master.id)
         exceptionDao.upsert(exception.copy(eventId = master.id).toEntity())
+        // The trigger on exceptions marks the series as changed here; this change came from the server.
+        masterLink?.let { accountDao.upsertEventLink(it) }
         accountDao.upsertExceptionLink(
             ExceptionLinkEntity(link?.id ?: 0, master.id, exception.originalStart, remote.remoteId, remote.etag, SyncState.CLEAN.name),
         )

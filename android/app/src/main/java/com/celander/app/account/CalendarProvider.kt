@@ -62,8 +62,8 @@ data class EventSyncResult(
     val full: Boolean,
 )
 
-/** What the provider says about an event that was sent. */
-data class RemoteWrite(val remoteId: String, val etag: String?, val updated: Long)
+/** What the provider says about an event that was sent: its id, the UID it gave it (for series), the new version and time. */
+data class RemoteWrite(val remoteId: String, val uid: String?, val etag: String?, val updated: Long)
 
 /** The server refused a write because the event changed there in the meantime. */
 class ConflictException(message: String? = null) : Exception(message)
@@ -74,6 +74,8 @@ class NeedsSignInException(message: String? = null) : Exception(message)
 /**
  * One kind of account. The rest of the app reads only the database; a provider fills it (see the sync) and
  * sends local changes. Adding a kind of account means writing one of these and registering it, nothing else.
+ * Events are sent as iCalendar components ([ICalEvent], see [com.celander.app.core.ical.IcsMapper.toIcal]) plus their
+ * reminders, the same form they arrive in.
  */
 interface CalendarProvider {
     val type: AccountType
@@ -88,14 +90,19 @@ interface CalendarProvider {
      */
     suspend fun syncEvents(account: AccountEntity, calendar: RemoteCalendarEntity): EventSyncResult
 
-    /** Sends a new event; throws [UnsupportedOperationException] where [ProviderCapabilities.canWrite] is false. */
-    suspend fun create(account: AccountEntity, calendar: RemoteCalendarEntity, event: RemoteEvent): RemoteWrite =
+    /** Sends a new event or series ([master]); throws [UnsupportedOperationException] where [ProviderCapabilities.canWrite] is false. */
+    suspend fun create(account: AccountEntity, calendar: RemoteCalendarEntity, master: ICalEvent, reminders: List<Int>): RemoteWrite =
         throw UnsupportedOperationException()
 
-    /** Sends a change; [ConflictException] when the server's version moved on ([etag] no longer matches). */
-    suspend fun update(account: AccountEntity, calendar: RemoteCalendarEntity, event: RemoteEvent, etag: String?): RemoteWrite =
+    /** Sends a change to an event or series; [ConflictException] when the server's version moved on ([etag] no longer matches). */
+    suspend fun update(account: AccountEntity, calendar: RemoteCalendarEntity, remoteId: String, master: ICalEvent, reminders: List<Int>, etag: String?): RemoteWrite =
         throw UnsupportedOperationException()
 
+    /** Sends a changed occurrence of the series [masterRemoteId] ([occurrence] carries the start it replaces as its recurrence id). */
+    suspend fun writeOccurrence(account: AccountEntity, calendar: RemoteCalendarEntity, masterRemoteId: String, occurrence: ICalEvent, reminders: List<Int>): RemoteWrite =
+        throw UnsupportedOperationException()
+
+    /** Deletes an event or series; one the server no longer has counts as deleted. */
     suspend fun delete(account: AccountEntity, calendar: RemoteCalendarEntity, remoteId: String, etag: String?): Unit =
         throw UnsupportedOperationException()
 

@@ -8,7 +8,17 @@ import com.celander.app.core.ical.ICalEvent
 import com.celander.app.core.model.AccessRole
 import java.time.Instant
 import java.time.LocalDate
+import com.celander.app.account.RemoteWrite
+import com.celander.app.core.ical.TimeZones
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import kotlinx.serialization.json.JsonObjectBuilder
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.addJsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -124,6 +134,71 @@ object GoogleCalendarMapper {
             .mapNotNull { (it["minutes"] as? JsonPrimitive)?.intOrNull }
             .distinct()
             .sortedDescending()
+    }
+
+    // --- Writing: the app's event (as an iCalendar component) as Google's JSON ---
+
+    private fun JsonObjectBuilder.moment(key: String, millis: Long, allDay: Boolean, zone: String) {
+        putJsonObject(key) {
+            if (allDay) {
+                put("date", LocalDate.ofEpochDay(Math.floorDiv(millis, DAY_MS)).toString())
+            } else {
+                val zoneId = TimeZones.resolve(zone)
+                put("dateTime", Instant.ofEpochMilli(millis).atZone(zoneId).toOffsetDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                put("timeZone", if (TimeZones.isUtc(zoneId)) "UTC" else zoneId.id)
+            }
+        }
+    }
+
+    /**
+     * The JSON of [ical] for an insert or a patch. A series carries its RRULE and the EXDATEs of cancelled occurrences;
+     * [reminders] are written as popup reminders (none: no reminder at all, not the calendar's defaults).
+     */
+    fun toJson(ical: ICalEvent, reminders: List<Int>): JsonObject = buildJsonObject {
+        put("summary", ical.summary)
+        put("description", ical.description)
+        put("location", ical.location)
+        moment("start", ical.start, ical.allDay, ical.timeZone)
+        moment("end", ical.end, ical.allDay, ical.timeZone)
+        if (ical.recurrenceId == null) {
+            val lines = buildList {
+                ical.rrule?.let { add("RRULE:$it") }
+                if (ical.rrule != null) {
+                    ical.exdates.forEach { millis ->
+                        val (params, value) = ICalDates.format(millis, ical.allDay, ical.timeZone)
+                        add("EXDATE$params:$value")
+                    }
+                }
+            }
+            putJsonArray("recurrence") { lines.forEach { add(it) } }
+        }
+        putJsonObject("reminders") {
+            put("useDefault", false)
+            putJsonArray("overrides") {
+                reminders.distinct().forEach { minutes ->
+                    addJsonObject {
+                        put("method", "popup")
+                        put("minutes", minutes)
+                    }
+                }
+            }
+        }
+    }
+
+    /** The id Google gives an occurrence of the series [seriesId]: the series' id and the original start (UTC, or the date for all-day series). */
+    fun instanceId(seriesId: String, originalStart: Long, allDay: Boolean): String {
+        val suffix = if (allDay) {
+            LocalDate.ofEpochDay(Math.floorDiv(originalStart, DAY_MS)).format(DateTimeFormatter.BASIC_ISO_DATE)
+        } else {
+            Instant.ofEpochMilli(originalStart).atZone(java.time.ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"))
+        }
+        return seriesId + "_" + suffix
+    }
+
+    /** What Google answered to a write. */
+    fun written(json: JsonObject): RemoteWrite? {
+        val id = json.str("id") ?: return null
+        return RemoteWrite(id, json.str("iCalUID"), json.str("etag"), json.str("updated")?.let(::instant) ?: 0L)
     }
 
     private fun JsonArray?.orEmpty(): JsonArray = this ?: JsonArray(emptyList())

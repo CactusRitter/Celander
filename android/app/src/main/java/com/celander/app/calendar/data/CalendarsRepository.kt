@@ -62,8 +62,12 @@ class CalendarsRepository @Inject constructor(
         val remoteByCalendar = remotes.associateBy { it.calendarId }
         val fromAccounts = room.filter { it.source == CalendarSource.ACCOUNT }.map { info ->
             val account = remoteByCalendar[info.id]?.let { accountById[it.accountId] }
-            // Read only until sending changes to the server is built: writable = false.
-            info.copy(account = account?.identifier, accountType = account?.type, writable = false)
+            // Writable where the account lets the user write; changes are sent at the next sync.
+            info.copy(
+                account = account?.identifier,
+                accountType = account?.type,
+                writable = remoteByCalendar[info.id]?.let { runCatching { com.celander.app.core.model.AccessRole.valueOf(it.accessRole).canWrite }.getOrDefault(false) } ?: false,
+            )
         }
         room.filter { it.source == CalendarSource.LOCAL } + deviceCalendars + fromAccounts + room.filter { it.source == CalendarSource.GOOGLE_TASKS }
     }
