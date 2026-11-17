@@ -88,6 +88,8 @@ fun CalendarsScreen(
     val local = list.filter { it.calendar.source == CalendarSource.LOCAL }
     val deviceGroups = list.filter { it.calendar.source == CalendarSource.DEVICE }
         .groupBy { if (it.calendar.accountType == CalendarContract.ACCOUNT_TYPE_LOCAL) null else it.calendar.account }
+    val accountGroups = list.filter { it.calendar.source == CalendarSource.ACCOUNT }.groupBy { it.calendar.account }
+    val accountsTitle = stringResource(R.string.accounts_title)
     val groupTitle = stringResource(R.string.settings_your_calendars)
     val onThisPhone = stringResource(R.string.settings_calendars_on_this_phone)
     val hint = stringResource(R.string.settings_hidden_hint)
@@ -154,6 +156,15 @@ fun CalendarsScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp),
                 )
+            }
+        }
+        // The calendars of the connected accounts, one group per account: the name follows the account, color and visibility are Celander's own.
+        accountGroups.forEach { (account, accountRows) ->
+            settingsGroup(account ?: accountsTitle) {
+                accountRows.forEachIndexed { index, row ->
+                    if (index > 0) SettingsDivider()
+                    CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setVisible(row.calendar.id, it) })
+                }
             }
         }
         val taskLists = list.filter { it.calendar.source == CalendarSource.GOOGLE_TASKS }
