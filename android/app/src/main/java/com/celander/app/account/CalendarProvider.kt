@@ -4,7 +4,7 @@ import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.database.RemoteCalendarEntity
 import com.celander.app.core.model.AccessRole
 import com.celander.app.core.model.AccountType
-import com.celander.app.core.model.EventTiming
+import com.celander.app.core.ical.ICalEvent
 
 /**
  * What one kind of account can do. The screens ask this instead of the type, so a provider that cannot
@@ -29,23 +29,19 @@ data class RemoteCalendar(
     val timeZone: String?,
 )
 
-/** An event, or one changed occurrence of a series, as the provider sends it. */
+/**
+ * An event, or one changed occurrence of a series, as a provider sends it, already in the form of an
+ * iCalendar component ([ICalEvent]): every provider converts to that one form, and the app's own converter
+ * ([com.celander.app.core.ical.IcsMapper.fromIcal]) turns it into events and exceptions. A series and its
+ * changed occurrences share [ICalEvent.uid].
+ */
 data class RemoteEvent(
     val remoteId: String,
     val etag: String?,
     /** Last modified at the server, in ms. */
     val updated: Long,
-    /** The event was deleted (or the occurrence cancelled) at the server. */
-    val cancelled: Boolean,
-    val title: String = "",
-    val location: String = "",
-    val description: String = "",
-    val timing: EventTiming? = null,
-    /** The recurrence lines as sent (RRULE, EXDATE, RDATE) of a series; empty for a single event. */
-    val recurrence: List<String> = emptyList(),
-    /** For a changed occurrence: the id of its series and the start it replaces, in ms. Null otherwise. */
-    val seriesRemoteId: String? = null,
-    val originalStart: Long? = null,
+    /** Null when the event was deleted at the server (there is nothing left to show). */
+    val ical: ICalEvent?,
     /** Minutes before the start, as the event carries them; null when the calendar's defaults apply. */
     val reminders: List<Int>? = null,
 )
