@@ -700,4 +700,22 @@
     <string name="backup_exported_settings">Backup saved.</string>
     <string name="backup_imported_settings">Settings restored.</string>
     <string name="backup_not_celander">That file is not a Celander backup.</string>
+    <string name="settings_section_accounts">Accounts</string>
+    <string name="accounts_title">Accounts</string>
+    <string name="accounts_summary_none">No account connected</string>
+    <string name="accounts_intro">Connect an account and Celander keeps its calendars here, so they work without a connection too.</string>
+    <string name="accounts_add_google">Add Google account</string>
+    <string name="accounts_google_missing">Google sign-in is not set up in this build.</string>
+    <string name="accounts_never_synced">Not synced yet</string>
+    <string name="accounts_last_sync">Last sync: %1$s</string>
+    <string name="accounts_needs_sign_in">Sign in again to go on syncing</string>
+    <string name="accounts_error">The last sync failed. It is tried again later.</string>
+    <string name="accounts_sync_now">Sync now</string>
+    <string name="accounts_sign_in_again">Sign in again</string>
+    <string name="accounts_remove">Remove account</string>
+    <string name="accounts_remove_title">Remove %1$s?</string>
+    <string name="accounts_remove_message">Its calendars and events are deleted from this device. Nothing changes at the account itself.</string>
+    <string name="accounts_remove_confirm">Remove</string>
+    <string name="accounts_sign_in_failed">Signing in did not work.</string>
+    <string name="accounts_added">%1$s connected</string>
 </resources>

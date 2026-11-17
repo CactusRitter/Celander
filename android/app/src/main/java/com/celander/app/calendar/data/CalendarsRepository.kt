@@ -50,10 +50,22 @@ class CalendarsRepository @Inject constructor(
     private val time: TimeSource,
     private val device: DeviceCalendarSource,
 ) {
-    /** Own calendars, then the phone's calendars, then the Google Tasks lists. */
-    val calendars: Flow<List<CalendarInfo>> = combine(dao.observeAll(), device.calendars) { rows, deviceCalendars ->
+    /** Own calendars, then the phone's calendars, then those of the connected accounts, then the Google Tasks lists. */
+    val calendars: Flow<List<CalendarInfo>> = combine(
+        dao.observeAll(),
+        device.calendars,
+        db.accountDao().observeAccounts(),
+        db.accountDao().observeRemoteCalendars(),
+    ) { rows, deviceCalendars, accounts, remotes ->
         val room = rows.map { it.toModel() }
-        room.filter { it.source == CalendarSource.LOCAL } + deviceCalendars + room.filter { it.source == CalendarSource.GOOGLE_TASKS }
+        val accountById = accounts.associateBy { it.id }
+        val remoteByCalendar = remotes.associateBy { it.calendarId }
+        val fromAccounts = room.filter { it.source == CalendarSource.ACCOUNT }.map { info ->
+            val account = remoteByCalendar[info.id]?.let { accountById[it.accountId] }
+            // Read only until sending changes to the server is built: writable = false.
+            info.copy(account = account?.identifier, accountType = account?.type, writable = false)
+        }
+        room.filter { it.source == CalendarSource.LOCAL } + deviceCalendars + fromAccounts + room.filter { it.source == CalendarSource.GOOGLE_TASKS }
     }
 
     /** The configured default for events, falling back to the first calendar that holds events. */

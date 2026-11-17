@@ -731,4 +731,22 @@
     <string name="backup_exported_settings">Copia guardada.</string>
     <string name="backup_imported_settings">Ajustes restaurados.</string>
     <string name="backup_not_celander">Ese archivo no es una copia de seguridad de Celander.</string>
+    <string name="settings_section_accounts">Cuentas</string>
+    <string name="accounts_title">Cuentas</string>
+    <string name="accounts_summary_none">Ninguna cuenta conectada</string>
+    <string name="accounts_intro">Conecta una cuenta y Celander guarda aquí sus calendarios; así también funcionan sin conexión.</string>
+    <string name="accounts_add_google">Añadir cuenta de Google</string>
+    <string name="accounts_google_missing">El inicio de sesión de Google no está configurado en esta versión.</string>
+    <string name="accounts_never_synced">Aún sin sincronizar</string>
+    <string name="accounts_last_sync">Última sincronización: %1$s</string>
+    <string name="accounts_needs_sign_in">Inicia sesión de nuevo para seguir sincronizando</string>
+    <string name="accounts_error">La última sincronización falló. Se volverá a intentar más tarde.</string>
+    <string name="accounts_sync_now">Sincronizar ahora</string>
+    <string name="accounts_sign_in_again">Iniciar sesión de nuevo</string>
+    <string name="accounts_remove">Quitar cuenta</string>
+    <string name="accounts_remove_title">¿Quitar %1$s?</string>
+    <string name="accounts_remove_message">Sus calendarios y eventos se borran de este dispositivo. En la cuenta no cambia nada.</string>
+    <string name="accounts_remove_confirm">Quitar</string>
+    <string name="accounts_sign_in_failed">No se pudo iniciar sesión.</string>
+    <string name="accounts_added">%1$s conectada</string>
 </resources>

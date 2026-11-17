@@ -30,6 +30,8 @@ class CelanderApp : Application() {
 
     @Inject lateinit var googleTasks: GoogleTasksSyncTrigger
 
+    @Inject lateinit var accounts: com.celander.app.account.AccountRepository
+
     @Inject @ApplicationScope
     lateinit var scope: CoroutineScope
 
@@ -47,6 +49,8 @@ class CelanderApp : Application() {
         registerActivityLifecycleCallbacks(OnActivityStarted { calendarAccess.refresh() })
         // Removes Google lists restored from a backup without their account, then syncs on changes.
         googleTasks.start(scope)
+        // Calendars of the connected accounts: sync at start and every quarter of an hour.
+        accounts.start(scope)
     }
 }
 

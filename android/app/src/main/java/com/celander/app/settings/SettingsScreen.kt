@@ -134,6 +134,7 @@ fun SettingsScreen(
     onOpenCalendars: () -> Unit,
     onOpenLicenses: () -> Unit,
     onOpenGoogleAccounts: () -> Unit,
+    onOpenAccounts: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -223,6 +224,7 @@ fun SettingsScreen(
                             },
                             onRoute = { route = it },
                             onOpenGoogleAccounts = onOpenGoogleAccounts,
+                            onOpenAccounts = onOpenAccounts,
                             onOpenLicenses = onOpenLicenses,
                         )
                         SettingsRoute.APPEARANCE -> AppearancePage(current, viewModel)
@@ -249,6 +251,7 @@ private fun MainPage(
     remindersSummary: String,
     onRoute: (String) -> Unit,
     onOpenGoogleAccounts: () -> Unit,
+    onOpenAccounts: () -> Unit,
     onOpenLicenses: () -> Unit,
 ) {
     val colorName = settings.customHue?.let { stringResource(R.string.design_custom) } ?: stringResource(settings.accent.label)
@@ -269,6 +272,7 @@ private fun MainPage(
             IconBubble { Icon(icon, null, tint = if (attention) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onPrimaryContainer) }
         }
     }
+    Section(stringResource(R.string.settings_section_accounts), com.celander.app.account.ui.accountsSummary(), Icons.Outlined.Sync, onClick = onOpenAccounts)
     Section(
         stringResource(R.string.settings_section_appearance),
         stringResource(R.string.settings_design_summary, colorName, NumberFormat.getPercentInstance().format(settings.transparency / 100.0)),
