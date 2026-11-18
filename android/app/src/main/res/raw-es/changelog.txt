@@ -3,4 +3,9 @@
 - Cristal V2: un desenfoque más nítido, una curva de transparencia que mantiene el texto legible y sombras que se quedan fuera del cristal.
 - Los ajustes son ahora un árbol corto de secciones, como en las otras apps.
 - Las actualizaciones se descargan dentro de la app, con barra de progreso. Celander consulta GitHub una o dos veces al día.
-- Copia de seguridad en un solo .zip con casillas (por ahora, los ajustes).
+- Cuentas como en Cemail: conecta Google o Microsoft (Outlook.com, Hotmail, Microsoft 365) en Ajustes > Cuentas y Celander guarda sus calendarios aquí, también sin conexión. Lo que cambias se envía a la cuenta en segundos; lo que cambia en otro sitio llega cada minuto con la app abierta y cada 15 minutos en segundo plano.
+- Google Tasks se puede activar en cada cuenta de Google. El calendario propio del teléfono ya no se lee.
+- Suscríbete a un calendario publicado como enlace .ics (solo lectura) e importa un archivo .ics en este dispositivo.
+- Copia de seguridad en un solo .zip con casillas: los ajustes, y los calendarios, eventos y tareas de este dispositivo. Las cuentas no van en la copia: vuelve a iniciar sesión.
+- Borrar todos los datos ahora también desconecta tus cuentas. Lo que está en Google o Microsoft se queda allí.
+- Volver a dejar una ocurrencia de un evento repetido como el original ya llega también a la cuenta.

@@ -3,4 +3,9 @@
 - Glass V2: a sharper blur, a transparency curve that keeps text readable, and shadows that stay outside the glass.
 - Settings are now a short tree of sections, like in the other apps.
 - Updates now download inside the app, with a progress bar. Celander looks on GitHub once or twice a day.
-- Backup in one .zip with check boxes (settings for now).
+- Accounts like in Cemail: connect Google or Microsoft (Outlook.com, Hotmail, Microsoft 365) in Settings > Accounts and Celander keeps their calendars here, also offline. Changes you make are sent to the account within seconds; changes made elsewhere arrive every minute while the app is open and every 15 minutes in the background.
+- Google Tasks can be switched on for each Google account. The phone's own calendar is no longer read.
+- Subscribe to a calendar published as an .ics link (read only), and import an .ics file into this device.
+- Backup in one .zip with check boxes: settings, and the calendars, events and tasks of this device. Accounts are not in the backup: sign in again.
+- Delete all data now also disconnects your accounts. What is stored at Google or Microsoft stays there.
+- Changing one occurrence of a repeating event back to the original now reaches the account too.

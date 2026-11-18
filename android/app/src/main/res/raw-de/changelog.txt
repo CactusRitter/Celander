@@ -3,4 +3,9 @@
 - Glas V2: eine schärfere Unschärfe, eine Transparenzkurve, die Text lesbar hält, und Schatten, die außerhalb des Glases bleiben.
 - Die Einstellungen sind jetzt ein kurzer Baum aus Bereichen, wie in den anderen Apps.
 - Updates werden jetzt in der App heruntergeladen, mit Fortschrittsbalken. Celander fragt ein- bis zweimal am Tag bei GitHub nach.
-- Sicherung in einer einzigen .zip mit Kontrollkästchen (vorerst die Einstellungen).
+- Konten wie in Cemail: Verbinde Google oder Microsoft (Outlook.com, Hotmail, Microsoft 365) unter Einstellungen > Konten, und Celander speichert deren Kalender hier, auch offline. Deine Änderungen gehen innerhalb von Sekunden ans Konto; Änderungen von anderswo kommen jede Minute bei geöffneter App und alle 15 Minuten im Hintergrund an.
+- Google Tasks lässt sich für jedes Google-Konto einschalten. Der Kalender des Telefons wird nicht mehr gelesen.
+- Abonniere einen als .ics-Link veröffentlichten Kalender (schreibgeschützt) und importiere eine .ics-Datei auf dieses Gerät.
+- Sicherung in einer einzigen .zip mit Kontrollkästchen: Einstellungen sowie Kalender, Termine und Aufgaben dieses Geräts. Konten sind nicht enthalten: Melde dich neu an.
+- „Alle Daten löschen“ trennt jetzt auch deine Konten. Was bei Google oder Microsoft liegt, bleibt dort.
+- Eine Änderung an einem Einzeltermin einer Serie, die wieder auf das Original zurückgesetzt wird, kommt jetzt auch im Konto an.
