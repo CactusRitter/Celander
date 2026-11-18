@@ -56,6 +56,7 @@ internal fun BackupPage(backup: Backup) {
     // What the user chose in the create dialog, kept while the file picker is open.
     var creating by rememberSaveable { mutableStateOf(false) }
     var chosenSettings by rememberSaveable { mutableStateOf(true) }
+    var chosenData by rememberSaveable { mutableStateOf(true) }
     // The file the user picked and what is inside it, while they choose what to restore.
     var pending by remember { mutableStateOf<Pair<Uri, Backup.Contents>?>(null) }
     var working by remember { mutableStateOf(false) }
@@ -80,16 +81,17 @@ internal fun BackupPage(backup: Backup) {
 
     val createLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
         if (uri != null) run {
-            backup.export(uri, chosenSettings)
+            backup.export(uri, chosenSettings, chosenData)
             resources.getString(R.string.backup_exported_settings)
         }
     }
     if (creating) {
         CreateDialog(
             onDismiss = { creating = false },
-            onCreate = { settings ->
+            onCreate = { settings, data ->
                 creating = false
                 chosenSettings = settings
+                chosenData = data
                 val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(Date())
                 createLauncher.launch(resources.getString(R.string.backup_file_settings, date))
             },
@@ -105,11 +107,14 @@ internal fun BackupPage(backup: Backup) {
         RestoreDialog(
             contents = contents,
             onDismiss = { pending = null },
-            onRestore = { settings ->
+            onRestore = { settings, data ->
                 pending = null
                 run {
-                    val r = backup.import(uri, settings)
-                    if (r.settingsRestored) resources.getString(R.string.backup_imported_settings) else ""
+                    val r = backup.import(uri, settings, data)
+                    listOfNotNull(
+                        resources.getString(R.string.backup_imported_settings).takeIf { r.settingsRestored },
+                        r.data?.let { resources.getString(R.string.backup_imported_data, it.events, it.tasks, it.skipped) },
+                    ).joinToString(" ")
                 }
             },
         )
@@ -135,8 +140,9 @@ internal fun BackupPage(backup: Backup) {
 
 /** Asks what to back up (at least one thing). */
 @Composable
-private fun CreateDialog(onDismiss: () -> Unit, onCreate: (settings: Boolean) -> Unit) {
+private fun CreateDialog(onDismiss: () -> Unit, onCreate: (settings: Boolean, data: Boolean) -> Unit) {
     var settings by rememberSaveable { mutableStateOf(true) }
+    var data by rememberSaveable { mutableStateOf(true) }
     AlertDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(28.dp),
@@ -145,10 +151,11 @@ private fun CreateDialog(onDismiss: () -> Unit, onCreate: (settings: Boolean) ->
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 RestoreRow(R.string.backup_restore_settings, settings) { settings = it }
+                RestoreRow(R.string.backup_restore_data, data) { data = it }
             }
         },
         confirmButton = {
-            TextButton(enabled = settings, onClick = { onCreate(settings) }) {
+            TextButton(enabled = settings || data, onClick = { onCreate(settings, data) }) {
                 Text(stringResource(R.string.backup_create_confirm), fontWeight = FontWeight.Bold)
             }
         },
@@ -158,8 +165,9 @@ private fun CreateDialog(onDismiss: () -> Unit, onCreate: (settings: Boolean) ->
 
 /** Asks what to restore from a backup, with a check box only for what the file carries. */
 @Composable
-private fun RestoreDialog(contents: Backup.Contents, onDismiss: () -> Unit, onRestore: (settings: Boolean) -> Unit) {
+private fun RestoreDialog(contents: Backup.Contents, onDismiss: () -> Unit, onRestore: (settings: Boolean, data: Boolean) -> Unit) {
     var settings by remember { mutableStateOf(contents.settings) }
+    var data by remember { mutableStateOf(contents.data) }
     AlertDialog(
         onDismissRequest = onDismiss,
         shape = RoundedCornerShape(28.dp),
@@ -168,10 +176,11 @@ private fun RestoreDialog(contents: Backup.Contents, onDismiss: () -> Unit, onRe
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 if (contents.settings) RestoreRow(R.string.backup_restore_settings, settings) { settings = it }
+                if (contents.data) RestoreRow(R.string.backup_restore_data, data) { data = it }
             }
         },
         confirmButton = {
-            TextButton(enabled = settings, onClick = { onRestore(settings) }) {
+            TextButton(enabled = settings || data, onClick = { onRestore(settings, data) }) {
                 Text(stringResource(R.string.backup_restore_confirm), fontWeight = FontWeight.Bold)
             }
         },

@@ -577,6 +577,8 @@
     <string name="backup_create_confirm">Erstellen</string>
     <string name="backup_restore_title">Was möchtest du wiederherstellen?</string>
     <string name="backup_restore_settings">Einstellungen</string>
+    <string name="backup_restore_data">Kalender, Termine und Aufgaben dieses Geräts</string>
+    <string name="backup_imported_data">%1$d Termine und %2$d Aufgaben hinzugefügt; %3$d waren schon da.</string>
     <string name="backup_restore_confirm">Wiederherstellen</string>
     <string name="backup_too_new">Diese Sicherung stammt von einem neueren Celander. Aktualisiere die App, um sie zu öffnen.</string>
     <string name="backup_working">Einen Moment…</string>
@@ -607,7 +609,7 @@
     <string name="update_check_failed">Prüfung fehlgeschlagen. Prüfe deine Verbindung.</string>
     <string name="update_checking">Wird gesucht…</string>
     <string name="backup">Sicherung</string>
-    <string name="backup_summary">Speichere deine Einstellungen in einer einzigen .zip-Datei, um sie auf ein anderes Gerät zu übertragen</string>
+    <string name="backup_summary">Speichere deine Einstellungen, Kalender, Termine und Aufgaben in einer einzigen .zip-Datei, um sie auf ein anderes Gerät zu übertragen. Konten sind nicht enthalten: Melde dich dort neu an</string>
     <string name="backup_file_settings">Celander-Sicherung-%1$s.zip</string>
     <string name="backup_exported_settings">Sicherung gespeichert.</string>
     <string name="backup_imported_settings">Einstellungen wiederhergestellt.</string>

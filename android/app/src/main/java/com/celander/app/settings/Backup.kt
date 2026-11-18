@@ -3,6 +3,7 @@ package com.celander.app.settings
 import android.content.Context
 import android.net.Uri
 import com.celander.app.BuildConfig
+import com.celander.app.core.ical.LocalDataIcs
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.BufferedInputStream
 import java.io.InputStream
@@ -23,17 +24,18 @@ import org.json.JSONObject
  * - `settings.json`: the settings, `{"app":"celander","format":1,"settings":{…typed values…}}` (see [SettingsRepository.exportJson]).
  *
  * Importing reads the zip, looks at what is in it and lets the user choose what to restore. Only this container is understood.
- * Calendars, events and tasks will be another entry of the same container (`contents` says what went in).
+ * `contents` says what went in: `settings`, `data`, or both.
  */
 @Singleton
 class Backup @Inject constructor(
     @ApplicationContext private val context: Context,
     private val settings: SettingsRepository,
+    private val data: LocalDataIcs,
 ) {
     /** What a backup file carries (and so what the import can restore). */
-    data class Contents(val settings: Boolean)
+    data class Contents(val settings: Boolean, val data: Boolean)
 
-    data class ImportResult(val settingsRestored: Boolean = false)
+    data class ImportResult(val settingsRestored: Boolean = false, val data: LocalDataIcs.ImportResult? = null)
 
     /** Not a Celander backup (another app's zip, or anything else). */
     class NotABackupException : Exception()
@@ -41,14 +43,16 @@ class Backup @Inject constructor(
     /** A backup made by a newer container version than this app understands. */
     class TooNewException : Exception()
 
-    /** One backup zip: `manifest.json` + `settings.json` if [includeSettings]. */
-    suspend fun export(uri: Uri, includeSettings: Boolean) = withContext(Dispatchers.IO) {
-        require(includeSettings) { "Nothing to back up" }
-        val settingsJson = settings.exportJson()
+    /** One backup zip: `manifest.json` + `settings.json` if [includeSettings] + `data.ics` if [includeData]. */
+    suspend fun export(uri: Uri, includeSettings: Boolean, includeData: Boolean = false) = withContext(Dispatchers.IO) {
+        require(includeSettings || includeData) { "Nothing to back up" }
+        val settingsJson = if (includeSettings) settings.exportJson() else null
+        val dataIcs = if (includeData) data.export() else null
         val out = context.contentResolver.openOutputStream(uri, "wt") ?: error("Could not write the file")
         ZipOutputStream(out.buffered()).use { zip ->
-            zip.putText(ManifestEntry, manifest(listOf(ContentSettings)).toString(2))
-            zip.putText(SettingsEntry, settingsJson)
+            zip.putText(ManifestEntry, manifest(listOfNotNull(ContentSettings.takeIf { includeSettings }, ContentData.takeIf { includeData })).toString(2))
+            settingsJson?.let { zip.putText(SettingsEntry, it) }
+            dataIcs?.let { zip.putText(DataEntry, it) }
         }
     }
 
@@ -74,6 +78,7 @@ class Backup @Inject constructor(
         input.use {
             var manifest: JSONObject? = null
             var hasSettings = false
+            var hasData = false
             var entries = 0
             ZipInputStream(it).use { zip ->
                 while (true) {
@@ -83,6 +88,7 @@ class Backup @Inject constructor(
                         entry.isDirectory -> Unit
                         entry.name == ManifestEntry -> manifest = runCatching { JSONObject(readLimited(zip).toString(Charsets.UTF_8)) }.getOrNull()
                         entry.name == SettingsEntry -> hasSettings = looksLikeSettings(readLimited(zip).toString(Charsets.UTF_8))
+                        entry.name == DataEntry -> hasData = readLimited(zip).toString(Charsets.UTF_8).contains("BEGIN:VCALENDAR")
                     }
                     zip.closeEntry()
                 }
@@ -91,14 +97,15 @@ class Backup @Inject constructor(
             val m = manifest ?: throw NotABackupException()
             if (!m.optString("app").equals(ManifestApp, ignoreCase = true)) throw NotABackupException()
             if (m.optInt("container", 0) > Container) throw TooNewException()
-            if (!hasSettings) throw NotABackupException()
-            Contents(hasSettings)
+            if (!hasSettings && !hasData) throw NotABackupException()
+            Contents(hasSettings, hasData)
         }
     }
 
     /** Restores what the user chose from the file; what it does not carry is ignored. */
-    suspend fun import(uri: Uri, restoreSettings: Boolean): ImportResult = withContext(Dispatchers.IO) {
+    suspend fun import(uri: Uri, restoreSettings: Boolean, restoreData: Boolean = false): ImportResult = withContext(Dispatchers.IO) {
         var settingsJson: String? = null
+        var dataIcs: String? = null
         val input = BufferedInputStream(context.contentResolver.openInputStream(uri) ?: error("Could not read the file"))
         input.use {
             var entries = 0
@@ -107,13 +114,14 @@ class Backup @Inject constructor(
                     val entry = zip.nextEntry ?: break
                     if (++entries > MaxEntries) throw NotABackupException()
                     if (!entry.isDirectory && entry.name == SettingsEntry && restoreSettings) settingsJson = readLimited(zip).toString(Charsets.UTF_8)
+                    if (!entry.isDirectory && entry.name == DataEntry && restoreData) dataIcs = readLimited(zip).toString(Charsets.UTF_8)
                     zip.closeEntry()
                 }
             }
         }
         var restored = false
         if (restoreSettings) settingsJson?.let { restored = settings.importJson(it) }
-        ImportResult(settingsRestored = restored)
+        ImportResult(settingsRestored = restored, data = dataIcs?.let { data.import(it) })
     }
 
     private fun looksLikeSettings(text: String): Boolean {
@@ -139,7 +147,9 @@ class Backup @Inject constructor(
         const val Container = 1
         const val ManifestEntry = "manifest.json"
         const val SettingsEntry = "settings.json"
+        const val DataEntry = "data.ics"
         const val ContentSettings = "settings"
+        const val ContentData = "data"
 
         /** Limits for an untrusted zip: JSON entries and the number of entries. */
         const val MaxJsonBytes = 64 * 1024 * 1024
