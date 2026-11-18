@@ -5,6 +5,10 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -83,15 +87,8 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
     var removing by rememberSaveable { mutableStateOf(false) }
     var subscribing by rememberSaveable { mutableStateOf(false) }
     var adding by rememberSaveable { mutableStateOf(false) }
-    if (subscribing) {
-        SubscribeDialog(
-            onDismiss = { subscribing = false },
-            onSubscribe = { url, name ->
-                subscribing = false
-                viewModel.addSubscription(url, name)
-            },
-        )
-    }
+    var subscriptionUrl by rememberSaveable { mutableStateOf("") }
+    var subscriptionName by rememberSaveable { mutableStateOf("") }
     val list = accounts ?: return
     val account = list.firstOrNull { it.id == selected }
     // An account that was removed (or is not there any more) takes the page back to the list.
@@ -108,8 +105,41 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
         snackbar = snackbar,
         onSnackbarAction = viewModel::onSnackbarAction,
         onSnackbarTimeout = viewModel::onSnackbarTimeout,
-        modalOpen = removing,
+        modalOpen = removing || subscribing,
         overlay = {
+            // The link of a calendar to subscribe to, and what to call it (optional), in the same glass as the other dialogs.
+            GlassDialog(
+                visible = subscribing,
+                title = stringResource(R.string.accounts_subscription_title),
+                message = stringResource(R.string.accounts_subscription_body),
+                confirmLabel = stringResource(R.string.accounts_subscription_confirm),
+                onConfirm = {
+                    subscribing = false
+                    viewModel.addSubscription(subscriptionUrl, subscriptionName)
+                    subscriptionUrl = ""
+                    subscriptionName = ""
+                },
+                onDismiss = { subscribing = false },
+                confirmEnabled = subscriptionUrl.isNotBlank(),
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedTextField(
+                        value = subscriptionUrl,
+                        onValueChange = { subscriptionUrl = it },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(stringResource(R.string.accounts_subscription_url)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                    )
+                    OutlinedTextField(
+                        value = subscriptionName,
+                        onValueChange = { subscriptionName = it },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(stringResource(R.string.accounts_subscription_name)) },
+                    )
+                }
+            }
             GlassDialog(
                 visible = removing && account != null,
                 title = stringResource(R.string.accounts_remove_title, account?.identifier.orEmpty()),
@@ -231,42 +261,6 @@ private fun providerName(account: AccountEntity): String = stringResource(
     },
 )
 
-/** Asks for the link of a calendar to subscribe to, and what to call it (optional). */
-@Composable
-private fun SubscribeDialog(onDismiss: () -> Unit, onSubscribe: (url: String, name: String) -> Unit) {
-    var url by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable { mutableStateOf("") }
-    androidx.compose.material3.AlertDialog(
-        onDismissRequest = onDismiss,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(28.dp),
-        containerColor = com.celander.app.ui.theme.LocalGlass.current.menu,
-        title = { Text(stringResource(R.string.accounts_subscription_title), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold) },
-        text = {
-            androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(stringResource(R.string.accounts_subscription_body), style = MaterialTheme.typography.bodyMedium)
-                androidx.compose.material3.OutlinedTextField(
-                    value = url,
-                    onValueChange = { url = it },
-                    singleLine = true,
-                    label = { Text(stringResource(R.string.accounts_subscription_url)) },
-                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Uri),
-                )
-                androidx.compose.material3.OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    singleLine = true,
-                    label = { Text(stringResource(R.string.accounts_subscription_name)) },
-                )
-            }
-        },
-        confirmButton = {
-            androidx.compose.material3.TextButton(enabled = url.isNotBlank(), onClick = { onSubscribe(url, name) }) {
-                Text(stringResource(R.string.accounts_subscription_confirm), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-            }
-        },
-        dismissButton = { androidx.compose.material3.TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
-    )
-}
 
 /**
  * The round mark of an account, as in Cemail: its picture at Google or Microsoft (the first letter while there is none),

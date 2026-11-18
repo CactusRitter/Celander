@@ -1,5 +1,6 @@
-## Unreleased
+## 2.1.0
 - Las cuentas se ven como en Cemail: tu foto de Google o Microsoft dentro de un anillo del color de la cuenta, y un solo botón «Añadir» que abre «Añadir una cuenta» con una tarjeta para Google, Microsoft y el enlace .ics.
+- El cuadro para suscribirse a un enlace de calendario usa ahora el mismo cristal que los demás cuadros, y los cuadros ya no oscurecen del todo la pantalla de detrás.
 
 ## 2.0.0
 - Diseño nuevo compartido con Cemail y Cenotes: seis diseños para elegir (Cristal, Moderno, AMOLED, Retro 98, Papel, Brutalista), un color de acento (ocho, o cualquier tono) y la transparencia del cristal, todo en Ajustes > Apariencia.

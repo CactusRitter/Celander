@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +50,10 @@ fun GlassDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
     destructive: Boolean = false,
+    /** Turns the confirm button off (for a form that is not filled in yet). */
+    confirmEnabled: Boolean = true,
+    /** Extra content under the message, such as text fields; the dialog then rises above the keyboard. */
+    content: (@Composable () -> Unit)? = null,
 ) {
     val colors = MaterialTheme.colorScheme
     val motion = LocalMotion.current
@@ -58,7 +63,8 @@ fun GlassDialog(
         Box(
             Modifier
                 .fillMaxSize()
-                .background(colors.scrim)
+                .background(colors.scrim.copy(alpha = SCRIM_ALPHA))
+                .then(if (content != null) Modifier.imePadding() else Modifier)
                 .pointerInput(Unit) { detectTapGestures { onDismiss() } }
                 .semantics {
                     contentDescription = cancelLabel
@@ -90,12 +96,17 @@ fun GlassDialog(
                         color = colors.onSurfaceVariant,
                         modifier = Modifier.padding(top = 8.dp, end = 8.dp),
                     )
+                    if (content != null) Box(Modifier.padding(top = 12.dp, end = 8.dp)) { content() }
                     Row(
                         Modifier.fillMaxWidth().padding(top = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.End),
                     ) {
                         TextAction(cancelLabel, onClick = onDismiss)
-                        TextAction(confirmLabel, onClick = onConfirm, color = if (destructive) colors.error else colors.primary)
+                        TextAction(
+                            confirmLabel,
+                            onClick = { if (confirmEnabled) onConfirm() },
+                            color = if (!confirmEnabled) colors.onSurfaceVariant.copy(alpha = 0.5f) else if (destructive) colors.error else colors.primary,
+                        )
                     }
                 }
             }
@@ -105,3 +116,6 @@ fun GlassDialog(
 
 private val MaxDialogWidth = 420.dp
 private const val DIALOG_EXIT_SCALE = 0.96f
+
+/** How much the screen behind a dialog is darkened (the scheme's scrim is opaque black). */
+private const val SCRIM_ALPHA = 0.4f
