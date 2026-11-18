@@ -28,7 +28,7 @@ android {
     defaultConfig {
         applicationId = "com.celander.app"
         minSdk = 26
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 15
         versionName = "2.1.2"
         // The client ID is "<ID>.apps.googleusercontent.com"; empty until set in local.properties.
