@@ -34,6 +34,8 @@ android {
         // The client ID is "<ID>.apps.googleusercontent.com"; empty until set in local.properties.
         val googleClientId = localProp("celander.oauth.google.clientId")
         buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleClientId\"")
+        // Microsoft's application (client) ID from Entra, a public client: no secret. Empty until set in local.properties.
+        buildConfigField("String", "MICROSOFT_OAUTH_CLIENT_ID", "\"${localProp("celander.oauth.microsoft.clientId")}\"")
         // Google asks Android clients for the client ID reversed as the redirect scheme.
         manifestPlaceholders["appAuthRedirectScheme"] =
             if (googleClientId.isBlank()) "com.celander.app" else "com.googleusercontent.apps." + googleClientId.removeSuffix(".apps.googleusercontent.com")
