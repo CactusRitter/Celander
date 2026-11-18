@@ -46,6 +46,8 @@ data class ICalTodo(
     val completedAt: Long? = null,
     /** Minutes before the due moment, one per relative VALARM. */
     val reminders: List<Int> = emptyList(),
+    /** The calendar it belonged to when it was exported by Celander (`X-CELANDER-CALENDAR`). */
+    val calendar: String? = null,
 )
 
 data class ICalCalendar(val name: String?, val events: List<ICalEvent>, val todos: List<ICalTodo> = emptyList())
@@ -141,6 +143,7 @@ object IcsParser {
             completed = done,
             completedAt = completedAt,
             reminders = reminders.distinct(),
+            calendar = first("X-CELANDER-CALENDAR")?.value?.let(ContentLine::unescapeText),
         )
     }
 

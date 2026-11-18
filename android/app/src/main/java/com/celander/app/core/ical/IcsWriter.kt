@@ -70,6 +70,7 @@ object IcsWriter {
             line("DTSTAMP:${ICalDates.formatUtc(nowMillis)}")
             line("SUMMARY:${ContentLine.escapeText(t.summary)}")
             if (t.description.isNotEmpty()) line("DESCRIPTION:${ContentLine.escapeText(t.description)}")
+            t.calendar?.let { line("X-CELANDER-CALENDAR:${ContentLine.escapeText(it)}") }
             // The due moment is the person's wall clock ("floating"): no zone, like in the app.
             t.due?.let { date ->
                 if (t.dueTime == null) line("DUE;VALUE=DATE:${date.format(DateTimeFormatter.BASIC_ISO_DATE)}")
