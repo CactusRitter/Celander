@@ -1,6 +1,6 @@
 # Lista de publicación de Celander 2.0.0
 
-Estado a 2026-11-18, rama `ce/estilo-ce` (no fusionada, sin push). **No se publica nada hasta que César o Ce Líder lo digan**, y a la vez que Cemail y Cenotes.
+PUBLICADA el 2026-11-18: v2.0.0 en https://github.com/CactusRitter/Celander/releases/tag/v2.0.0 (main = ce/estilo-ce, versionCode 12, APK firmado en G:Mi unidadCe AppsCelanderCelander-2.0.0.apk). Lo de abajo es el historial de la lista.
 
 ## Ya hecho
 - [x] Notas de la 2.0.0 en `android/app/src/main/res/raw/changelog.txt`, `raw-es` y `raw-de` (cuentas Google y Microsoft, Tasks por cuenta, suscripción `.ics` e importar archivo, copia ZIP con datos, borrar datos con cuentas, ocurrencias revertidas).
