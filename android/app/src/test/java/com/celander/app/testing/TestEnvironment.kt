@@ -1,7 +1,6 @@
 package com.celander.app.testing
 
 import android.content.Context
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.celander.app.calendar.data.CalendarsRepository
@@ -27,7 +26,7 @@ class TestEnvironment(
     val time = FixedTimeSource(LocalDateTime.of(2026, 10, 23, 10, 10).atZone(BERLIN).toInstant())
     val db: CelanderDatabase = Room.inMemoryDatabaseBuilder(context, CelanderDatabase::class.java).build()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    val settings = SettingsRepository(PreferenceDataStoreFactory.create(scope = scope) { File(directory, "settings.preferences_pb") })
+    val settings = SettingsRepository(testPreferencesDataStore(scope, File(directory, "settings.preferences_pb")))
     val calendars = CalendarsRepository(db, db.calendarDao(), db.eventDao(), db.exceptionDao(), db.taskDao(), settings, time)
     val events = EventRepository(db, db.eventDao(), db.exceptionDao(), time)
     val tasks = TaskRepository(db, db.taskDao(), db.googleTasksDao(), time)

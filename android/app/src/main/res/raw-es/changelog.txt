@@ -1,4 +1,5 @@
-## Unreleased
+## 2.1.2
+- Icono nuevo de la app, con el estilo de Cemail y Cenotes: un calendario sobre fondo claro, también como icono temático.
 - Página nueva «Diagnóstico» en Ajustes (como en Cemail): un registro de actividad de inicios de sesión, sincronizaciones y actualizaciones, más el último error inesperado, que puedes compartir o copiar. Nunca guarda títulos de eventos, direcciones ni tokens.
 
 ## 2.1.1

@@ -1,6 +1,6 @@
 package com.celander.app.settings
 
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import com.celander.app.testing.testPreferencesDataStore
 import com.celander.app.core.di.settingsCorruptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,7 @@ class SettingsCorruptionTest {
     fun aDamagedFileStartsOverWithTheDefaults() = runBlocking {
         // Wire type 7 does not exist in protocol buffers: the file cannot be parsed.
         val file = File(folder.root, "settings.preferences_pb").apply { writeBytes(byteArrayOf(0x0f, 0x0f, 0x0f)) }
-        val repository = SettingsRepository(PreferenceDataStoreFactory.create(corruptionHandler = settingsCorruptionHandler(), scope = scope) { file })
+        val repository = SettingsRepository(testPreferencesDataStore(scope, file, settingsCorruptionHandler()))
         assertEquals(AppSettings(), repository.current())
 
         repository.update { it.copy(showWeekNumbers = !it.showWeekNumbers) }

@@ -1,4 +1,5 @@
-## Unreleased
+## 2.1.2
+- New app icon in the style of Cemail and Cenotes: a calendar on a light background, also as a themed icon.
 - New Diagnostics page in Settings (as in Cemail): an activity log of account sign-ins, syncs and updates, plus the last unexpected error, that you can share or copy. It never holds event titles, addresses or tokens.
 
 ## 2.1.1

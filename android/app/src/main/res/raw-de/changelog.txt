@@ -1,4 +1,5 @@
-## Unreleased
+## 2.1.2
+- Neues App-Symbol im Stil von Cemail und Cenotes: ein Kalender auf hellem Hintergrund, auch als Themen-Symbol.
 - Neue Seite „Diagnose“ in den Einstellungen (wie in Cemail): ein Aktivitätsprotokoll zu Kontoanmeldungen, Synchronisierungen und Updates sowie der letzte unerwartete Fehler, die du teilen oder kopieren kannst. Es enthält nie Termintitel, Adressen oder Tokens.
 
 ## 2.1.1

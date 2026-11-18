@@ -1,6 +1,6 @@
 package com.celander.app.settings
 
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import com.celander.app.testing.testPreferencesDataStore
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -25,7 +25,7 @@ class SettingsRepositoryTest {
     @get:Rule val folder = TemporaryFolder()
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val dataStore by lazy { PreferenceDataStoreFactory.create(scope = scope) { File(folder.root, "settings.preferences_pb") } }
+    private val dataStore by lazy { testPreferencesDataStore(scope, File(folder.root, "settings.preferences_pb")) }
     private val repository by lazy { SettingsRepository(dataStore) }
     private val legacyGlass = stringPreferencesKey("glass")
     private val glassTransparency = floatPreferencesKey("glass_transparency")
