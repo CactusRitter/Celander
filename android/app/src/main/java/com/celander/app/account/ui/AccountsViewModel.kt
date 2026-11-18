@@ -1,5 +1,6 @@
 package com.celander.app.account.ui
 
+import com.celander.app.AppLog
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -87,7 +88,7 @@ class AccountsViewModel @Inject constructor(
 
     /** What came back from the browser sign-in. */
     fun onSignInResult(data: Intent?) {
-        android.util.Log.i("Accounts", "browser returned, data=" + (data != null))
+        AppLog.i("accounts", "browser returned, data=" + (data != null))
         val type = signingIn
         viewModelScope.launch {
             val outcome = if (type == AccountType.MICROSOFT) repository.addMicrosoft(data) else repository.addGoogle(data)

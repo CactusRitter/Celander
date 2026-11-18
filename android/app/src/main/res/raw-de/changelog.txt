@@ -1,3 +1,6 @@
+## Unreleased
+- Neue Seite „Diagnose“ in den Einstellungen (wie in Cemail): ein Aktivitätsprotokoll zu Kontoanmeldungen, Synchronisierungen und Updates sowie der letzte unerwartete Fehler, die du teilen oder kopieren kannst. Es enthält nie Termintitel, Adressen oder Tokens.
+
 ## 2.1.1
 - Behoben: Das Tippen auf Herunterladen im Update-Hinweis schloss die App. Celander deklariert jetzt die Berechtigung, die Android braucht, um die neue Version an den Installer zu übergeben.
 

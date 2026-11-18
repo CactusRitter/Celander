@@ -37,6 +37,8 @@ class CelanderApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        CrashLog.install(this)
+        AppLog.init(this)
         notifier.ensureChannels()
         // The first calendar is named in the language of the first start.
         scope.launch { calendars.ensureDefault(getString(R.string.default_calendar_name)) }

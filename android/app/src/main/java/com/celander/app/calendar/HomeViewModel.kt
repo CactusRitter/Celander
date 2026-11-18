@@ -1,6 +1,6 @@
 package com.celander.app.calendar
 
-import android.util.Log
+import com.celander.app.AppLog
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -166,7 +166,7 @@ class HomeViewModel @Inject constructor(
     val attempt: StateFlow<Int> = _attempt.asStateFlow()
 
     private fun failed(error: Throwable) {
-        Log.e(TAG, "Loading calendar data failed", error)
+        AppLog.e("home", "Loading calendar data failed", error)
         _loadFailed.value = true
     }
 

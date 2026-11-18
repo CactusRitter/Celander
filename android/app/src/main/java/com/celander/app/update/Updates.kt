@@ -1,11 +1,11 @@
 package com.celander.app.update
 
+import com.celander.app.AppLog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import com.celander.app.BuildConfig
-import android.util.Log
 import java.io.File
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
@@ -120,7 +120,7 @@ class Updates(private val context: Context, private val client: OkHttpClient = O
         } else {
             null
         }
-        Log.i(TAG, "checked: latest ${release.tag}, ${if (found != null) "newer" else "up to date"}")
+        AppLog.i("update", "checked: latest ${release.tag}, ${if (found != null) "newer" else "up to date"}")
         prefs.edit().apply {
             if (found == null) remove(KEY_VERSION).remove(KEY_APK).remove(KEY_PAGE).remove(KEY_NOTES).remove(KEY_SIZE)
             else putString(KEY_VERSION, found.version).putString(KEY_APK, found.apkUrl).putString(KEY_PAGE, found.pageUrl)
@@ -168,20 +168,20 @@ class Updates(private val context: Context, private val client: OkHttpClient = O
             dir.mkdirs()
             val part = File(dir, done.name + ".part")
             try {
-                Log.i(TAG, "downloading ${update.version}")
+                AppLog.i("update", "downloading ${update.version}")
                 fetch(update, part)
                 if (!part.renameTo(done)) throw java.io.IOException("could not keep the file")
                 _download.value = DownloadState.Ready(update.version)
-                Log.i(TAG, "downloaded ${update.version}")
+                AppLog.i("update", "downloaded ${update.version}")
                 withContext(Dispatchers.Main) { install(update) }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: IncompleteException) {
                 part.delete() // something is wrong with it: the next try starts from the beginning
-                Log.e(TAG, "download of ${update.version} incomplete", e)
+                AppLog.e("update", "download of ${update.version} incomplete", e)
                 _download.value = DownloadState.Failed(update.version, incomplete = true)
             } catch (e: Exception) {
-                Log.e(TAG, "download of ${update.version} failed", e)
+                AppLog.e("update", "download of ${update.version} failed", e)
                 _download.value = DownloadState.Failed(update.version, incomplete = false)
             }
         }
@@ -207,7 +207,7 @@ class Updates(private val context: Context, private val client: OkHttpClient = O
         downloadClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) throw java.io.IOException("download ${response.code}")
             val resumed = response.code == 206
-            if (resumed) Log.i(TAG, "going on from $have bytes") else have = 0 // the server sent it all again
+            if (resumed) AppLog.i("update", "going on from $have bytes") else have = 0 // the server sent it all again
             val length = response.body!!.contentLength()
             val total = when {
                 length < 0 -> update.size.takeIf { it > 0 } ?: -1L
@@ -274,7 +274,7 @@ class Updates(private val context: Context, private val client: OkHttpClient = O
         )
         true
     } catch (e: Exception) {
-        Log.e(TAG, "could not open the install permission", e)
+        AppLog.e("update", "could not open the install permission", e)
         false
     }
 
@@ -293,7 +293,7 @@ class Updates(private val context: Context, private val client: OkHttpClient = O
             )
             true
         } catch (e: Exception) {
-            Log.e(TAG, "could not open the installer", e)
+            AppLog.e("update", "could not open the installer", e)
             false
         }
     }

@@ -1,5 +1,6 @@
 package com.celander.app.account
 
+import com.celander.app.AppLog
 import android.content.Intent
 import com.celander.app.account.auth.GoogleAuth
 import com.celander.app.account.auth.MicrosoftAuth
@@ -90,7 +91,7 @@ class AccountRepository @Inject constructor(
     suspend fun addMicrosoft(data: Intent?): AddAccountResult = added(AccountType.MICROSOFT, microsoft.handleResult(data))
 
     /** Stores the account a sign-in of [type] gave (or refreshes the one that was there) and syncs it. */
-    private suspend fun added(type: AccountType, signedIn: SignInOutcome): AddAccountResult = when (val outcome = signedIn.also { android.util.Log.i(TAG, "sign-in result ($type): ${it.javaClass.simpleName}" + ((it as? SignInOutcome.Failed)?.let { f -> " (${f.reason})" } ?: "")) }) {
+    private suspend fun added(type: AccountType, signedIn: SignInOutcome): AddAccountResult = when (val outcome = signedIn.also { AppLog.i("accounts", "sign-in result ($type): ${it.javaClass.simpleName}" + ((it as? SignInOutcome.Failed)?.let { f -> " (${f.reason})" } ?: "")) }) {
         SignInOutcome.Cancelled -> AddAccountResult.Cancelled
         SignInOutcome.NotConfigured -> AddAccountResult.NotConfigured
         is SignInOutcome.Failed -> AddAccountResult.Failed(outcome.reason)
@@ -109,7 +110,7 @@ class AccountRepository @Inject constructor(
         }
     }
 
-    suspend fun syncAccount(id: Long): SyncOutcome = lock.withLock { sync.sync(id).also { android.util.Log.i(TAG, "sync of account $id: $it") } }
+    suspend fun syncAccount(id: Long): SyncOutcome = lock.withLock { sync.sync(id).also { AppLog.i("accounts", "sync of account $id: $it") } }
 
     /** Syncs every account (one after the other). True when a passing problem (offline, server error) means it should be tried again. */
     suspend fun syncAll(): Boolean {

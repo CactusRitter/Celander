@@ -1,3 +1,6 @@
+## Unreleased
+- Página nueva «Diagnóstico» en Ajustes (como en Cemail): un registro de actividad de inicios de sesión, sincronizaciones y actualizaciones, más el último error inesperado, que puedes compartir o copiar. Nunca guarda títulos de eventos, direcciones ni tokens.
+
 ## 2.1.1
 - Arreglado: al pulsar Descargar en el aviso de actualización la app se cerraba. Celander declara ahora el permiso que Android necesita para pasar la versión nueva al instalador.
 

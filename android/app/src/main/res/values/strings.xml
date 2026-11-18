@@ -607,6 +607,17 @@
     <string name="settings_transparency_title">Glass transparency</string>
     <string name="settings_transparency_body">How see-through the cards and bars are.</string>
     <string name="settings_section_updates">Updates</string>
+    <string name="settings_section_diagnostics">Diagnostics</string>
+    <string name="settings_row_diagnostics_body">Activity log and last error</string>
+    <string name="settings_log_title">Activity log</string>
+    <string name="settings_log_body">A record of what the app does on this device (account sign-ins, syncs, updates, errors), without event titles, addresses or tokens. Share it so it can be read when you cannot connect a cable.</string>
+    <string name="settings_log_share">Share log</string>
+    <string name="settings_log_share_title">Share the log</string>
+    <string name="settings_crash_title">Last unexpected error</string>
+    <string name="settings_crash_body">Saved only on this device. Copy it to send it to whoever maintains the app.</string>
+    <string name="copy">Copy</string>
+    <string name="clear">Clear</string>
+    <string name="copied">Copied</string>
     <string name="settings_updates_title">Look for new versions</string>
     <string name="settings_updates_body">Once or twice a day Celander asks GitHub, where its versions are published, whether there is a newer one, and says so at the top of the calendar. GitHub only sees the address of your connection, nothing about you or your events.</string>
     <string name="settings_updates_now">Look now</string>

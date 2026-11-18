@@ -1,5 +1,6 @@
 package com.celander.app.account
 
+import com.celander.app.AppLog
 import androidx.room.withTransaction
 import com.celander.app.core.database.AccountDao
 import com.celander.app.core.database.AccountEntity
@@ -140,7 +141,7 @@ class AccountSync(
     private suspend fun pushOne(account: AccountEntity, calendar: RemoteCalendarEntity, provider: CalendarProvider, link: EventLinkEntity) {
         if (link.syncState == SyncState.DELETED.name) {
             link.remoteId?.let { provider.delete(account, calendar, it, link.etag) }
-            android.util.Log.i("Accounts", "deleted event ${link.eventId} at the server")
+            AppLog.i("accounts", "deleted event ${link.eventId} at the server")
             accountDao.deleteEventLink(link.eventId)
             accountDao.deleteExceptionLinks(link.eventId)
             return
@@ -151,7 +152,7 @@ class AccountSync(
             return
         }
         val event = entity.toModel()
-        android.util.Log.i("Accounts", "sending ${link.syncState} event ${link.eventId}")
+        AppLog.i("accounts", "sending ${link.syncState} event ${link.eventId}")
         val exceptions = exceptionDao.getForEvent(entity.id).map { it.toModel(event.zone) }
         val parts = IcsMapper.toIcal(event, exceptions)
         val master = parts.first()
@@ -164,7 +165,7 @@ class AccountSync(
                 provider.update(account, calendar, link.remoteId, master, event.reminders, null)
             }
         }
-        android.util.Log.i("Accounts", "sent event ${link.eventId} as ${write.remoteId}")
+        AppLog.i("accounts", "sent event ${link.eventId} as ${write.remoteId}")
         // The server gives a series its own UID; the occurrences that come back later are matched by it.
         if (write.uid != null && write.uid != entity.uid) eventDao.update(entity.copy(uid = write.uid))
         for (occurrence in parts.drop(1)) {

@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
@@ -67,7 +68,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.celander.app.AppLog
 import com.celander.app.BuildConfig
+import com.celander.app.CrashLog
 import com.celander.app.CelanderApp
 import com.celander.app.R
 import com.celander.app.core.model.CalendarSource
@@ -122,6 +125,7 @@ private object SettingsRoute {
     const val DATA = "data"
     const val BACKUP = "backup"
     const val UPDATES = "updates"
+    const val DIAGNOSTICS = "diagnostics"
 
     fun parent(route: String): String? = if (route == MAIN) null else MAIN
     fun depth(route: String): Int = if (route == MAIN) 0 else 1
@@ -159,6 +163,7 @@ fun SettingsScreen(
         SettingsRoute.DATA -> stringResource(R.string.settings_section_data)
         SettingsRoute.BACKUP -> stringResource(R.string.backup)
         SettingsRoute.UPDATES -> stringResource(R.string.settings_section_updates)
+        SettingsRoute.DIAGNOSTICS -> stringResource(R.string.settings_section_diagnostics)
         else -> stringResource(R.string.settings_title)
     }
 
@@ -225,6 +230,7 @@ fun SettingsScreen(
                         SettingsRoute.DATA -> DataPage(hasSampleData, viewModel) { confirmDeleteAll = true }
                         SettingsRoute.BACKUP -> BackupPage(viewModel.backup)
                         SettingsRoute.UPDATES -> UpdatesPage(current, viewModel)
+                        SettingsRoute.DIAGNOSTICS -> DiagnosticsPage()
                     }
                 }
             }
@@ -273,6 +279,7 @@ private fun MainPage(
     Section(stringResource(R.string.settings_section_data), stringResource(R.string.settings_data_summary), Icons.Outlined.Storage) { onRoute(SettingsRoute.DATA) }
     Section(stringResource(R.string.backup), stringResource(R.string.backup_summary), BackupIcon) { onRoute(SettingsRoute.BACKUP) }
     Section(stringResource(R.string.settings_section_updates), stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), DownloadIcon) { onRoute(SettingsRoute.UPDATES) }
+    Section(stringResource(R.string.settings_section_diagnostics), stringResource(R.string.settings_row_diagnostics_body), Icons.Outlined.BugReport) { onRoute(SettingsRoute.DIAGNOSTICS) }
     Section(stringResource(R.string.settings_licenses), null, Icons.Outlined.Info, onClick = onOpenLicenses)
     // About as a quiet footer: logo, name and version.
     Column(
@@ -750,3 +757,42 @@ private val DURATION_PRESETS = listOf(15, 30, 45, 60, 90, 120)
 private const val CUSTOM_DURATION = -1
 private val HOURS = (0..23).toList()
 private val MINUTES = (0 until 60 step MINUTE_STEP).toList()
+
+/** The activity log can always be shared; the last crash shows only if there was one (as in Cemail). */
+@Composable
+private fun DiagnosticsPage() {
+    val context = LocalContext.current
+    var crash by remember { mutableStateOf(CrashLog.read(context)) }
+    val copiedLabel = stringResource(R.string.copied)
+    fun copy(text: String) {
+        val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+        clipboard.setPrimaryClip(android.content.ClipData.newPlainText(copiedLabel, text))
+    }
+    SettingsCard {
+        Text(stringResource(R.string.settings_log_title), style = MaterialTheme.typography.titleSmall)
+        Text(stringResource(R.string.settings_log_body), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            val shareTitle = stringResource(R.string.settings_log_share_title)
+            TextAction(stringResource(R.string.settings_log_share), onClick = { AppLog.share(context, shareTitle) })
+            TextAction(stringResource(R.string.copy), onClick = { copy(AppLog.text(context)) })
+            TextAction(stringResource(R.string.clear), onClick = {
+                AppLog.clear(context)
+                crash = null
+            }, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+    crash?.let { text ->
+        SettingsCard {
+            Text(stringResource(R.string.settings_crash_title), style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.settings_crash_body), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 6, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextAction(stringResource(R.string.copy), onClick = { copy(text) })
+                TextAction(stringResource(R.string.clear), onClick = {
+                    CrashLog.clear(context)
+                    crash = null
+                }, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }
+}
