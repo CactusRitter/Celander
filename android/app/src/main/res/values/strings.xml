@@ -622,6 +622,7 @@
     <string name="accounts_summary_none">No account connected</string>
     <string name="accounts_intro">Connect an account and Celander keeps its calendars here, so they work without a connection too.</string>
     <string name="accounts_google_missing">Google sign-in is not set up in this build.</string>
+    <string name="accounts_microsoft_missing">Microsoft sign-in is not set up in this build.</string>
     <string name="accounts_never_synced">Not synced yet</string>
     <string name="accounts_last_sync">Last sync: %1$s</string>
     <string name="accounts_needs_sign_in">Sign in again to go on syncing</string>
@@ -634,8 +635,10 @@
     <string name="accounts_remove_confirm">Remove</string>
     <string name="accounts_sign_in_failed">Signing in did not work.</string>
     <string name="accounts_added">%1$s connected</string>
-    <string name="accounts_add_button">Add</string>
+    <string name="accounts_add_google">Add a Google account</string>
+    <string name="accounts_add_microsoft">Add a Microsoft account</string>
     <string name="accounts_provider_google">Google</string>
+    <string name="accounts_provider_microsoft">Microsoft</string>
     <string name="accounts_tasks_summary">Syncs the task lists of this account both ways.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
 </resources>

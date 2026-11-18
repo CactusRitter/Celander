@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.celander.app.R
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountStatus
+import com.celander.app.core.model.AccountType
 import com.celander.app.settings.SettingsDivider
 import com.celander.app.settings.SettingsRow
 import com.celander.app.settings.SettingsScaffold
@@ -67,7 +68,7 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
     // An account that was removed (or is not there any more) takes the page back to the list.
     if (selected != null && account == null) selected = null
     BackHandler(enabled = account != null) { selected = null }
-    val startSignIn = { hint: String? -> viewModel.googleSignInIntent(hint)?.let(signIn::launch) ?: viewModel.onSignInResult(null) }
+    val startSignIn = { type: AccountType, hint: String? -> viewModel.signInIntent(type, hint)?.let(signIn::launch) ?: viewModel.onSignInResult(null) }
     val title = stringResource(R.string.accounts_title)
     val tasksTitle = stringResource(R.string.google_tasks_title)
 
@@ -119,7 +120,7 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                     BigRow(
                         title = row.displayName,
                         body = listOfNotNull(
-                            stringResource(R.string.accounts_row_body, row.identifier, stringResource(R.string.accounts_provider_google)),
+                            stringResource(R.string.accounts_row_body, row.identifier, providerName(row)),
                             if (attention) statusText(row) else null,
                         ).joinToString("\n"),
                         index = index,
@@ -130,16 +131,32 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                     }
                 }
             }
-            item(key = "add") {
+            item(key = "add-google") {
                 AddButton(
-                    text = stringResource(R.string.accounts_add_button),
-                    onClick = { startSignIn(null) },
+                    text = stringResource(R.string.accounts_add_google),
+                    onClick = { startSignIn(AccountType.GOOGLE, null) },
+                )
+            }
+            item(key = "add-microsoft") {
+                AddButton(
+                    text = stringResource(R.string.accounts_add_microsoft),
+                    onClick = { startSignIn(AccountType.MICROSOFT, null) },
                 )
             }
             if (!viewModel.googleConfigured) {
-                item(key = "not-configured") {
+                item(key = "google-not-configured") {
                     Text(
                         stringResource(R.string.accounts_google_missing),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+                    )
+                }
+            }
+            if (!viewModel.microsoftConfigured) {
+                item(key = "microsoft-not-configured") {
+                    Text(
+                        stringResource(R.string.accounts_microsoft_missing),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
@@ -154,7 +171,7 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                         androidx.compose.foundation.layout.Column {
                             Text(account.displayName, style = MaterialTheme.typography.titleMedium)
                             Text(account.identifier, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(stringResource(R.string.accounts_provider_google), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                            Text(providerName(account), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
@@ -166,19 +183,22 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                 )
                 SettingsDivider()
                 if (account.status == AccountStatus.NEEDS_SIGN_IN.name) {
-                    SettingsRow(title = stringResource(R.string.accounts_sign_in_again), onClick = { startSignIn(account.identifier) })
+                    SettingsRow(title = stringResource(R.string.accounts_sign_in_again), onClick = { startSignIn(AccountType.valueOf(account.type), account.identifier) })
                 } else {
                     SettingsRow(title = stringResource(R.string.accounts_sync_now), onClick = { viewModel.syncNow(account.id) })
                 }
             }
-            settingsGroup(tasksTitle) {
-                val tasks = tasksStates[account.identifier]
-                SettingsSwitchRow(
-                    title = stringResource(R.string.google_tasks_title),
-                    checked = tasks != null,
-                    onCheckedChange = { viewModel.setTasks(account.identifier, it) },
-                    summary = tasks?.let { tasksSummary(it) } ?: stringResource(R.string.accounts_tasks_summary),
-                )
+            // Tasks are Google's: a Microsoft account has no such switch.
+            if (account.type == AccountType.GOOGLE.name) {
+                settingsGroup(tasksTitle) {
+                    val tasks = tasksStates[account.identifier]
+                    SettingsSwitchRow(
+                        title = stringResource(R.string.google_tasks_title),
+                        checked = tasks != null,
+                        onCheckedChange = { viewModel.setTasks(account.identifier, it) },
+                        summary = tasks?.let { tasksSummary(it) } ?: stringResource(R.string.accounts_tasks_summary),
+                    )
+                }
             }
             item(key = "remove") {
                 TextAction(
@@ -191,6 +211,11 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
         }
     }
 }
+
+/** The provider an account belongs to, as the user knows it. */
+@Composable
+private fun providerName(account: AccountEntity): String =
+    stringResource(if (account.type == AccountType.MICROSOFT.name) R.string.accounts_provider_microsoft else R.string.accounts_provider_google)
 
 /** The round mark of an account: its first letter. */
 @Composable

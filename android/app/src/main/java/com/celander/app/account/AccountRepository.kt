@@ -2,6 +2,7 @@ package com.celander.app.account
 
 import android.content.Intent
 import com.celander.app.account.auth.GoogleAuth
+import com.celander.app.account.auth.MicrosoftAuth
 import com.celander.app.account.auth.SignInOutcome
 import com.celander.app.account.auth.TokenStore
 import com.celander.app.core.database.AccountDao
@@ -40,6 +41,7 @@ class AccountRepository @Inject constructor(
     private val sync: AccountSync,
     private val tokens: TokenStore,
     private val google: GoogleAuth,
+    private val microsoft: MicrosoftAuth,
     private val scheduler: AccountSyncScheduler,
     private val googleTasks: GoogleTasksConnection,
 ) {
@@ -53,16 +55,26 @@ class AccountRepository @Inject constructor(
     /** Opens Google's sign-in in the browser; hand what comes back to [addGoogle]. [loginHint] names an account to offer first. */
     fun googleSignInIntent(loginHint: String? = null): Intent? = google.signInIntent(loginHint)
 
-    suspend fun addGoogle(data: Intent?): AddAccountResult = when (val outcome = google.handleResult(data).also { android.util.Log.i(TAG, "sign-in result: ${it.javaClass.simpleName}" + ((it as? SignInOutcome.Failed)?.let { f -> " (${f.reason})" } ?: "")) }) {
+    val microsoftConfigured: Boolean get() = microsoft.isConfigured
+
+    /** Opens Microsoft's sign-in in the browser; hand what comes back to [addMicrosoft]. */
+    fun microsoftSignInIntent(loginHint: String? = null): Intent? = microsoft.signInIntent(loginHint)
+
+    suspend fun addGoogle(data: Intent?): AddAccountResult = added(AccountType.GOOGLE, google.handleResult(data))
+
+    suspend fun addMicrosoft(data: Intent?): AddAccountResult = added(AccountType.MICROSOFT, microsoft.handleResult(data))
+
+    /** Stores the account a sign-in of [type] gave (or refreshes the one that was there) and syncs it. */
+    private suspend fun added(type: AccountType, signedIn: SignInOutcome): AddAccountResult = when (val outcome = signedIn.also { android.util.Log.i(TAG, "sign-in result ($type): ${it.javaClass.simpleName}" + ((it as? SignInOutcome.Failed)?.let { f -> " (${f.reason})" } ?: "")) }) {
         SignInOutcome.Cancelled -> AddAccountResult.Cancelled
         SignInOutcome.NotConfigured -> AddAccountResult.NotConfigured
         is SignInOutcome.Failed -> AddAccountResult.Failed(outcome.reason)
         is SignInOutcome.Success -> {
             val result = outcome.result
-            val existing = dao.account(AccountType.GOOGLE.name, result.email)
+            val existing = dao.account(type.name, result.email)
             val id = existing?.id ?: dao.insertAccount(
                 AccountEntity(
-                    type = AccountType.GOOGLE.name, identifier = result.email, displayName = result.name ?: result.email,
+                    type = type.name, identifier = result.email, displayName = result.name ?: result.email,
                     createdAt = System.currentTimeMillis(),
                 ),
             )

@@ -7,6 +7,7 @@ import com.celander.app.R
 import com.celander.app.account.AccountRepository
 import com.celander.app.account.AddAccountResult
 import com.celander.app.core.database.AccountEntity
+import com.celander.app.core.model.AccountType
 import com.celander.app.core.ui.SnackbarManager
 import com.celander.app.core.ui.SnackbarMessage
 import com.celander.app.core.ui.UiText
@@ -51,16 +52,27 @@ class AccountsViewModel @Inject constructor(
 
     val googleConfigured: Boolean get() = repository.googleConfigured
 
-    fun googleSignInIntent(loginHint: String? = null): Intent? = repository.googleSignInIntent(loginHint)
+    val microsoftConfigured: Boolean get() = repository.microsoftConfigured
+
+    /** Whose sign-in the browser is showing: the answer that comes back is for this kind of account. */
+    private var signingIn = AccountType.GOOGLE
+
+    /** The browser sign-in for an account of [type]; [loginHint] names the address to offer first. */
+    fun signInIntent(type: AccountType, loginHint: String? = null): Intent? {
+        signingIn = type
+        return if (type == AccountType.MICROSOFT) repository.microsoftSignInIntent(loginHint) else repository.googleSignInIntent(loginHint)
+    }
 
     /** What came back from the browser sign-in. */
     fun onSignInResult(data: Intent?) {
         android.util.Log.i("Accounts", "browser returned, data=" + (data != null))
+        val type = signingIn
         viewModelScope.launch {
-            when (val result = repository.addGoogle(data)) {
+            val outcome = if (type == AccountType.MICROSOFT) repository.addMicrosoft(data) else repository.addGoogle(data)
+            when (val result = outcome) {
                 is AddAccountResult.Added -> snackbar.show(UiText.Res(R.string.accounts_added, listOf(result.identifier)))
                 AddAccountResult.Cancelled -> Unit
-                AddAccountResult.NotConfigured -> snackbar.show(UiText.Res(R.string.accounts_google_missing))
+                AddAccountResult.NotConfigured -> snackbar.show(UiText.Res(if (type == AccountType.MICROSOFT) R.string.accounts_microsoft_missing else R.string.accounts_google_missing))
                 is AddAccountResult.Failed -> snackbar.show(UiText.Res(R.string.accounts_sign_in_failed))
             }
         }

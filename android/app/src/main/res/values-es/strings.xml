@@ -645,6 +645,7 @@
     <string name="accounts_summary_none">Ninguna cuenta conectada</string>
     <string name="accounts_intro">Conecta una cuenta y Celander guarda aquí sus calendarios; así también funcionan sin conexión.</string>
     <string name="accounts_google_missing">El inicio de sesión de Google no está configurado en esta versión.</string>
+    <string name="accounts_microsoft_missing">El inicio de sesión de Microsoft no está configurado en esta versión.</string>
     <string name="accounts_never_synced">Aún sin sincronizar</string>
     <string name="accounts_last_sync">Última sincronización: %1$s</string>
     <string name="accounts_needs_sign_in">Inicia sesión de nuevo para seguir sincronizando</string>
@@ -657,8 +658,10 @@
     <string name="accounts_remove_confirm">Quitar</string>
     <string name="accounts_sign_in_failed">No se pudo iniciar sesión.</string>
     <string name="accounts_added">%1$s conectada</string>
-    <string name="accounts_add_button">Añadir</string>
+    <string name="accounts_add_google">Añadir una cuenta de Google</string>
+    <string name="accounts_add_microsoft">Añadir una cuenta de Microsoft</string>
     <string name="accounts_provider_google">Google</string>
+    <string name="accounts_provider_microsoft">Microsoft</string>
     <string name="accounts_tasks_summary">Sincroniza en ambos sentidos las listas de tareas de esta cuenta.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
 </resources>
