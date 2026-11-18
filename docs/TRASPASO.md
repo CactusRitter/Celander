@@ -1,57 +1,64 @@
-# Traspaso de Celander: datos y cuentas (sesión Celander, 2026-11-17)
+# Traspaso de Celander (sesión Celander) — estado al 2026-11-18
 
-Rama de trabajo: `ce/estilo-ce` (local; sin push). El diseño compartido (Skin, Ajustes, actualizaciones, copia ZIP) lo hace Ce Líder en `Celander-diseno` (rama `ce/diseno-ce`); no tocar `designsystem/` ni `settings/` sin avisarle.
+Rama de trabajo: `ce/estilo-ce` (local, sin push; ya incluye el diseño común fusionado de `ce/diseno-ce`). Repo de César: `CactusRitter/Celander` (`origin`); `upstream` es de Jonathan, nunca push. Se publica UNA sola versión, **Celander 2.0.0**, con todo, a la vez que Cemail y Cenotes y solo cuando César/Ce Líder lo digan. Paquete final `com.celander.app`.
 
-## Hecho (commits en ce/estilo-ce)
-- Widgets (1a): sin sombra ni desenfoque, borde `widget_rim` (con `<solid>` transparente: sin él se pinta opaco), suelo de opacidad 0,5, deslizador completo. Probado el widget Día en emulador.
-- Room v4: tablas `accounts`, `remote_calendars`, `event_links`, `exception_links` (patrón de enlaces como Google Tasks; sin FK en los enlaces = tombstones). `CalendarSource.ACCOUNT`: los eventos de una cuenta se guardan como los locales en `events`/`event_exceptions`; la pantalla lee solo Room.
-- `account/CalendarProvider` (interfaz) + `RemoteEvent` envuelve `ICalEvent`: cada proveedor convierte a ICalEvent y `IcsMapper.fromIcal` hace series/excepciones.
-- `account/google`: `GoogleCalendarApi` (calendarList, events con syncToken, 401 -> token nuevo, 410 -> recarga completa), `GoogleCalendarMapper`, `GoogleCalendarProvider` (solo lectura, `canWrite=false`).
-- `account/AccountSync`: calendarios, pull de eventos (series con EXDATE, instancias que llegan solas, borrados, recarga completa quita lo que falta), no pisa cambios locales pendientes, `remove(accountId)`.
-- `account/auth`: `GoogleAuth` (AppAuth, scopes de la política), `TokenStore` (AES-GCM, clave Keystore, `account_tokens.xml` fuera de la copia de Android). Cliente OAuth en `android/local.properties` (`celander.oauth.google.clientId`).
-- Tests: AccountDaoTest, GoogleCalendarMapperTest, GoogleCalendarProviderTest, AccountSyncTest (todos pasan).
+## Reglas de trabajo vigentes
+- César solo decide dinero, publicar, datos de su cuenta real, OPPO y diseño no acordado; lo técnico lo decido yo y lo anoto aquí. Al cerrar cada bloque: `SendMessage` a «Ce Líder» (≤6 líneas: qué + commit, decisiones, no probado, qué se pide a César).
+- Antes de diseñar algo: ver si otra app Ce ya lo resuelve (Cemail: Microsoft Graph, AppAuth, push) y copiarlo; subagente con resumen corto.
+- Emulador SIEMPRE sin ventana. S26 (`RFGL107KERL`) y tableta (`R52Y806MWSP`) son de pruebas (instalar ahí sin pedir permiso; siempre `adb -s <serie>`); el OPPO nunca. Capturas con datos reales solo en `docs-ce/` (excluida de git).
+- **Datos reales de César, no tocar**: el evento «Quedada con Gloria» (19:00–22:30, 18 nov, calendario «Eventos»). Para probar editar/borrar: evento propio de prueba (se crea y se borra), o el servidor falso de los tests.
+- Textos solo en `values`, `values-es`, `values-de` (alemán con «du»). Sin compilaciones ni capturas innecesarias.
 
-## Pendiente (orden)
-1. (hecho) Conexión: AccountRepository, Hilt, sync al arrancar y cada 15 min (solo mientras vive el proceso; falta WorkManager en segundo plano), CalendarsRepository muestra ACCOUNT (writable=false). Pantalla account/ui y fila «Cuentas» arriba de Ajustes (probado en emulador: se ve, el login aún no).
-2. (hecho) Pantalla de cuentas.
-3. (hecho 2026-11-17 en el S26) Login real de Google con la cuenta de César: sincroniza calendarios y eventos sin permisos de calendario del teléfono. Bug resuelto: RedirectUriReceiverActivity de AppAuth exige tema AppCompat (Theme.Celander.SignInReturn en el manifiesto); sin él la app se cerraba al volver del navegador.
-4. (hecho en código, probado con servidor falso) Escritura: disparadores SQLite (core/database/AccountTriggers) marcan NEW/DIRTY/DELETED en event_links; AccountSync.push envía antes de cada pull (create/update con etag, conflicto = gana lo local, ocurrencias con writeOccurrence, borrado con tombstone). Pendiente: probar con la cuenta real (César crea un evento), revertir una excepción, y luego quitar core/device y permisos, Microsoft y .ics.
-5. Microsoft (Graph delta), suscripciones/importación .ics. Yahoo: descartado por César.
+## Arquitectura de datos (hecho)
+- Room v5. Tablas nuevas: `accounts`, `remote_calendars`, `event_links`, `exception_links` (patrón de enlaces como Google Tasks; sin FK en los enlaces = tombstones). `CalendarSource.ACCOUNT`: los eventos de una cuenta viven en `events`/`event_exceptions` como los locales; la UI solo lee Room. Migración 4→5 borra `device_calendar_prefs`.
+- `account/CalendarProvider` (interfaz por tipo de cuenta) + `RemoteEvent` envuelve `ICalEvent`; conversión de series/excepciones con `IcsMapper`.
+- `account/google`: `GoogleCalendarApi` (calendarList, events con syncToken, insert/patch/delete; 401→token nuevo, 410→recarga completa, 412→conflicto), `GoogleCalendarMapper`, `GoogleCalendarProvider`.
+- `account/AccountSync`: pull (series con EXDATE, instancias sueltas, borrados, recarga completa) y push (create/update con etag, ocurrencias por PATCH de instancia `serie_yyyyMMddTHHmmssZ`, delete con tombstone). Conflicto con el servidor: **gana lo local** (aprobado por Ce Líder para 2.0.0). Nunca pisa cambios locales pendientes en el pull.
+- `core/database/AccountTriggers`: triggers SQLite (se instalan en `onOpen`) marcan NEW/DIRTY/DELETED en `event_links` desde cualquier escritura (editor, split, deshacer).
+- `account/auth`: `GoogleAuth` (AppAuth, scopes: openid email profile calendar.events calendar.calendarlist.readonly tasks), `TokenStore` (AES-GCM, clave Android Keystore, fuera de la copia de Android: `account_tokens.xml` excluido). Cliente OAuth Android en `android/local.properties` (`celander.oauth.google.clientId`, no se sube). La actividad de retorno de AppAuth necesita tema AppCompat (`Theme.Celander.SignInReturn`, si no la app se cierra al volver del navegador).
+- `AccountRepository`/`AccountSyncScheduler`: envío a los ~3 s de un cambio local (WorkManager único con red), pull cada 60 s SOLO con la app visible, pull al abrir (≥30 s), periódico de 15 min en segundo plano (red). Widgets y recordatorios se refrescan solos (observan Room). Sin push de Google (calendar.watch) ni de Microsoft: exigirían servidor propio (contra la política de hoy). Sin «deslizar para refrescar» (César lo canceló).
+- Google Tasks usa los tokens AppAuth (`task/google/AccountAuthorizer`); `play-services-auth` eliminado. Interruptor «Google Tasks» en la página de cada cuenta; quitar cuenta desconecta Tasks.
+- Calendario del teléfono eliminado: sin `CalendarContract` ni permisos READ/WRITE_CALENDAR, SYNC_SETTINGS.
+- UI: Ajustes › Cuentas (como Cemail): fila por cuenta, botón Añadir, página de la cuenta (cabecera, Sincronizar ahora / Iniciar sesión de nuevo, Google Tasks, Quitar). Gestionar calendarios muestra los calendarios de cada cuenta (editables según el rol; festivos = solo lectura).
+- Widgets: sin sombra ni desenfoque, borde `widget_rim` (necesita `<solid>` transparente), deslizador de transparencia completo con suelo de opacidad 0,5.
 
-## Decisiones de César
-- Una sola versión, Celander 2.0.0, con todo; se publican las tres apps a la vez. Haze 2 se queda en Celander. Paquete `com.celander.app` se mantiene. Sin datos locales en la 1.08.
-- La política de privacidad debe ser verdad: lista en `Ce/docs/CELANDER-PRIVACIDAD.md` (marcar al avanzar).
-- Emulador siempre sin ventana. Instalar en S26/tableta solo avisando antes a César; el OPPO no se toca.
+## Medido / probado
+- S26 con la cuenta real (evento de prueba propio, creado y borrado): Guardar → en Google en ~4,5 s; Eliminar → borrado en Google en ~4,5 s. Login, tokens, primera sync, calendarios y Tasks (interruptor) correctos. Migración Room 4→5 con la base real: bien.
+- Tests: ~464; fallan solo `SettingsCorruptionTest` y 3 de `SettingsRepositoryTest` (error de DataStore al renombrar `.tmp` en Windows; ya fallaban en el commit original 6d0258d) y `GlassDialogTest` (solo en la suite completa; pasa sola).
+- **No probado**: cambios hechos fuera (Google Calendar web) llegando a Celander en ≤60 s (se lo pide Ce Líder a César); WorkManager con la app cerrada durante horas; crear/editar/completar una tarea y verla en Google Tasks; series con ocurrencias movidas contra la cuenta real; widgets Mes/Tareas/Año/Agenda y fondos con mucho detalle (solo se vio el widget Día en emulador).
 
-## Comandos
-Ver `CLAUDE.md` (compilar, emulador). Prueba con paquete `.test`: `-PidSuffix=.test` (el login de Google no sirve ahí: el cliente OAuth es de `com.celander.app`).
+## Pendiente, EN ORDEN
+1. **Revertir una ocurrencia ya enviada** (ahora no se envía): en `AccountSync.pushOne`, para cada `exception_links` CLEAN cuya excepción local ya no existe, reescribir esa instancia con los valores de la serie (`IcsMapper.toIcal(event, listOf(EventException(...)))` genera el override; añadir `status: confirmed` en `toJson` de ocurrencias) y borrar el enlace; añadir `deleteExceptionLink(id)` al DAO y un test en `AccountPushTest`.
+2. **«Borrar todos los datos»** (Ajustes › Datos, `settings/DataReset.kt`) debe borrar también cuentas, tokens (`TokenStore.clear`), calendarios de cuenta y listas de Tasks; verificar (punto 8 de privacidad).
+3. **Microsoft** (Graph, delta): partir de `Cemail/.../data/auth/MicrosoftAuth.kt` y `data/graph/GraphApi.kt` (subagente con resumen de 5 líneas). Registro Entra ya hecho por Ce Líder: ID de cliente `6e17cfa1-6713-4308-bd81-0a7de0e97b0c`, redirección `com.celander.app://oauth2redirect` (clave sugerida en `local.properties`), permisos Calendars.ReadWrite User.Read email openid profile offline_access. Un solo recordatorio por evento (`maxReminders=1` en `ProviderCapabilities`). Añadir el esquema `com.celander.app` al `RedirectUriReceiverActivity` (manifiesto) y el tema ya existente.
+4. **Suscripciones `.ics` (URL, solo lectura, periódicas) e importación de archivos `.ics`**; y **`LocalDataIcs`** (`export(): String` con VEVENT y VTODO de calendarios LOCAL; `import(text): ImportResult(events, tasks, skipped)`, dedupe por UID; hay que añadir VTODO al parser/escritor, hoy solo hay eventos) y conectarlo a la página de Copia (ZIP) de Ajustes (`settings/BackupPage.kt`, hoy solo ajustes).
+5. Más adelante (aprobado por César, después de lo anterior): push de calendario reutilizando Worker de Cloudflare + Firebase de Cemail (`Cemail/docs/PUSH.md`, `Ce/docs/NUBE.md`); implica actualizar la política de privacidad (hoy dice que no hay servidor). NO empezar antes.
+6. Menores: capturas de los otros widgets (Mes, Tareas, Año, Agenda) en emulador antes de fusionar; revisar `RemindersSection`/`maxCount` y `CalendarInfo.maxReminders` sin uso; fin de línea CRLF/LF mezclado en algunos archivos; quitar los `Log.i("Accounts", …)` si molestan (no llevan datos personales).
+- Yahoo: descartado por César. Capturas de los 6 diseños: no hacen falta.
 
-## Decisiones técnicas (las toma la sesión Celander; César solo decide dinero, publicar, datos de su cuenta, OPPO, diseño no acordado)
-- Escritura: local primero en Room y se envía en el siguiente sync (cada 15 min con la app abierta o «Sincronizar ahora»). Conflicto con el servidor: gana el cambio hecho aquí (calendario de una sola persona).
-- Los eventos de una serie se envían completos (RRULE + EXDATE de canceladas) y las ocurrencias cambiadas como PATCH de la instancia (id = serie_yyyyMMddTHHmmssZ).
-- Revertir una ocurrencia ya enviada a Google no se envía todavía.
-- Orden: escritura -> quitar core/device y permisos de calendario -> Microsoft -> .ics.
+## Lista de privacidad (`Ce/docs/CELANDER-PRIVACIDAD.md`) — estado
+1. Ámbitos de Google: hecho en el código (`GoogleAuth.SCOPES`); pantalla de consentimiento declarada por Ce Líder/César, **«En producción» sin verificar** (3/100 usuarios; sin caducidad de 7 días).
+2. Microsoft: pendiente (fase Microsoft).
+3. Permisos del manifiesto: **hecho** (solo notificaciones, alarmas exactas, arranque, internet, red).
+4. Tokens cifrados con Keystore: **hecho** (AES-GCM; no están en Room ni en logs).
+5. Fuera de la copia de Android: **hecho** (`backup_rules.xml` y `data_extraction_rules.xml`).
+6. Widgets sin red: por diseño (leen Room); verificar leyendo `widget/` al final.
+7. Lista de hosts y sin SDK de terceros: Play Services eliminado; falta el recuento final de hosts (accounts.google.com, oauth2.googleapis.com, www.googleapis.com, login.microsoftonline.com, graph.microsoft.com, URL `.ics`, photon.komoot.io, api.github.com) con un `grep` de URLs.
+8. Quitar cuenta y «Borrar todos los datos»: quitar cuenta probado con tests (`AccountSyncTest`); «Borrar todos los datos» pendiente (punto 2 de arriba).
+9. Nada al desarrollador: sin servidores propios hoy.
+10. Consentimiento y datos de contacto: web y política publicadas en `cactusritter.github.io/Celander/` (fuente `docs/` de `main`); coinciden con la política salvo lo que cambie con Microsoft/.ics/push.
+- Verificación final: leer código y manifiesto (vale un subagente) y marcar en el archivo de Ce.
 
-## Datos reales de César: no tocar
-- En su calendario de Google y en la base local del S26 hay un evento REAL, «quedada con Gloria» (creado desde Celander y sincronizado el 2026-11-18). No borrarlo, editarlo ni moverlo en ninguna prueba. Para probar editar/borrar: un evento de prueba propio que se crea y se borra, o el servidor falso de los tests.
-- La cuenta real solo se usa para lo que César pida; los tests usan datos simulados.
+## Cómo se prueba en el S26
+```
+cd android && ./gradlew.bat :app:assembleDebug        # firma celander-release.jks (android/keystore, fuera de git)
+adb -s RFGL107KERL install --user 0 -r app/build/outputs/apk/debug/app-debug.apk
+adb -s RFGL107KERL shell am start -n com.celander.app/com.celander.app.MainActivity
+adb -s RFGL107KERL logcat -d -s Accounts            # trazas del flujo de cuentas y del envío
+```
+- Paquete de prueba junto a otro firmado distinto: `-PidSuffix=.test` (el login de Google NO sirve ahí: el cliente OAuth es de `com.celander.app`). Emulador: `emulator-5554` (sin ventana: `emulator.exe -avd Pixel_API_36 -no-window -gpu swiftshader_indirect`); los `.ps1` están bloqueados por la política de PowerShell.
+- El login de Google lo hace César en el navegador (nunca escribir contraseñas). El S26 tiene el apagado de pantalla en 30 min (original 10 min = 600000; restaurar al terminar: ver `docs-ce/CAMBIOS-MOVIL.md`).
+- Gradle: ejecutar SIEMPRE desde `android/` y con la salida recortada (`| grep -E "^e: |BUILD|FAILED"`); `local.properties` lleva `sdk.dir=C:/Users/cesar/AppData/Local/Android/Sdk` (barras normales) y la clave del cliente OAuth.
 
-## Sincronización en segundo plano y «tiempo real» (decidido con Ce Líder, 2026-11-18)
-- Sin servidor propio ni notificaciones push de Google (calendar.watch) ni de Microsoft: exigirían un servidor público y FCM, contra la política de privacidad («no enviamos nada a servidores nuestros»).
-- Envío inmediato: cualquier cambio local (los disparadores de AccountTriggers lo marcan) lanza en ~3 s un trabajo único de WorkManager con red (`AccountSyncScheduler.requestSoon`); si no hay red, reintenta con backoff.
-- Recibir: pull al abrir/volver a la app (mínimo 30 s entre pulls, `AccountRepository.onForeground`), al arrancar, y periódico cada 15 min en segundo plano (mínimo de Android, solo con red y mientras haya una cuenta).
-- Widgets y recordatorios se actualizan solos: observan las tablas que escribe el sync.
-- Deslizar para refrescar: CANCELADO por César (no lo quiere en ningún sitio). Con la app visible se pregunta por cambios cada 60 s (parado en segundo plano), además del pull al abrir (mín. 30 s) y el periódico de 15 min; «Sincronizar ahora» queda en Ajustes › Cuentas.
-- Medido en el S26 con la cuenta real (evento de prueba propio, creado y borrado): Guardar -> creado en Google en ~4,5 s (3 s de espera para agrupar cambios + ~1,5 s); Eliminar -> borrado en Google en ~4,5 s.
-
-## Google Cloud (informado por Ce Líder, 2026-11-18)
-- Proyecto `crested-talon-512623-f3`: pantalla de consentimiento «En producción», sin verificar (3 de 100 usuarios): no hay caducidad de refresh tokens a los 7 días; al iniciar sesión sale el aviso «Google no ha verificado esta aplicación» (Avanzado › Ir a Celander).
-- El retardo de 3 s antes de enviar un cambio local se queda (agrupa ediciones y deja margen al deshacer); total medido ~4,5 s hasta Google.
-
-## Pendiente aprobado por César para más adelante (después de Microsoft y .ics)
-- Push de calendario reutilizando lo de Cemail: Worker de Cloudflare + Firebase (`Cemail/docs/PUSH.md`; `Ce/docs/NUBE.md`, «Push de Cemail»). Implica servidor propio (Cloudflare) y FCM: hay que actualizar la política de privacidad (hoy dice que no hay servidor) antes de publicarlo. NO empezar ahora.
-- Norma: antes de decir «no se puede» o diseñar algo, mirar si otra app Ce ya lo resuelve (Cemail tiene Microsoft Graph, AppAuth y push) y copiarlo; para Microsoft partir de `MicrosoftAuth.kt`/`GraphApi` de Cemail.
-
-## Google Tasks con AppAuth (2026-11-18)
-- Tasks usa los tokens AppAuth de las cuentas (task/google/AccountAuthorizer); play-services-auth y kotlinx-coroutines-play-services eliminados (punto 7 de la lista de privacidad: sin SDK de terceros que llame a casa). El interruptor «Google Tasks» está en la página de cada cuenta; quitar la cuenta desconecta Tasks. Probado en el S26 con la cuenta real: sincroniza.
-- Desaparecieron los avisos de «tareas rescatadas» y «cambios pendientes» (sin UI); los datos siguen en GoogleTasksAccounts.
+## Otros
+- Estado del repo: ver `git log --oneline` en `ce/estilo-ce`. `docs/PLAN.md` es el plan original (histórico). `docs-ce/` (capturas con datos reales y `CAMBIOS-MOVIL.md`) está excluida de git.
