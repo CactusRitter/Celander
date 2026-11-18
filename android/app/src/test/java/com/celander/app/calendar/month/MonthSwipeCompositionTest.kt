@@ -18,8 +18,8 @@ import androidx.compose.ui.test.performTouchInput
 import com.celander.app.calendar.CalendarWindow
 import com.celander.app.core.ui.Formats
 import com.celander.app.settings.AppSettings
-import com.celander.app.ui.theme.CelanderTheme
-import com.celander.app.ui.theme.ThemeMode
+import com.ce.kit.ui.theme.CeTheme
+import com.ce.kit.ui.theme.ThemeMode
 import com.celander.app.settings.TimeFormat
 import com.celander.app.testing.BERLIN
 import com.celander.app.testing.occurrence
@@ -54,7 +54,7 @@ class MonthSwipeCompositionTest {
 
     private fun showMonth() {
         compose.setContent {
-            CelanderTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) {
+            CeTheme(AppSettings(themeMode = ThemeMode.LIGHT, transparency = 0)) {
                 MonthView(
                     selectedDate = today,
                     today = today,

@@ -52,16 +52,16 @@ import com.celander.app.ui.ChoiceChip
 import com.celander.app.ui.GlassSnackbarHost
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.elastic
-import com.celander.app.ui.glass.GlassBackground
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.GlassLayers
-import com.celander.app.ui.glass.GlassPill
-import com.celander.app.ui.glass.GlassSwitch
-import com.celander.app.ui.glass.LocalHazeState
-import com.celander.app.ui.glass.PillIcon
-import com.celander.app.ui.glass.TopScrim
-import com.celander.app.ui.glass.glass
-import com.celander.app.ui.glass.onBackdrop
+import com.ce.kit.ui.glass.GlassBackground
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.GlassLayers
+import com.ce.kit.ui.glass.GlassPill
+import com.ce.kit.ui.glass.GlassSwitch
+import com.ce.kit.ui.glass.LocalHazeState
+import com.ce.kit.ui.glass.PillIcon
+import com.ce.kit.ui.glass.TopScrim
+import com.ce.kit.ui.glass.glass
+import com.ce.kit.ui.glass.onBackdrop
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 

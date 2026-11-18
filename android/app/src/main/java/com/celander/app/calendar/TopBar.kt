@@ -1,8 +1,8 @@
 package com.celander.app.calendar
 
 import androidx.compose.animation.AnimatedContent
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
 import androidx.compose.material3.MaterialTheme
 import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.AnimatedVisibility
@@ -44,8 +44,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.celander.app.R
-import com.celander.app.ui.theme.CelanderTheme
-import com.celander.app.ui.glass.GlassIconButton
+import com.ce.kit.ui.theme.CeTheme
+import com.ce.kit.ui.glass.GlassIconButton
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.springClickable
 import java.time.LocalDate

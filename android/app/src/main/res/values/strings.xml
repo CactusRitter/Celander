@@ -413,14 +413,7 @@
     <string name="design_preview">Preview</string>
     <string name="design_no_blur">Blur needs Android 12; this device shows glass without it.</string>
     <string name="design_section_motion">Motion</string>
-    <string name="accent_indigo">Indigo</string>
-    <string name="accent_blue">Blue</string>
-    <string name="accent_teal">Teal</string>
-    <string name="accent_green">Green</string>
-    <string name="accent_amber">Amber</string>
-    <string name="accent_coral">Coral</string>
     <string name="accent_rose">Rose</string>
-    <string name="accent_violet">Violet</string>
 
     <!-- Settings › Design, glass group -->
     <string name="design_section_glass">Glass</string>
@@ -544,19 +537,6 @@
     <!-- Widget blur -->
 
     <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
-    <string name="accent_pink">Raspberry</string>
-    <string name="skin_glass">Glass</string>
-    <string name="skin_modern">Modern</string>
-    <string name="skin_amoled" translatable="false">AMOLED</string>
-    <string name="skin_retro" translatable="false">Retro 98</string>
-    <string name="skin_paper">Paper</string>
-    <string name="skin_brutal">Brutalist</string>
-    <string name="style_classic">Classic</string>
-    <string name="style_neutral">Neutral</string>
-    <string name="style_aurora">Aurora</string>
-    <string name="style_sunset">Sunset</string>
-    <string name="style_ocean">Ocean</string>
-    <string name="style_neon">Neon</string>
     <string name="whatsnew_current">What’s new in %1$s</string>
     <string name="whatsnew_next">Coming in %1$s</string>
     <string name="whatsnew_earlier">Earlier versions</string>

@@ -1,8 +1,8 @@
 package com.celander.app.calendar
 
 import androidx.annotation.StringRes
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
 import androidx.compose.material3.MaterialTheme
 import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.animateContentSize
@@ -57,10 +57,10 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.blockTouchesBelow
-import com.celander.app.ui.rememberHaptics
+import com.ce.kit.ui.rememberHaptics
 import com.celander.app.ui.springClickable
 import kotlinx.coroutines.launch
 

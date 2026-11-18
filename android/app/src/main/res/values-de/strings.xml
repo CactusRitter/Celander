@@ -410,14 +410,7 @@
     <string name="design_preview">Vorschau</string>
     <string name="design_no_blur">Unschärfe braucht Android 12; dieses Gerät zeigt Glas ohne sie.</string>
     <string name="design_section_motion">Bewegung</string>
-    <string name="accent_indigo">Indigo</string>
-    <string name="accent_blue">Blau</string>
-    <string name="accent_teal">Petrol</string>
-    <string name="accent_green">Grün</string>
-    <string name="accent_amber">Bernstein</string>
-    <string name="accent_coral">Koralle</string>
     <string name="accent_rose">Rosé</string>
-    <string name="accent_violet">Violett</string>
 
     <!-- Settings › Design, glass group -->
     <string name="design_section_glass">Glas</string>
@@ -541,17 +534,6 @@
     <!-- Widget blur -->
 
     <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
-    <string name="accent_pink">Himbeere</string>
-    <string name="skin_glass">Glas</string>
-    <string name="skin_modern">Modern</string>
-    <string name="skin_paper">Papier</string>
-    <string name="skin_brutal">Brutalist</string>
-    <string name="style_classic">Klassisch</string>
-    <string name="style_neutral">Neutral</string>
-    <string name="style_aurora">Polarlicht</string>
-    <string name="style_sunset">Sonnenuntergang</string>
-    <string name="style_ocean">Ozean</string>
-    <string name="style_neon">Neon</string>
     <string name="whatsnew_current">Neu in %1$s</string>
     <string name="whatsnew_next">Kommt in %1$s</string>
     <string name="whatsnew_earlier">Frühere Versionen</string>

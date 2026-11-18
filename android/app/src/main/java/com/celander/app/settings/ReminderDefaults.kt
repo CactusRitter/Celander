@@ -27,7 +27,7 @@ import com.celander.app.core.model.CalendarInfo
 import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.ui.Formats
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
 import com.celander.app.event.MAX_REMINDERS
 import com.celander.app.event.RemindersSection

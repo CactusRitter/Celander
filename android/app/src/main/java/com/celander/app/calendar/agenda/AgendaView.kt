@@ -1,8 +1,8 @@
 package com.celander.app.calendar.agenda
 
 import androidx.compose.foundation.background
-import com.celander.app.ui.glass.fadingTopEdge
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.fadingTopEdge
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import com.celander.app.ui.nowLine
 import androidx.compose.foundation.layout.Box
@@ -47,13 +47,13 @@ import com.celander.app.calendar.components.TaskRow
 import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.SkeletonRows
 import com.celander.app.ui.TextAction
 import com.celander.app.ui.centeringPadding
 import com.celander.app.ui.dimmed
-import com.celander.app.ui.glass.fadingTopEdge
+import com.ce.kit.ui.glass.fadingTopEdge
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

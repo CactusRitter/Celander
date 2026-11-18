@@ -111,7 +111,7 @@ val ChipTextStyle = TextStyle(fontSize = 11.sp, lineHeight = 13.sp, fontWeight =
 
 /**
  * Provides what the calendar screens read besides the theme: reduced motion, the window layout and the elastic overscroll.
- * Goes inside `CelanderTheme`.
+ * Goes inside `CeTheme`.
  */
 @Composable
 fun CalendarEnvironment(reduceMotion: Boolean, content: @Composable () -> Unit) {

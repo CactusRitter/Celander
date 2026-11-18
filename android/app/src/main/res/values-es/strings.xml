@@ -434,14 +434,7 @@
     <string name="design_preview">Vista previa</string>
     <string name="design_no_blur">El desenfoque necesita Android 12; este dispositivo muestra el cristal sin él.</string>
     <string name="design_section_motion">Movimiento</string>
-    <string name="accent_indigo">Índigo</string>
-    <string name="accent_blue">Azul</string>
-    <string name="accent_teal">Verde azulado</string>
-    <string name="accent_green">Verde</string>
-    <string name="accent_amber">Ámbar</string>
-    <string name="accent_coral">Coral</string>
     <string name="accent_rose">Rosa</string>
-    <string name="accent_violet">Violeta</string>
 
     <!-- Ajustes › Diseño, grupo cristal -->
     <string name="design_section_glass">Cristal</string>
@@ -569,17 +562,6 @@
     <!-- Widget blur -->
 
     <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
-    <string name="accent_pink">Frambuesa</string>
-    <string name="skin_glass">Cristal</string>
-    <string name="skin_modern">Moderno</string>
-    <string name="skin_paper">Papel</string>
-    <string name="skin_brutal">Brutalista</string>
-    <string name="style_classic">Clásico</string>
-    <string name="style_neutral">Neutro</string>
-    <string name="style_aurora">Aurora</string>
-    <string name="style_sunset">Atardecer</string>
-    <string name="style_ocean">Océano</string>
-    <string name="style_neon">Neón</string>
     <string name="whatsnew_current">Novedades de la %1$s</string>
     <string name="whatsnew_next">Novedades de la %1$s (próxima)</string>
     <string name="whatsnew_earlier">Versiones anteriores</string>

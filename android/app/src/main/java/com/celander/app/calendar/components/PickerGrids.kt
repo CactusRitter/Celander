@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.PlainIconButton
 import com.celander.app.ui.WheelPicker
 import java.time.DayOfWeek

@@ -38,7 +38,7 @@ import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.color
 import com.celander.app.ui.dimmed

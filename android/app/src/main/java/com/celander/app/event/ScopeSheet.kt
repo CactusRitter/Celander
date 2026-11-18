@@ -1,7 +1,7 @@
 package com.celander.app.event
 
 import androidx.annotation.StringRes
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +22,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.recurrence.SeriesScope
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.GlassSheet
 import com.celander.app.ui.rememberGlassSheetController
 import com.celander.app.ui.springClickable

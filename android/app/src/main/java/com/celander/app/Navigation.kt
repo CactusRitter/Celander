@@ -16,7 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.celander.app.calendar.HomeScreen
 import com.celander.app.calendar.LaunchRequests
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.MotionTokens
 import com.celander.app.account.ui.AccountsScreen
 import com.celander.app.settings.CalendarsScreen

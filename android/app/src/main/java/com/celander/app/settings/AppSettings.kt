@@ -1,13 +1,13 @@
 package com.celander.app.settings
 
 import com.celander.app.core.model.CalendarView
-import com.celander.app.ui.glass.GlassTokens
-import com.celander.app.ui.theme.Accent
-import com.celander.app.ui.theme.AccentPalette
-import com.celander.app.ui.theme.Skin
-import com.celander.app.ui.theme.ThemeMode
-import com.celander.app.ui.theme.ThemeStyle
-import com.celander.app.ui.theme.customPalette
+import com.ce.kit.ui.glass.GlassTokens
+import com.ce.kit.ui.theme.Accent
+import com.ce.kit.ui.theme.AccentPalette
+import com.ce.kit.ui.theme.Skin
+import com.ce.kit.ui.theme.ThemeMode
+import com.ce.kit.ui.theme.ThemeStyle
+import com.ce.kit.ui.theme.customPalette
 import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.Locale
@@ -21,15 +21,15 @@ data class AppSettings(
     /** A colour of the free hue bar (0–360) instead of [accent]; null = the chosen accent. */
     val customHue: Float? = null,
     /** Light, dark or following the phone. */
-    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    override val themeMode: ThemeMode = ThemeMode.SYSTEM,
     /** Background and glass tint of the glass look (only used with [Skin.GLASS]). */
-    val themeStyle: ThemeStyle = ThemeStyle.AURORA,
+    override val themeStyle: ThemeStyle = ThemeStyle.AURORA,
     /** The whole look of the app; [Skin.GLASS] is the one shared with Cemail and Cenotes. */
-    val skin: Skin = Skin.GLASS,
+    override val skin: Skin = Skin.GLASS,
     /** Soft "3D" shadow under every glass surface. */
-    val depth3d: Boolean = false,
+    override val depth3d: Boolean = false,
     /** 0 = solid glass, 100 = fully see-through. */
-    val transparency: Int = 65,
+    override val transparency: Int = 65,
     /** Ask GitHub once or twice a day whether there is a newer Celander. */
     val checkUpdates: Boolean = true,
     /** The cards of all home screen widgets, set apart from [transparency]. */
@@ -49,9 +49,9 @@ data class AppSettings(
     val eventReminders: List<Int> = listOf(10),
     val allDayReminders: List<Int> = listOf(360),
     val taskReminders: List<Int> = listOf(0),
-) {
+) : com.ce.kit.ui.theme.CeAppearance {
     /** The app's colour in its four shades: the custom one, or the chosen accent. */
-    val accentPalette: AccentPalette
+    override val accentPalette: AccentPalette
         get() = customHue?.let { customPalette(it) } ?: accent.palette
 
     fun firstDayOfWeek(locale: Locale = Locale.getDefault()): DayOfWeek = when (weekStart) {

@@ -1,6 +1,6 @@
 package com.celander.app.settings
 
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -56,7 +56,7 @@ import com.celander.app.core.ui.Formats
 import com.celander.app.core.ui.rememberFormats
 import com.celander.app.ui.AccentButton
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.ColorSwatch
 import com.celander.app.ui.GlassSheet
 import com.celander.app.ui.Sizes

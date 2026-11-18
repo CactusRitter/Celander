@@ -4,8 +4,8 @@ import com.celander.app.testing.testPreferencesDataStore
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.celander.app.ui.glass.GlassTokens
-import com.celander.app.ui.theme.Accent
+import com.ce.kit.ui.glass.GlassTokens
+import com.ce.kit.ui.theme.Accent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -10,10 +10,10 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.celander.app.ui.glass.GlassTokens
-import com.celander.app.ui.theme.Accent
-import com.celander.app.ui.theme.Skin
-import com.celander.app.ui.theme.ThemeStyle
+import com.ce.kit.ui.glass.GlassTokens
+import com.ce.kit.ui.theme.Accent
+import com.ce.kit.ui.theme.Skin
+import com.ce.kit.ui.theme.ThemeStyle
 import kotlin.math.roundToInt
 import java.io.IOException
 import javax.inject.Inject

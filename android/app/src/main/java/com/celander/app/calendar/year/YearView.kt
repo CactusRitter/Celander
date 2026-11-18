@@ -1,8 +1,8 @@
 package com.celander.app.calendar.year
 
 import androidx.compose.foundation.Canvas
-import com.celander.app.ui.glass.fadingTopEdge
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.fadingTopEdge
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import com.celander.app.ui.isDark
 import com.celander.app.ui.today
@@ -50,11 +50,11 @@ import com.celander.app.calendar.PeriodPager
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.LimitedFontScale
 import com.celander.app.ui.elastic
-import com.celander.app.ui.glass.fadingTopEdge
-import com.celander.app.ui.rememberHaptics
+import com.ce.kit.ui.glass.fadingTopEdge
+import com.ce.kit.ui.rememberHaptics
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth

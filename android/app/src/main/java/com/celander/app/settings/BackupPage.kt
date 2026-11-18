@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.ui.ChoiceChip
 import com.celander.app.ui.SettingsCard
-import com.celander.app.ui.glass.TaskCheckbox
-import com.celander.app.ui.theme.LocalGlass
+import com.ce.kit.ui.glass.TaskCheckbox
+import com.ce.kit.ui.theme.LocalGlass
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

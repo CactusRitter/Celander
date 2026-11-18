@@ -54,13 +54,13 @@ import com.celander.app.calendar.data.CalendarContentRepository
 import com.celander.app.calendar.data.CalendarsRepository
 import com.celander.app.core.time.TimeSource
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.glass.GlassTokens
+import com.ce.kit.ui.glass.GlassTokens
 import com.celander.app.ui.sunday
-import com.celander.app.ui.theme.glassColors
-import com.celander.app.ui.theme.glassScheme
+import com.ce.kit.ui.theme.glassColors
+import com.ce.kit.ui.theme.glassScheme
 import com.celander.app.settings.AppSettings
 import com.celander.app.settings.SettingsRepository
-import com.celander.app.ui.theme.ThemeMode
+import com.ce.kit.ui.theme.ThemeMode
 import com.celander.app.task.TaskRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn

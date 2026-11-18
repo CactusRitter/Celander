@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.ui.Formats
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.RemovableChip
 import com.celander.app.ui.SelectableChip
 import com.celander.app.ui.Sizes

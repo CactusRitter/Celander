@@ -60,7 +60,7 @@ import com.celander.app.core.recurrence.SeriesScope
 import com.celander.app.core.ui.Formats
 import com.celander.app.ui.AccentButton
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.GlassSheet
 import com.celander.app.ui.IconRow
 import com.celander.app.ui.SelectableChip

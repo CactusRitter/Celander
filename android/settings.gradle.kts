@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Celander"
 include(":app")
+apply(from = "CeKit/ce-kit-settings.gradle.kts")

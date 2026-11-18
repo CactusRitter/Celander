@@ -3,10 +3,10 @@ package com.celander.app.widget
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.luminance
-import com.celander.app.ui.glass.GlassTokens
-import com.celander.app.ui.theme.Accent
-import com.celander.app.ui.theme.glassColors
-import com.celander.app.ui.theme.glassScheme
+import com.ce.kit.ui.glass.GlassTokens
+import com.ce.kit.ui.theme.Accent
+import com.ce.kit.ui.theme.glassColors
+import com.ce.kit.ui.theme.glassScheme
 import org.junit.Assert.assertTrue
 import org.junit.Test
 

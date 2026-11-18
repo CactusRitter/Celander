@@ -1,13 +1,14 @@
 package com.celander.app.ui
 
+import com.ce.kit.ui.rememberHaptics
 import androidx.compose.animation.animateColorAsState
-import com.celander.app.ui.theme.LocalSkin
-import com.celander.app.ui.theme.LocalGlass
-import com.celander.app.ui.glass.Elevation
-import com.celander.app.ui.glass.softShadow
-import com.celander.app.ui.glass.TaskCheckbox
-import com.celander.app.ui.theme.Skin
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.theme.LocalSkin
+import com.ce.kit.ui.theme.LocalGlass
+import com.ce.kit.ui.glass.Elevation
+import com.ce.kit.ui.glass.softShadow
+import com.ce.kit.ui.glass.TaskCheckbox
+import com.ce.kit.ui.theme.Skin
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

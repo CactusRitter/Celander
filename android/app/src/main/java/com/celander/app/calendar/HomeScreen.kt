@@ -1,8 +1,8 @@
 package com.celander.app.calendar
 
 import androidx.activity.compose.BackHandler
-import com.celander.app.ui.glass.GlassBackground
-import com.celander.app.ui.glass.LocalHazeState
+import com.ce.kit.ui.glass.GlassBackground
+import com.ce.kit.ui.glass.LocalHazeState
 import com.celander.app.ui.LocalWindowLayout
 import com.celander.app.ui.LocalMotion
 import androidx.activity.compose.LocalActivity
@@ -60,14 +60,14 @@ import com.celander.app.calendar.year.YearView
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
 import com.celander.app.core.ui.rememberFormats
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.ErrorState
-import com.celander.app.ui.glass.GlassLayers
+import com.ce.kit.ui.glass.GlassLayers
 import com.celander.app.ui.GlassSnackbarHost
 import com.celander.app.ui.MotionConfig
 import com.celander.app.ui.MotionTokens
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.rememberHaptics
+import com.ce.kit.ui.rememberHaptics
 import com.celander.app.event.EditorSheet
 import com.celander.app.event.EventDetailSheet
 import com.celander.app.search.SearchOverlay

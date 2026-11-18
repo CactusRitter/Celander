@@ -1,7 +1,7 @@
 package com.celander.app.event
 
 import androidx.compose.animation.AnimatedContent
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import com.celander.app.ui.LocalMotion
 import androidx.compose.animation.AnimatedVisibility
@@ -88,7 +88,7 @@ import com.celander.app.core.model.EntryKind
 import com.celander.app.core.ui.Formats
 import com.celander.app.ui.AccentButton
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.ColorSwatch
 import com.celander.app.ui.GlassSheet
 import com.celander.app.ui.HairlineDivider

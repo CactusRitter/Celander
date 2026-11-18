@@ -1,10 +1,10 @@
 package com.celander.app.search
 
 import androidx.activity.compose.BackHandler
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
-import com.celander.app.ui.glass.fadingTopEdge
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
+import com.ce.kit.ui.glass.fadingTopEdge
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -82,7 +82,7 @@ import com.celander.app.core.model.EventOccurrence
 import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.EmptyState
 import com.celander.app.ui.MotionTokens
 import com.celander.app.ui.PlainIconButton
@@ -93,7 +93,7 @@ import com.celander.app.ui.color
 import com.celander.app.ui.dimmed
 import com.celander.app.ui.centeringPadding
 import com.celander.app.ui.elastic
-import com.celander.app.ui.glass.fadingTopEdge
+import com.ce.kit.ui.glass.fadingTopEdge
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

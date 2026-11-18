@@ -92,22 +92,22 @@ import com.celander.app.ui.TextAction
 import com.celander.app.ui.UpdateBanner
 import com.celander.app.ui.WhatsNew
 import com.celander.app.ui.WheelPicker
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.GlassSlider
-import com.celander.app.ui.glass.bounceSpring
-import com.celander.app.ui.glass.glass
-import com.celander.app.ui.glass.glassSpring
-import com.celander.app.ui.glass.pressScale
-import com.celander.app.ui.glass.softBounceSpring
-import com.celander.app.ui.theme.Accent
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.GlassSlider
+import com.ce.kit.ui.glass.bounceSpring
+import com.ce.kit.ui.glass.glass
+import com.ce.kit.ui.glass.glassSpring
+import com.ce.kit.ui.glass.pressScale
+import com.ce.kit.ui.glass.softBounceSpring
+import com.ce.kit.ui.theme.Accent
 import com.celander.app.ui.theme.BackupIcon
 import com.celander.app.ui.theme.DownloadIcon
-import com.celander.app.ui.theme.LocalGlass
+import com.ce.kit.ui.theme.LocalGlass
 import com.celander.app.ui.theme.PaletteIcon
-import com.celander.app.ui.theme.Skin
-import com.celander.app.ui.theme.ThemeMode
-import com.celander.app.ui.theme.ThemeStyle
-import com.celander.app.ui.theme.customPalette
+import com.ce.kit.ui.theme.Skin
+import com.ce.kit.ui.theme.ThemeMode
+import com.ce.kit.ui.theme.ThemeStyle
+import com.ce.kit.ui.theme.customPalette
 import java.text.NumberFormat
 import java.time.DayOfWeek
 import kotlin.math.roundToInt
@@ -291,7 +291,7 @@ private fun MainPage(
         Text(
             stringResource(R.string.app_name) + " · " + stringResource(R.string.settings_version, BuildConfig.VERSION_NAME),
             style = MaterialTheme.typography.bodyMedium,
-            color = com.celander.app.ui.glass.onBackdrop(MaterialTheme.colorScheme.onSurfaceVariant),
+            color = com.ce.kit.ui.glass.onBackdrop(MaterialTheme.colorScheme.onSurfaceVariant),
             textAlign = TextAlign.Center,
         )
     }

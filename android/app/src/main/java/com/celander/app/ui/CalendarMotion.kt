@@ -25,7 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.celander.app.ui.glass.pressScale
+import com.ce.kit.ui.glass.pressScale
 import kotlinx.coroutines.delay
 
 /**

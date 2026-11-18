@@ -25,7 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import com.celander.app.ui.CalendarColor
 import com.celander.app.ui.GoogleLogo
 import com.celander.app.ui.MicrosoftLogo
-import com.celander.app.ui.theme.LocalGlass
+import com.ce.kit.ui.theme.LocalGlass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.layout.Row
@@ -65,9 +65,9 @@ import com.celander.app.ui.IconBubble
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.SettingsCard
 import com.celander.app.ui.TextAction
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
-import com.celander.app.ui.glass.pressScale
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
+import com.ce.kit.ui.glass.pressScale
 import com.celander.app.task.google.GoogleTasksState
 import com.celander.app.task.google.GoogleTasksStatus
 

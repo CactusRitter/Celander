@@ -2,8 +2,8 @@ package com.celander.app.calendar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +29,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.ui.AccentButton
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.SoftButton
 import com.celander.app.ui.blockTouchesBelow
 

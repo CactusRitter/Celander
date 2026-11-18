@@ -1,10 +1,10 @@
 package com.celander.app.calendar.month
 
 import androidx.compose.foundation.background
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
-import com.celander.app.ui.glass.fadingBottomEdge
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
+import com.ce.kit.ui.glass.fadingBottomEdge
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import com.celander.app.ui.isDark
 import com.celander.app.ui.today
@@ -97,7 +97,7 @@ import com.celander.app.core.model.TaskItem
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
 import com.celander.app.ui.CalendarColor
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.ChipTextStyle
 import com.celander.app.ui.EmptyState
 import com.celander.app.ui.LimitedFontScale
@@ -105,11 +105,11 @@ import com.celander.app.ui.PlainIconButton
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.SkeletonRows
 import com.celander.app.ui.elastic
-import com.celander.app.ui.glass.fadingBottomEdge
-import com.celander.app.ui.glass.pressScale
+import com.ce.kit.ui.glass.fadingBottomEdge
+import com.ce.kit.ui.glass.pressScale
 import com.celander.app.ui.pulseOn
 import com.celander.app.ui.rememberEntranceWindow
-import com.celander.app.ui.rememberHaptics
+import com.ce.kit.ui.rememberHaptics
 import com.celander.app.ui.staggeredEntrance
 import java.time.DayOfWeek
 import java.time.Instant

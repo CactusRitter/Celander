@@ -43,7 +43,7 @@ import com.celander.app.R
 import com.celander.app.calendar.components.DateGridPicker
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.SelectableChip
 import com.celander.app.ui.Stepper
 import java.time.DayOfWeek

@@ -1,7 +1,7 @@
 package com.celander.app.notifications
 
 import androidx.compose.foundation.layout.Arrangement
-import com.celander.app.ui.glass.glassTile
+import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import com.celander.app.R
-import com.celander.app.ui.theme.CelanderTheme
+import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.TextAction
 

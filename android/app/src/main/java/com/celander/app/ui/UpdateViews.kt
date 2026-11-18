@@ -2,8 +2,8 @@ package com.celander.app.ui
 
 import androidx.compose.foundation.clickable
 import com.celander.app.update.DownloadState
-import com.celander.app.ui.glass.glassSpring
-import com.celander.app.ui.glass.GlassProgressBar
+import com.ce.kit.ui.glass.glassSpring
+import com.ce.kit.ui.glass.GlassProgressBar
 import androidx.compose.animation.animateContentSize
 import android.text.format.Formatter
 import androidx.compose.foundation.layout.Arrangement
@@ -29,10 +29,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.celander.app.BuildConfig
 import com.celander.app.CelanderApp
 import com.celander.app.R
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
-import com.celander.app.ui.glass.popIn
-import com.celander.app.ui.glass.pressScale
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
+import com.ce.kit.ui.glass.popIn
+import com.ce.kit.ui.glass.pressScale
 import com.celander.app.update.ReleaseNotes
 
 /**

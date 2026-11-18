@@ -1,8 +1,8 @@
 package com.celander.app.ui
 
 import androidx.activity.compose.PredictiveBackHandler
-import com.celander.app.ui.glass.GlassKind
-import com.celander.app.ui.glass.glass
+import com.ce.kit.ui.glass.GlassKind
+import com.ce.kit.ui.glass.glass
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animate
