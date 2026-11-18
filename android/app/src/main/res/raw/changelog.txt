@@ -1,3 +1,6 @@
+## 2.1.1
+- Fixed: tapping Download in the update notice closed the app. Celander now declares the permission Android needs to hand the new version to its installer.
+
 ## 2.1.0
 - Accounts look like Cemail's: your picture from Google or Microsoft inside a ring in the account's colour, and one "Add" button that opens "Add an account" with a card for Google, Microsoft and the .ics link.
 - The dialog to subscribe to a calendar link now uses the same glass as the other dialogs, and dialogs no longer turn the screen behind them fully black.

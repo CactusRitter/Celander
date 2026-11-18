@@ -1,3 +1,6 @@
+## 2.1.1
+- Arreglado: al pulsar Descargar en el aviso de actualización la app se cerraba. Celander declara ahora el permiso que Android necesita para pasar la versión nueva al instalador.
+
 ## 2.1.0
 - Las cuentas se ven como en Cemail: tu foto de Google o Microsoft dentro de un anillo del color de la cuenta, y un solo botón «Añadir» que abre «Añadir una cuenta» con una tarjeta para Google, Microsoft y el enlace .ics.
 - El cuadro para suscribirse a un enlace de calendario usa ahora el mismo cristal que los demás cuadros, y los cuadros ya no oscurecen del todo la pantalla de detrás.

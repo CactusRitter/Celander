@@ -1,3 +1,6 @@
+## 2.1.1
+- Behoben: Das Tippen auf Herunterladen im Update-Hinweis schloss die App. Celander deklariert jetzt die Berechtigung, die Android braucht, um die neue Version an den Installer zu übergeben.
+
 ## 2.1.0
 - Konten sehen aus wie in Cemail: dein Bild von Google oder Microsoft in einem Ring in der Farbe des Kontos, und ein einziger Knopf „Hinzufügen“, der „Konto hinzufügen“ mit einer Karte für Google, Microsoft und den .ics-Link öffnet.
 - Das Fenster zum Abonnieren eines Kalenderlinks nutzt jetzt dasselbe Glas wie die anderen Fenster, und Fenster verdunkeln den Bildschirm dahinter nicht mehr komplett.
