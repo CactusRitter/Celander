@@ -5,7 +5,7 @@ permalink: /privacy/
 
 # Privacy Policy
 
-*Last updated: 17 November 2026* · [Español](#español) · [Deutsch](#deutsch)
+*Last updated: 18 November 2026* · [Español](#español) · [Deutsch](#deutsch)
 
 Celander ("the app") is an Android calendar and task app, developed by César Caballero ("I", "me"). This policy explains what information the app accesses, how it is used and stored, and your choices. Celander is a small personal project distributed to a few people as an APK; it is not published on Google Play.
 
@@ -35,7 +35,7 @@ The app also asks Android for permission to show **notifications**, to schedule 
 - Sign-in tokens are stored on your phone **encrypted** with a key kept in the Android Keystore.
 - Your settings (theme, colours, default reminders, and so on) stay on your phone.
 - Home screen widgets show data from that local database and make no network connection of their own.
-- If Android backup is turned on on your phone, Android may back up the app's local data to your Google account under your phone's backup settings; sign-in tokens are excluded from that backup. Backup files you create yourself in the app are saved where you choose.
+- If Android backup is turned on on your phone, Android may back up the app's local data to your Google account under your phone's backup settings; sign-in tokens are excluded from that backup. Backup files you create yourself in the app (ZIP) contain your settings and, if you tick the box, your local calendars, events and tasks; they never contain your Google or Microsoft accounts or sign-in tokens, and they are saved where you choose.
 - Nothing is sent to me or to any third party. The only network connections the app makes are to:
   - Google's services (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), when you use a Google account;
   - Microsoft's services (`login.microsoftonline.com`, `graph.microsoft.com`), when you use a Microsoft account;
@@ -66,7 +66,7 @@ César Caballero · cesar.a.caballerot@gmail.com
 
 # Política de privacidad {#español}
 
-*Última actualización: 17 de noviembre de 2026* · [English](#privacy-policy) · [Deutsch](#deutsch)
+*Última actualización: 18 de noviembre de 2026* · [English](#privacy-policy) · [Deutsch](#deutsch)
 
 Celander ("la app") es una aplicación de calendario y tareas para Android, desarrollada por César Caballero ("yo"). Esta política explica a qué información accede la app, cómo se usa y se guarda, y qué puedes decidir tú. Celander es un pequeño proyecto personal que se reparte como APK a unas pocas personas; no está publicada en Google Play.
 
@@ -96,7 +96,7 @@ La app también pide a Android permiso para mostrar **notificaciones**, programa
 - Los tokens de inicio de sesión se guardan en tu teléfono **cifrados** con una clave del Android Keystore.
 - Tus ajustes (tema, colores, recordatorios por defecto, etc.) se quedan en tu teléfono.
 - Los widgets de la pantalla de inicio muestran datos de esa base de datos local y no hacen conexiones de red por su cuenta.
-- Si la copia de seguridad de Android está activada en tu teléfono, Android puede guardar los datos locales de la app en tu cuenta de Google según los ajustes de copia de tu teléfono; los tokens de inicio de sesión no se incluyen en esa copia. Los archivos de copia que crees tú mismo en la app se guardan donde elijas.
+- Si la copia de seguridad de Android está activada en tu teléfono, Android puede guardar los datos locales de la app en tu cuenta de Google según los ajustes de copia de tu teléfono; los tokens de inicio de sesión no se incluyen en esa copia. Los archivos de copia (ZIP) que crees tú mismo en la app contienen tus ajustes y, si marcas la casilla, tus calendarios, eventos y tareas locales; nunca incluyen tus cuentas de Google o Microsoft ni los tokens de inicio de sesión, y se guardan donde elijas.
 - No se envía nada a mí ni a terceros. Las únicas conexiones de red de la app son con:
   - los servicios de Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), si usas una cuenta de Google;
   - los servicios de Microsoft (`login.microsoftonline.com`, `graph.microsoft.com`), si usas una cuenta de Microsoft;
@@ -127,7 +127,7 @@ César Caballero · cesar.a.caballerot@gmail.com
 
 # Datenschutzerklärung {#deutsch}
 
-*Zuletzt aktualisiert: 17. November 2026* · [English](#privacy-policy) · [Español](#español)
+*Zuletzt aktualisiert: 18. November 2026* · [English](#privacy-policy) · [Español](#español)
 
 Celander („die App“) ist eine Kalender- und Aufgaben-App für Android, entwickelt von César Caballero („ich“). Diese Erklärung beschreibt, auf welche Informationen die App zugreift, wie sie verwendet und gespeichert werden und welche Möglichkeiten du hast. Celander ist ein kleines privates Projekt, das als APK an ein paar Personen weitergegeben wird; es ist nicht bei Google Play veröffentlicht.
 
@@ -157,7 +157,7 @@ Außerdem bittet die App Android um die Erlaubnis, **Benachrichtigungen** anzuze
 - Anmelde-Tokens werden auf deinem Telefon **verschlüsselt** gespeichert, mit einem Schlüssel im Android Keystore.
 - Deine Einstellungen (Design, Farben, Standard-Erinnerungen usw.) bleiben auf deinem Telefon.
 - Widgets auf dem Startbildschirm zeigen Daten aus dieser lokalen Datenbank und bauen selbst keine Netzwerkverbindung auf.
-- Wenn die Android-Datensicherung auf deinem Telefon eingeschaltet ist, kann Android die lokalen Daten der App gemäß den Sicherungseinstellungen deines Telefons in deinem Google-Konto sichern; Anmelde-Tokens sind von dieser Sicherung ausgenommen. Sicherungsdateien, die du selbst in der App erstellst, werden dort gespeichert, wo du es festlegst.
+- Wenn die Android-Datensicherung auf deinem Telefon eingeschaltet ist, kann Android die lokalen Daten der App gemäß den Sicherungseinstellungen deines Telefons in deinem Google-Konto sichern; Anmelde-Tokens sind von dieser Sicherung ausgenommen. Sicherungsdateien (ZIP), die du selbst in der App erstellst, enthalten deine Einstellungen und, wenn du das Kästchen anhakst, deine lokalen Kalender, Termine und Aufgaben; sie enthalten nie deine Google- oder Microsoft-Konten oder Anmelde-Tokens und werden dort gespeichert, wo du es festlegst.
 - Es wird nichts an mich oder an Dritte gesendet. Die App verbindet sich nur mit:
   - den Diensten von Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), wenn du ein Google-Konto nutzt;
   - den Diensten von Microsoft (`login.microsoftonline.com`, `graph.microsoft.com`), wenn du ein Microsoft-Konto nutzt;
