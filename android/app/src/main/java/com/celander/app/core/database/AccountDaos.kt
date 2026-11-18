@@ -97,4 +97,7 @@ interface AccountDao {
 
     @Query("DELETE FROM exception_links WHERE eventId = :eventId")
     suspend fun deleteExceptionLinks(eventId: Long)
+
+    @Query("DELETE FROM exception_links WHERE id = :id")
+    suspend fun deleteExceptionLink(id: Long)
 }

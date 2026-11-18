@@ -155,6 +155,8 @@ object GoogleCalendarMapper {
      * [reminders] are written as popup reminders (none: no reminder at all, not the calendar's defaults).
      */
     fun toJson(ical: ICalEvent, reminders: List<Int>): JsonObject = buildJsonObject {
+        // An occurrence is always written as confirmed: this also restores one that was cancelled.
+        if (ical.recurrenceId != null) put("status", "confirmed")
         put("summary", ical.summary)
         put("description", ical.description)
         put("location", ical.location)

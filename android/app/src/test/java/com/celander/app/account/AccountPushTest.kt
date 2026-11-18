@@ -163,6 +163,34 @@ class AccountPushTest {
     }
 
     @Test
+    fun anOccurrenceBackToTheSeriesValuesIsRewrittenAtTheServer() = runBlocking {
+        val id = db.eventDao().insert(entity("Gym", rrule = "FREQ=WEEKLY"))
+        sync.sync(accountId)
+        val original = ms("2026-11-27T10:00:00Z")
+        db.exceptionDao().upsert(
+            EventExceptionEntity(
+                eventId = id, originalStart = original, cancelled = false, title = "Gym late", location = null,
+                description = null, allDay = false, startUtc = ms("2026-11-27T12:00:00Z"), endUtc = ms("2026-11-27T13:00:00Z"), startDay = null, endDay = null,
+            ),
+        )
+        sync.sync(accountId)
+        assertEquals(1, db.accountDao().exceptionLinks(id).size)
+        // The user undoes the change: the occurrence is the series' again.
+        db.exceptionDao().delete(id, original)
+        assertEquals(SyncState.DIRTY.name, link(id)!!.syncState)
+        sync.sync(accountId)
+        val revert = provider.occurrences.last()
+        assertEquals(2, provider.occurrences.size)
+        assertEquals("Gym", revert.summary)
+        assertEquals(original, revert.start)
+        assertEquals(original, revert.recurrenceId)
+        assertEquals(0, db.accountDao().exceptionLinks(id).size)
+        // Nothing left to send.
+        sync.sync(accountId)
+        assertEquals(2, provider.occurrences.size)
+    }
+
+    @Test
     fun aCancelledOccurrenceTravelsAsAnExdateOfTheSeries() = runBlocking {
         val id = db.eventDao().insert(entity("Gym", rrule = "FREQ=WEEKLY"))
         sync.sync(accountId)

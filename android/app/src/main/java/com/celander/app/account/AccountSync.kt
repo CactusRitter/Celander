@@ -19,6 +19,7 @@ import com.celander.app.core.ical.ICalEvent
 import com.celander.app.core.ical.IcsMapper
 import com.celander.app.core.model.AccountStatus
 import com.celander.app.core.model.CalendarSource
+import com.celander.app.core.model.EventException
 import com.celander.app.core.model.SyncState
 import com.celander.app.ui.CalendarColor
 
@@ -171,6 +172,14 @@ class AccountSync(
             val original = exceptions.firstOrNull { it.originalStart == keyOf(event, occurrence.recurrenceId) }?.originalStart ?: continue
             val existing = accountDao.exceptionLink(entity.id, original)
             accountDao.upsertExceptionLink(ExceptionLinkEntity(existing?.id ?: 0, entity.id, original, done.remoteId, done.etag, SyncState.CLEAN.name))
+        }
+        // An occurrence that was sent changed and is back to the series' values (or was cancelled and restored): its instance at the
+        // server is rewritten with the series' values, and its link goes away because it is no longer a separate occurrence.
+        val kept = exceptions.map { it.originalStart }.toSet()
+        for (stale in accountDao.exceptionLinks(entity.id).filter { it.syncState == SyncState.CLEAN.name && it.originalStart !in kept }) {
+            val revert = IcsMapper.toIcal(event, listOf(EventException(eventId = entity.id, originalStart = stale.originalStart))).drop(1).single()
+            provider.writeOccurrence(account, calendar, write.remoteId, revert.copy(uid = write.uid ?: revert.uid), event.reminders)
+            accountDao.deleteExceptionLink(stale.id)
         }
         accountDao.upsertEventLink(
             link.copy(remoteId = write.remoteId, etag = write.etag, remoteUpdated = write.updated, syncState = SyncState.CLEAN.name, lastError = null),
