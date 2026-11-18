@@ -644,6 +644,11 @@
     <string name="accounts_provider_microsoft">Microsoft</string>
     <string name="accounts_provider_subscription">Subscription</string>
     <string name="accounts_add_subscription">Subscribe to a calendar link (.ics)</string>
+    <string name="accounts_add_button">Add</string>
+    <string name="accounts_add_title">Add an account</string>
+    <string name="accounts_add_google_body">Google accounts and Google Calendar</string>
+    <string name="accounts_add_microsoft_body">Outlook, Hotmail and Microsoft 365</string>
+    <string name="accounts_add_subscription_body">Follow a calendar from its web address (read-only)</string>
     <string name="accounts_subscription_title">Subscribe to a calendar</string>
     <string name="accounts_subscription_body">Paste the link of a calendar published as an .ics file. It is read only and is refreshed from time to time.</string>
     <string name="accounts_subscription_url">Link (https:// or webcal://)</string>

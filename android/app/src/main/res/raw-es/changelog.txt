@@ -1,3 +1,6 @@
+## Unreleased
+- Las cuentas se ven como en Cemail: tu foto de Google o Microsoft dentro de un anillo del color de la cuenta, y un solo botón «Añadir» que abre «Añadir una cuenta» con una tarjeta para Google, Microsoft y el enlace .ics.
+
 ## 2.0.0
 - Diseño nuevo compartido con Cemail y Cenotes: seis diseños para elegir (Cristal, Moderno, AMOLED, Retro 98, Papel, Brutalista), un color de acento (ocho, o cualquier tono) y la transparencia del cristal, todo en Ajustes > Apariencia.
 - Cristal V2: un desenfoque más nítido, una curva de transparencia que mantiene el texto legible y sombras que se quedan fuera del cristal.

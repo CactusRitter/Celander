@@ -1,3 +1,6 @@
+## Unreleased
+- Accounts look like Cemail's: your picture from Google or Microsoft inside a ring in the account's colour, and one "Add" button that opens "Add an account" with a card for Google, Microsoft and the .ics link.
+
 ## 2.0.0
 - New design shared with Cemail and Cenotes: six designs to choose from (Glass, Modern, AMOLED, Retro 98, Paper, Brutalist), an accent colour (eight, or any hue) and the glass transparency, all in Settings > Appearance.
 - Glass V2: a sharper blur, a transparency curve that keeps text readable, and shadows that stay outside the glass.

@@ -639,6 +639,11 @@
     <string name="accounts_provider_microsoft">Microsoft</string>
     <string name="accounts_provider_subscription">Abo</string>
     <string name="accounts_add_subscription">Kalenderlink abonnieren (.ics)</string>
+    <string name="accounts_add_button">Hinzufügen</string>
+    <string name="accounts_add_title">Konto hinzufügen</string>
+    <string name="accounts_add_google_body">Google-Konten und Google Kalender</string>
+    <string name="accounts_add_microsoft_body">Outlook, Hotmail und Microsoft 365</string>
+    <string name="accounts_add_subscription_body">Einen Kalender über seine Webadresse verfolgen (nur Lesen)</string>
     <string name="accounts_subscription_title">Kalender abonnieren</string>
     <string name="accounts_subscription_body">Füge den Link eines Kalenders ein, der als .ics-Datei veröffentlicht ist. Er ist schreibgeschützt und wird von Zeit zu Zeit aktualisiert.</string>
     <string name="accounts_subscription_url">Link (https:// oder webcal://)</string>

@@ -1,3 +1,6 @@
+## Unreleased
+- Konten sehen aus wie in Cemail: dein Bild von Google oder Microsoft in einem Ring in der Farbe des Kontos, und ein einziger Knopf „Hinzufügen“, der „Konto hinzufügen“ mit einer Karte für Google, Microsoft und den .ics-Link öffnet.
+
 ## 2.0.0
 - Neues Design, gemeinsam mit Cemail und Cenotes: sechs Designs zur Auswahl (Glas, Modern, AMOLED, Retro 98, Papier, Brutalistisch), eine Akzentfarbe (acht, oder jeder Farbton) und die Glas-Transparenz, alles unter Einstellungen > Aussehen.
 - Glas V2: eine schärfere Unschärfe, eine Transparenzkurve, die Text lesbar hält, und Schatten, die außerhalb des Glases bleiben.

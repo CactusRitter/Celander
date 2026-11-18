@@ -4,8 +4,26 @@ import android.text.format.DateUtils
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material.icons.rounded.Link
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import com.celander.app.ui.CalendarColor
+import com.celander.app.ui.GoogleLogo
+import com.celander.app.ui.MicrosoftLogo
+import com.celander.app.ui.theme.LocalGlass
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,6 +82,7 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
     var selected by rememberSaveable { mutableStateOf<Long?>(null) }
     var removing by rememberSaveable { mutableStateOf(false) }
     var subscribing by rememberSaveable { mutableStateOf(false) }
+    var adding by rememberSaveable { mutableStateOf(false) }
     if (subscribing) {
         SubscribeDialog(
             onDismiss = { subscribing = false },
@@ -77,14 +96,15 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
     val account = list.firstOrNull { it.id == selected }
     // An account that was removed (or is not there any more) takes the page back to the list.
     if (selected != null && account == null) selected = null
-    BackHandler(enabled = account != null) { selected = null }
+    BackHandler(enabled = account != null || adding) { if (account != null) selected = null else adding = false }
+    val photoVersion by viewModel.photoVersion.collectAsStateWithLifecycle()
     val startSignIn = { type: AccountType, hint: String? -> viewModel.signInIntent(type, hint)?.let(signIn::launch) ?: viewModel.onSignInResult(null) }
     val title = stringResource(R.string.accounts_title)
     val tasksTitle = stringResource(R.string.google_tasks_title)
 
     SettingsScaffold(
-        title = account?.displayName ?: title,
-        onBack = { if (account != null) selected = null else onBack() },
+        title = account?.displayName ?: if (adding) stringResource(R.string.accounts_add_title) else title,
+        onBack = { if (account != null) selected = null else if (adding) adding = false else onBack() },
         snackbar = snackbar,
         onSnackbarAction = viewModel::onSnackbarAction,
         onSnackbarTimeout = viewModel::onSnackbarTimeout,
@@ -105,7 +125,15 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
             )
         },
     ) {
-        if (account == null) {
+        if (adding && account == null) {
+            addAccountItems(
+                googleConfigured = viewModel.googleConfigured,
+                microsoftConfigured = viewModel.microsoftConfigured,
+                onGoogle = { adding = false; startSignIn(AccountType.GOOGLE, null) },
+                onMicrosoft = { adding = false; startSignIn(AccountType.MICROSOFT, null) },
+                onSubscription = { adding = false; subscribing = true },
+            )
+        } else if (account == null) {
             item(key = "intro") {
                 Text(
                     stringResource(R.string.accounts_intro),
@@ -135,55 +163,20 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                         ).joinToString("\n"),
                         index = index,
                         onClick = { selected = row.id },
-                        modifier = Modifier.widthIn(max = Sizes.maxFormWidth).padding(horizontal = 12.dp),
+                        modifier = Modifier.widthIn(max = Sizes.maxFormWidth).padding(horizontal = 12.dp, vertical = 6.dp),
                     ) {
-                        Initial(row)
+                        AccountAvatar(row, viewModel.photoFile(row.id), photoVersion, size = 52)
                     }
                 }
             }
-            item(key = "add-google") {
-                AddButton(
-                    text = stringResource(R.string.accounts_add_google),
-                    onClick = { startSignIn(AccountType.GOOGLE, null) },
-                )
-            }
-            item(key = "add-microsoft") {
-                AddButton(
-                    text = stringResource(R.string.accounts_add_microsoft),
-                    onClick = { startSignIn(AccountType.MICROSOFT, null) },
-                )
-            }
-            item(key = "add-subscription") {
-                AddButton(
-                    text = stringResource(R.string.accounts_add_subscription),
-                    onClick = { subscribing = true },
-                )
-            }
-            if (!viewModel.googleConfigured) {
-                item(key = "google-not-configured") {
-                    Text(
-                        stringResource(R.string.accounts_google_missing),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
-                    )
-                }
-            }
-            if (!viewModel.microsoftConfigured) {
-                item(key = "microsoft-not-configured") {
-                    Text(
-                        stringResource(R.string.accounts_microsoft_missing),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
-                    )
-                }
+            item(key = "add") {
+                AddButton(text = stringResource(R.string.accounts_add_button), onClick = { adding = true })
             }
         } else {
             item(key = "header") {
                 SettingsCard(Modifier.widthIn(max = Sizes.maxFormWidth).padding(horizontal = 12.dp, vertical = 6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                        Initial(account, size = 56)
+                        AccountAvatar(account, viewModel.photoFile(account.id), photoVersion, size = 56)
                         androidx.compose.foundation.layout.Column {
                             Text(account.displayName, style = MaterialTheme.typography.titleMedium)
                             Text(account.identifier, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -275,16 +268,77 @@ private fun SubscribeDialog(onDismiss: () -> Unit, onSubscribe: (url: String, na
     )
 }
 
-/** The round mark of an account: its first letter. */
+/**
+ * The round mark of an account, as in Cemail: its picture at Google or Microsoft (the first letter while there is none),
+ * inside a ring of the colour that belongs to the account. [photoVersion] makes it reload when a picture arrives.
+ */
 @Composable
-private fun Initial(account: AccountEntity, size: Int = 48) {
-    IconBubble(size = size.dp) {
-        Text(
-            (account.displayName.firstOrNull() ?: account.identifier.firstOrNull() ?: '?').uppercase(),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
+private fun AccountAvatar(account: AccountEntity, photoFile: java.io.File, photoVersion: Int, size: Int = 52) {
+    val photo by produceState<ImageBitmap?>(null, account.id, photoVersion) {
+        value = withContext(Dispatchers.IO) {
+            if (photoFile.exists()) BitmapFactory.decodeFile(photoFile.path)?.asImageBitmap() else null
+        }
     }
+    val dark = LocalGlass.current.dark
+    val color = CalendarColor.entries[(account.id % CalendarColor.entries.size).toInt()].base(dark)
+    Box(Modifier.size(size.dp).border(2.dp, color, CircleShape), contentAlignment = Alignment.Center) {
+        val inner = (size - 6).dp
+        val image = photo
+        if (image != null) {
+            Image(image, null, Modifier.size(inner).clip(CircleShape), contentScale = ContentScale.Crop)
+        } else {
+            Box(Modifier.size(inner).background(color.copy(alpha = 0.18f), CircleShape), contentAlignment = Alignment.Center) {
+                Text(
+                    (account.displayName.firstOrNull() ?: account.identifier.firstOrNull() ?: '?').uppercase(),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+    }
+}
+
+/** The kinds of account that can be added, as big cards with the logo of each service (like Cemail's "Add account"). */
+private fun androidx.compose.foundation.lazy.LazyListScope.addAccountItems(
+    googleConfigured: Boolean,
+    microsoftConfigured: Boolean,
+    onGoogle: () -> Unit,
+    onMicrosoft: () -> Unit,
+    onSubscription: () -> Unit,
+) {
+    item(key = "add-google") {
+        val surface = MaterialTheme.colorScheme.surface
+        BigRow(stringResource(R.string.accounts_provider_google), stringResource(R.string.accounts_add_google_body), 0, onGoogle, Modifier.widthIn(max = Sizes.maxFormWidth).padding(horizontal = 12.dp, vertical = 6.dp), verticalPadding = 22.dp) {
+            IconBubble(60.dp, surface) { GoogleLogo(32.dp) }
+        }
+    }
+    item(key = "add-microsoft") {
+        val surface = MaterialTheme.colorScheme.surface
+        BigRow(stringResource(R.string.accounts_provider_microsoft), stringResource(R.string.accounts_add_microsoft_body), 1, onMicrosoft, Modifier.widthIn(max = Sizes.maxFormWidth).padding(horizontal = 12.dp, vertical = 6.dp), verticalPadding = 22.dp) {
+            IconBubble(60.dp, surface) { MicrosoftLogo(30.dp) }
+        }
+    }
+    item(key = "add-subscription") {
+        BigRow(stringResource(R.string.accounts_add_subscription), stringResource(R.string.accounts_add_subscription_body), 2, onSubscription, Modifier.widthIn(max = Sizes.maxFormWidth).padding(horizontal = 12.dp, vertical = 6.dp), verticalPadding = 22.dp) {
+            IconBubble(60.dp) { Icon(Icons.Rounded.Link, null, tint = MaterialTheme.colorScheme.onPrimaryContainer) }
+        }
+    }
+    if (!googleConfigured) {
+        item(key = "google-not-configured") { MissingNote(R.string.accounts_google_missing) }
+    }
+    if (!microsoftConfigured) {
+        item(key = "microsoft-not-configured") { MissingNote(R.string.accounts_microsoft_missing) }
+    }
+}
+
+@Composable
+private fun MissingNote(text: Int) {
+    Text(
+        stringResource(text),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.error,
+        modifier = Modifier.widthIn(max = Sizes.maxFormWidth).fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+    )
 }
 
 @Composable

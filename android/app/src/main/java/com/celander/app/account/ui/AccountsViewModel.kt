@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.celander.app.R
 import com.celander.app.account.AccountRepository
+import com.celander.app.account.AccountPhotos
 import com.celander.app.account.AddAccountResult
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountType
@@ -31,8 +32,19 @@ class AccountsViewModel @Inject constructor(
     private val snackbar: SnackbarManager,
     private val tasks: GoogleTasksAccounts,
     private val tasksConnection: GoogleTasksConnection,
+    private val photos: AccountPhotos,
 ) : ViewModel() {
     val accounts: StateFlow<List<AccountEntity>?> = repository.accounts.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** Changes whenever any account picture does. */
+    val photoVersion: StateFlow<Int> = photos.version
+
+    fun photoFile(accountId: Long): java.io.File = photos.file(accountId)
+
+    init {
+        // The pictures of the accounts, fetched the first time and checked again every few days.
+        viewModelScope.launch { repository.accounts.collect { list -> list.forEach { photos.refreshIfStale(it) } } }
+    }
     val snackbarMessage: StateFlow<SnackbarMessage?> = snackbar.current
 
     /** The Google Tasks connection of each connected account, by e-mail address. */
@@ -118,7 +130,10 @@ class AccountsViewModel @Inject constructor(
     }
 
     fun remove(id: Long) {
-        viewModelScope.launch { repository.remove(id) }
+        viewModelScope.launch {
+            repository.remove(id)
+            photos.remove(id)
+        }
     }
 
     fun onSnackbarAction(message: SnackbarMessage) = snackbar.performAction(message)

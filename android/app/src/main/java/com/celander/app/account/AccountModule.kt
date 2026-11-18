@@ -37,6 +37,10 @@ object AccountModule {
     fun icsUrlProvider(client: OkHttpClient, @IoDispatcher io: CoroutineDispatcher) = IcsUrlProvider(client, io)
 
     @Provides @Singleton
+    fun accountPhotos(@ApplicationContext context: Context, client: OkHttpClient, tokens: TokenStore, google: GoogleAuth, microsoft: MicrosoftAuth) =
+        AccountPhotos(context, client, AccountTokens(tokens, google, microsoft))
+
+    @Provides @Singleton
     fun accountSync(
         db: CelanderDatabase,
         client: OkHttpClient,
