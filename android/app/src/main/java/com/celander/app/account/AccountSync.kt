@@ -1,6 +1,6 @@
 package com.celander.app.account
 
-import com.celander.app.AppLog
+import com.ce.kit.log.AppLog
 import androidx.room.withTransaction
 import com.celander.app.core.database.AccountDao
 import com.celander.app.core.database.AccountEntity

@@ -1,6 +1,6 @@
 package com.celander.app.calendar
 
-import com.celander.app.AppLog
+import com.ce.kit.log.AppLog
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

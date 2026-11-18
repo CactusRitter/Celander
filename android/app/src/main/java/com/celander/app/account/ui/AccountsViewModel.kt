@@ -1,6 +1,6 @@
 package com.celander.app.account.ui
 
-import com.celander.app.AppLog
+import com.ce.kit.log.AppLog
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

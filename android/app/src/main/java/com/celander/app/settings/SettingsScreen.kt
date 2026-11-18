@@ -68,9 +68,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.celander.app.AppLog
+import com.ce.kit.log.AppLog
 import com.celander.app.BuildConfig
-import com.celander.app.CrashLog
+import com.ce.kit.log.CrashLog
 import com.celander.app.CelanderApp
 import com.celander.app.R
 import com.celander.app.core.model.CalendarSource

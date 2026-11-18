@@ -1,6 +1,6 @@
 package com.celander.app.account
 
-import com.celander.app.AppLog
+import com.ce.kit.log.AppLog
 import android.content.Intent
 import com.celander.app.account.auth.GoogleAuth
 import com.celander.app.account.auth.MicrosoftAuth

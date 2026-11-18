@@ -8,7 +8,6 @@ import com.celander.app.core.di.ApplicationScope
 import com.celander.app.notifications.ReminderNotifier
 import com.celander.app.notifications.ReminderScheduler
 import com.celander.app.task.google.GoogleTasksSyncTrigger
-import com.celander.app.update.Updates
 import com.celander.app.widget.WidgetUpdater
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -33,12 +32,11 @@ class CelanderApp : Application() {
     lateinit var scope: CoroutineScope
 
     /** New versions published on GitHub (Settings → Updates and the notice at the top of the calendar). */
-    val updates: Updates by lazy { Updates(this) }
+    val updates: com.ce.kit.update.Updates get() = com.ce.kit.CeKit.updates
 
     override fun onCreate() {
         super.onCreate()
-        CrashLog.install(this)
-        AppLog.init(this)
+        com.ce.kit.CeKit.init(this, com.ce.kit.CeAppConfig("Celander", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, "CactusRitter/Celander"))
         notifier.ensureChannels()
         // The first calendar is named in the language of the first start.
         scope.launch { calendars.ensureDefault(getString(R.string.default_calendar_name)) }
