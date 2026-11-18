@@ -38,7 +38,7 @@ Rama de trabajo: `ce/estilo-ce` (local, sin push; ya incluye el diseño común f
 
 ## Pendiente, EN ORDEN
 1. **Probar en el S26 con César** (instalar ahí está permitido; el login Microsoft/Google lo hace César en el navegador): login Microsoft, calendarios y eventos simples, serie con una ocurrencia movida y otra cancelada, día entero; cambios hechos en Google Calendar web llegando en ≤60 s; «Borrar todos los datos» con cuentas; copia ZIP con datos y restaurarla; suscripción `.ics` y archivo suelto; widgets Mes/Tareas/Año/Agenda.
-2. 2.0.0 PUBLICADA (2026-11-18): release v2.0.0, main al día, APK en G:. Queda la prueba en el S26/OPPO de César.
+2. 2.1.0 PUBLICADA (2026-11-18): release v2.1.0, main al día (85eeedd), APK en G:. Cuentas como Cemail, cuadro .ics en cristal, velo de cuadros al 40 %. Pendiente: icono al estilo Ce (sin publicar), los 4 tests de DataStore en Windows, probar en S26/OPPO.
 3. Más adelante (aprobado por César, después de lo anterior): push de calendario reutilizando Worker de Cloudflare + Firebase de Cemail (`Cemail/docs/PUSH.md`, `Ce/docs/NUBE.md`); implica actualizar la política de privacidad (hoy dice que no hay servidor). NO empezar antes.
 4. Menores: capturas de los otros widgets en emulador; revisar `RemindersSection`/`maxCount` y `CalendarInfo.maxReminders` sin uso; fin de línea CRLF/LF mezclado en algunos archivos (hace fallar `perl -0` multilínea: usa Edit); quitar los `Log.i("Accounts", …)` si molestan (sin datos personales); Microsoft: usar delta con ventana si el número de peticiones molesta.
 - Yahoo: descartado por César. Capturas de los 6 diseños: no hacen falta.
