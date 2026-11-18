@@ -56,4 +56,7 @@ object AccountModule {
 abstract class AccountBindings {
     @dagger.Binds
     abstract fun scheduler(impl: WorkManagerAccountSyncScheduler): AccountSyncScheduler
+
+    @dagger.Binds
+    abstract fun accountsReset(impl: AccountRepository): AccountsReset
 }

@@ -354,9 +354,9 @@
     <string name="settings_samples_clear">Delete sample data</string>
     <string name="settings_samples_clear_summary">Removes all sample calendars and entries</string>
     <string name="settings_delete_all">Delete all data</string>
-    <string name="settings_delete_all_summary">All calendars, events and tasks in Celander. Google data stays in your account</string>
+    <string name="settings_delete_all_summary">All calendars, events and tasks in Celander, and your connected accounts. What is stored at Google or Microsoft stays there</string>
     <string name="delete_all_title">Delete all data?</string>
-    <string name="delete_all_message">All calendars, events and tasks on this device will be deleted and Google Tasks will be disconnected. Your Google calendars and tasks stay in your Google account. This cannot be undone.</string>
+    <string name="delete_all_message">All calendars, events and tasks on this device will be deleted and your connected accounts (Google, Microsoft) and Google Tasks will be disconnected. Your calendars and tasks at Google and Microsoft stay in your accounts. This cannot be undone.</string>
     <string name="delete_all_confirm">Delete everything</string>
     <string name="action_cancel">Cancel</string>
     <string name="data_deleted">All data deleted</string>

@@ -34,6 +34,11 @@ sealed interface AddAccountResult {
     data class Failed(val reason: String) : AddAccountResult
 }
 
+/** What "Delete all data" needs from the accounts: to forget every one of them on this device. */
+fun interface AccountsReset {
+    suspend fun removeAll()
+}
+
 /** The accounts whose calendars Celander syncs: signing in, syncing, removing. Screens read the database through [accounts]. */
 @Singleton
 class AccountRepository @Inject constructor(
@@ -44,7 +49,7 @@ class AccountRepository @Inject constructor(
     private val microsoft: MicrosoftAuth,
     private val scheduler: AccountSyncScheduler,
     private val googleTasks: GoogleTasksConnection,
-) {
+) : AccountsReset {
     val accounts: Flow<List<AccountEntity>> = dao.observeAccounts()
 
     /** Only one sync runs at a time, whoever asks. */
@@ -98,6 +103,17 @@ class AccountRepository @Inject constructor(
         dao.account(id)?.takeIf { it.type == AccountType.GOOGLE.name }?.let { googleTasks.disconnect(it.identifier) }
         sync.remove(id)
         tokens.clear(AccountTokens.key(id))
+    }
+
+    /**
+     * "Delete all data": every account goes with its calendars, events, links and tokens. Google Tasks is disconnected by the
+     * reset itself (before this), so it is not touched here. Nothing is sent to any server.
+     */
+    override suspend fun removeAll() = lock.withLock {
+        dao.accounts().forEach {
+            sync.remove(it.id)
+            tokens.clear(AccountTokens.key(it.id))
+        }
     }
 
     private var lastForegroundSync = 0L

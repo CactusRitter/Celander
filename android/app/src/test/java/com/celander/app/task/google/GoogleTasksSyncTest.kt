@@ -509,7 +509,7 @@ class GoogleTasksSyncTest {
         sync.run()
         env.settings.update { it.copy(defaultTaskCalendarId = personal, lastUsedTaskCalendarId = personal) }
         tasks.create(Task(calendarId = personal, title = "Local"))
-        val reset = DataReset(env.db, env.db.calendarDao(), env.db.snoozeDao(), env.calendars, env.settings, connection)
+        val reset = DataReset(env.db, env.db.calendarDao(), env.db.snoozeDao(), env.calendars, env.settings, connection) { }
 
         reset.deleteAll("Personal")
 

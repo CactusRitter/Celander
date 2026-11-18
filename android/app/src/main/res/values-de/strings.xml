@@ -351,9 +351,9 @@
     <string name="settings_samples_clear">Beispieldaten löschen</string>
     <string name="settings_samples_clear_summary">Entfernt alle Beispielkalender und -einträge</string>
     <string name="settings_delete_all">Alle Daten löschen</string>
-    <string name="settings_delete_all_summary">Alle Kalender, Termine und Aufgaben in Celander. Google-Daten bleiben in deinem Konto</string>
+    <string name="settings_delete_all_summary">Alle Kalender, Termine und Aufgaben in Celander und deine verbundenen Konten. Was bei Google oder Microsoft gespeichert ist, bleibt dort</string>
     <string name="delete_all_title">Alle Daten löschen?</string>
-    <string name="delete_all_message">Alle Kalender, Termine und Aufgaben auf diesem Gerät werden gelöscht und Google Tasks wird getrennt. Deine Google-Kalender und -Aufgaben bleiben in deinem Google-Konto. Das lässt sich nicht rückgängig machen.</string>
+    <string name="delete_all_message">Alle Kalender, Termine und Aufgaben auf diesem Gerät werden gelöscht, und deine verbundenen Konten (Google, Microsoft) sowie Google Tasks werden getrennt. Deine Kalender und Aufgaben bei Google und Microsoft bleiben in deinen Konten. Das lässt sich nicht rückgängig machen.</string>
     <string name="delete_all_confirm">Alles löschen</string>
     <string name="action_cancel">Abbrechen</string>
     <string name="data_deleted">Alle Daten gelöscht</string>

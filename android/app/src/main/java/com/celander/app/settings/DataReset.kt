@@ -1,6 +1,7 @@
 package com.celander.app.settings
 
 import androidx.room.withTransaction
+import com.celander.app.account.AccountsReset
 import com.celander.app.calendar.data.CalendarsRepository
 import com.celander.app.core.database.CalendarDao
 import com.celander.app.core.database.CelanderDatabase
@@ -11,9 +12,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * "Delete all data": Google Tasks is disconnected (only locally, nothing is deleted at Google), then
- * every local calendar goes with its entries and pending snoozes; the app starts over with one
- * calendar. Celander's settings for the phone's calendars stay.
+ * "Delete all data": Google Tasks is disconnected (only locally, nothing is deleted at Google), every account goes with
+ * its calendars, events and saved sign-in, then every local calendar goes with its entries and pending snoozes; the app
+ * starts over with one calendar. Appearance and other preferences stay.
  */
 @Singleton
 class DataReset @Inject constructor(
@@ -23,10 +24,13 @@ class DataReset @Inject constructor(
     private val calendars: CalendarsRepository,
     private val settings: SettingsRepository,
     private val googleTasks: GoogleTasksConnection,
+    private val accounts: AccountsReset,
 ) {
     /** Appearance and other preferences stay; only data and the calendar choices go. */
     suspend fun deleteAll(defaultCalendarName: String) {
         googleTasks.disconnectLocally()
+        // Accounts (Google, Microsoft): their calendars, events, links and saved sign-ins. The servers keep everything.
+        accounts.removeAll()
         db.withTransaction {
             calendarDao.deleteBySource(CalendarSource.LOCAL.name)
             snoozeDao.deleteAll()

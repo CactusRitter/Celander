@@ -371,9 +371,9 @@
     <string name="settings_samples_clear">Eliminar datos de ejemplo</string>
     <string name="settings_samples_clear_summary">Quita todos los calendarios y entradas de ejemplo</string>
     <string name="settings_delete_all">Eliminar todos los datos</string>
-    <string name="settings_delete_all_summary">Todos los calendarios, eventos y tareas de Celander. Los datos de Google se quedan en tu cuenta</string>
+    <string name="settings_delete_all_summary">Todos los calendarios, eventos y tareas de Celander, y tus cuentas conectadas. Lo que está en Google o Microsoft se queda allí</string>
     <string name="delete_all_title">¿Eliminar todos los datos?</string>
-    <string name="delete_all_message">Se eliminarán todos los calendarios, eventos y tareas de este dispositivo y se desconectará Google Tasks. Tus calendarios y tareas de Google se quedan en tu cuenta de Google. No se puede deshacer.</string>
+    <string name="delete_all_message">Se eliminarán todos los calendarios, eventos y tareas de este dispositivo y se desconectarán tus cuentas (Google, Microsoft) y Google Tasks. Tus calendarios y tareas de Google y Microsoft se quedan en tus cuentas. No se puede deshacer.</string>
     <string name="delete_all_confirm">Eliminar todo</string>
     <string name="action_cancel">Cancelar</string>
     <string name="data_deleted">Todos los datos eliminados</string>
