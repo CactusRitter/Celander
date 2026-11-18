@@ -1,6 +1,9 @@
 package com.celander.app.core.ical
 
 import java.time.Duration
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.UUID
 
 data class ICalEvent(
@@ -28,7 +31,24 @@ data class ICalEvent(
     val extra: String? = null,
 )
 
-data class ICalCalendar(val name: String?, val events: List<ICalEvent>)
+/**
+ * A to-do (VTODO). Its time is a wall-clock date and time of the person, not an instant in a zone: [due] is null for a task without date,
+ * [dueTime] null for one that is due on a day only.
+ */
+data class ICalTodo(
+    val uid: String,
+    val summary: String = "",
+    val description: String = "",
+    val due: java.time.LocalDate? = null,
+    val dueTime: java.time.LocalTime? = null,
+    val completed: Boolean = false,
+    /** When it was completed (ms), if the file says. */
+    val completedAt: Long? = null,
+    /** Minutes before the due moment, one per relative VALARM. */
+    val reminders: List<Int> = emptyList(),
+)
+
+data class ICalCalendar(val name: String?, val events: List<ICalEvent>, val todos: List<ICalTodo> = emptyList())
 
 object IcsParser {
     /** Properties mapped to [ICalEvent] fields; everything else is preserved in [ICalEvent.extra]. */
@@ -43,16 +63,19 @@ object IcsParser {
     fun parseCalendar(text: String): ICalCalendar {
         val lines = ContentLine.unfold(text)
         val events = mutableListOf<ICalEvent>()
+        val todos = mutableListOf<ICalTodo>()
         var name: String? = null
         var current: MutableList<String>? = null
+        var kind = "VEVENT"
         var depth = 0
         for (line in lines) {
             val upper = line.trim().uppercase()
             val event = current
             if (event == null) {
                 when {
-                    upper == "BEGIN:VEVENT" -> {
+                    upper == "BEGIN:VEVENT" || upper == "BEGIN:VTODO" -> {
                         current = mutableListOf()
+                        kind = upper.removePrefix("BEGIN:")
                         depth = 0
                     }
                     upper.startsWith("X-WR-CALNAME") && name == null ->
@@ -61,8 +84,8 @@ object IcsParser {
                 continue
             }
             when {
-                upper == "END:VEVENT" && depth == 0 -> {
-                    parseEvent(event)?.let(events::add)
+                upper == "END:$kind" && depth == 0 -> {
+                    if (kind == "VTODO") parseTodo(event)?.let(todos::add) else parseEvent(event)?.let(events::add)
                     current = null
                 }
                 upper.startsWith("BEGIN:") -> {
@@ -76,7 +99,49 @@ object IcsParser {
                 else -> event += line
             }
         }
-        return ICalCalendar(name, events)
+        return ICalCalendar(name, events, todos)
+    }
+
+    /** A VTODO: its due moment (or start) as the wall-clock date and time of the person, its state and its relative reminders. */
+    private fun parseTodo(lines: List<String>): ICalTodo? {
+        val props = lines.mapNotNull(ContentLine::parse)
+        fun first(name: String) = props.firstOrNull { it.name == name }
+        fun text(name: String) = first(name)?.value?.let(ContentLine::unescapeText).orEmpty()
+        val summary = text("SUMMARY")
+        val moment = (first("DUE") ?: first("DTSTART"))?.let(ICalDates::parse)
+        val local = moment?.takeIf { !it.allDay }?.let { Instant.ofEpochMilli(it.millis).atZone(ZoneId.systemDefault()) }
+        val uid = first("UID")?.value?.trim()?.takeIf { it.isNotEmpty() }
+            ?: UUID.nameUUIDFromBytes("$summary|${moment?.millis}".toByteArray()).toString()
+        val status = first("STATUS")?.value?.trim()
+        val completedAt = first("COMPLETED")?.let(ICalDates::parse)?.millis
+        val done = status.equals("COMPLETED", ignoreCase = true) || completedAt != null ||
+            first("PERCENT-COMPLETE")?.value?.trim()?.toIntOrNull() == 100
+        if (summary.isBlank() && moment == null) return null
+        // Nested components: relative alarms, in minutes before the due moment.
+        val reminders = mutableListOf<Int>()
+        var inAlarm = false
+        for (line in lines) {
+            val upper = line.trim().uppercase()
+            when {
+                upper == "BEGIN:VALARM" -> inAlarm = true
+                upper == "END:VALARM" -> inAlarm = false
+                inAlarm && upper.startsWith("TRIGGER") -> {
+                    val trigger = ContentLine.parse(line) ?: continue
+                    if (trigger.param("VALUE").equals("DATE-TIME", ignoreCase = true)) continue
+                    ICalDates.parseDuration(trigger.value)?.let { reminders += (-it.toMinutes()).toInt() }
+                }
+            }
+        }
+        return ICalTodo(
+            uid = uid,
+            summary = summary,
+            description = text("DESCRIPTION"),
+            due = moment?.let { if (it.allDay) Instant.ofEpochMilli(it.millis).atZone(ZoneOffset.UTC).toLocalDate() else local!!.toLocalDate() },
+            dueTime = local?.toLocalTime(),
+            completed = done,
+            completedAt = completedAt,
+            reminders = reminders.distinct(),
+        )
     }
 
     private fun parseEvent(lines: List<String>): ICalEvent? {

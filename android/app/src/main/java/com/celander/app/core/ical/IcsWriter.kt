@@ -9,7 +9,7 @@ import java.time.zone.ZoneOffsetTransitionRule
 object IcsWriter {
     private const val PRODID = "-//Celander//Celander Android//DE"
 
-    fun calendar(events: List<ICalEvent>, name: String? = null, nowMillis: Long = System.currentTimeMillis()): String {
+    fun calendar(events: List<ICalEvent>, name: String? = null, nowMillis: Long = System.currentTimeMillis(), todos: List<ICalTodo> = emptyList()): String {
         val out = StringBuilder()
         fun line(s: String) = out.append(ContentLine.fold(s)).append("\r\n")
 
@@ -63,6 +63,34 @@ object IcsWriter {
                 line("END:VALARM")
             }
             line("END:VEVENT")
+        }
+        for (t in todos) {
+            line("BEGIN:VTODO")
+            line("UID:${t.uid}")
+            line("DTSTAMP:${ICalDates.formatUtc(nowMillis)}")
+            line("SUMMARY:${ContentLine.escapeText(t.summary)}")
+            if (t.description.isNotEmpty()) line("DESCRIPTION:${ContentLine.escapeText(t.description)}")
+            // The due moment is the person's wall clock ("floating"): no zone, like in the app.
+            t.due?.let { date ->
+                if (t.dueTime == null) line("DUE;VALUE=DATE:${date.format(DateTimeFormatter.BASIC_ISO_DATE)}")
+                else line("DUE:${date.atTime(t.dueTime).format(LOCAL)}")
+            }
+            line(if (t.completed) "STATUS:COMPLETED" else "STATUS:NEEDS-ACTION")
+            if (t.completed) t.completedAt?.let { line("COMPLETED:${ICalDates.formatUtc(it)}") }
+            for (minutes in t.reminders) {
+                line("BEGIN:VALARM")
+                line("ACTION:DISPLAY")
+                line("DESCRIPTION:${ContentLine.escapeText(t.summary.ifBlank { "Reminder" })}")
+                line(
+                    when {
+                        minutes > 0 -> "TRIGGER:-PT${minutes}M"
+                        minutes < 0 -> "TRIGGER:PT${-minutes}M"
+                        else -> "TRIGGER:PT0S"
+                    },
+                )
+                line("END:VALARM")
+            }
+            line("END:VTODO")
         }
         line("END:VCALENDAR")
         return out.toString()
