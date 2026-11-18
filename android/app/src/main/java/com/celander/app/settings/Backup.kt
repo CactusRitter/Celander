@@ -124,6 +124,14 @@ class Backup @Inject constructor(
         ImportResult(settingsRestored = restored, data = dataIcs?.let { data.import(it) })
     }
 
+    /** Adds the events and tasks of a plain .ics file (from another calendar app) to this device; throws [NotABackupException] if it is not one. */
+    suspend fun importIcs(uri: Uri): LocalDataIcs.ImportResult = withContext(Dispatchers.IO) {
+        val bytes = (context.contentResolver.openInputStream(uri) ?: error("Could not read the file")).use { readLimited(it) }
+        val text = bytes.toString(Charsets.UTF_8)
+        if (!text.contains("BEGIN:VCALENDAR", ignoreCase = true)) throw NotABackupException()
+        data.import(text)
+    }
+
     private fun looksLikeSettings(text: String): Boolean {
         val o = runCatching { JSONObject(text) }.getOrNull() ?: return false
         return o.optString("app").equals(ManifestApp, ignoreCase = true) && o.optJSONObject("settings") != null

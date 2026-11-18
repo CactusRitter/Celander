@@ -601,6 +601,7 @@
     <!-- Settings: appearance, backup and updates (as in Cemail and Celander) -->
     <string name="backup_import">Importar</string>
     <string name="backup_create">Crear copia de seguridad</string>
+    <string name="backup_import_ics">Importar archivo .ics</string>
     <string name="backup_create_title">¿Qué quieres guardar?</string>
     <string name="backup_create_confirm">Crear</string>
     <string name="backup_restore_title">¿Qué quieres restaurar?</string>
@@ -664,6 +665,14 @@
     <string name="accounts_add_microsoft">Añadir una cuenta de Microsoft</string>
     <string name="accounts_provider_google">Google</string>
     <string name="accounts_provider_microsoft">Microsoft</string>
+    <string name="accounts_provider_subscription">Suscripción</string>
+    <string name="accounts_add_subscription">Suscribirse a un enlace de calendario (.ics)</string>
+    <string name="accounts_subscription_title">Suscribirse a un calendario</string>
+    <string name="accounts_subscription_body">Pega el enlace de un calendario publicado como archivo .ics. Es de solo lectura y se actualiza de vez en cuando.</string>
+    <string name="accounts_subscription_url">Enlace (https:// o webcal://)</string>
+    <string name="accounts_subscription_name">Nombre (opcional)</string>
+    <string name="accounts_subscription_confirm">Suscribirse</string>
+    <string name="accounts_subscription_failed">Ese enlace no funcionó. Revísalo e inténtalo de nuevo.</string>
     <string name="accounts_tasks_summary">Sincroniza en ambos sentidos las listas de tareas de esta cuenta.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
 </resources>

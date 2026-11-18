@@ -63,6 +63,16 @@ class AccountsViewModel @Inject constructor(
         return if (type == AccountType.MICROSOFT) repository.microsoftSignInIntent(loginHint) else repository.googleSignInIntent(loginHint)
     }
 
+    /** Subscribes to the calendar at [url]; [name] may be empty. */
+    fun addSubscription(url: String, name: String) {
+        viewModelScope.launch {
+            when (val result = repository.addSubscription(url, name)) {
+                is AddAccountResult.Added -> snackbar.show(UiText.Res(R.string.accounts_added, listOf(result.identifier)))
+                else -> snackbar.show(UiText.Res(R.string.accounts_subscription_failed))
+            }
+        }
+    }
+
     /** What came back from the browser sign-in. */
     fun onSignInResult(data: Intent?) {
         android.util.Log.i("Accounts", "browser returned, data=" + (data != null))

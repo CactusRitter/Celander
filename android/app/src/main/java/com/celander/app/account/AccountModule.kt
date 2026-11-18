@@ -6,6 +6,7 @@ import com.celander.app.account.auth.MicrosoftAuth
 import com.celander.app.account.auth.TokenStore
 import com.celander.app.account.google.GoogleCalendarApi
 import com.celander.app.account.google.GoogleCalendarProvider
+import com.celander.app.account.ics.IcsUrlProvider
 import com.celander.app.account.microsoft.GraphCalendarApi
 import com.celander.app.account.microsoft.MicrosoftCalendarProvider
 import com.celander.app.core.database.CelanderDatabase
@@ -33,12 +34,16 @@ object AccountModule {
     fun microsoftAuth(@ApplicationContext context: Context) = MicrosoftAuth(context)
 
     @Provides @Singleton
+    fun icsUrlProvider(client: OkHttpClient, @IoDispatcher io: CoroutineDispatcher) = IcsUrlProvider(client, io)
+
+    @Provides @Singleton
     fun accountSync(
         db: CelanderDatabase,
         client: OkHttpClient,
         tokens: TokenStore,
         google: GoogleAuth,
         microsoft: MicrosoftAuth,
+        ics: IcsUrlProvider,
         @IoDispatcher io: CoroutineDispatcher,
     ): AccountSync = AccountSync(
         db, db.accountDao(), db.calendarDao(), db.eventDao(), db.exceptionDao(),
@@ -46,6 +51,7 @@ object AccountModule {
             mapOf(
                 AccountType.GOOGLE to GoogleCalendarProvider(GoogleCalendarApi(client, io), accountTokens),
                 AccountType.MICROSOFT to MicrosoftCalendarProvider(GraphCalendarApi(client, io), accountTokens),
+                AccountType.ICS_URL to ics,
             )
         },
     )

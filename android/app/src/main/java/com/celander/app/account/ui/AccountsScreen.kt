@@ -63,6 +63,16 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
     }
     var selected by rememberSaveable { mutableStateOf<Long?>(null) }
     var removing by rememberSaveable { mutableStateOf(false) }
+    var subscribing by rememberSaveable { mutableStateOf(false) }
+    if (subscribing) {
+        SubscribeDialog(
+            onDismiss = { subscribing = false },
+            onSubscribe = { url, name ->
+                subscribing = false
+                viewModel.addSubscription(url, name)
+            },
+        )
+    }
     val list = accounts ?: return
     val account = list.firstOrNull { it.id == selected }
     // An account that was removed (or is not there any more) takes the page back to the list.
@@ -143,6 +153,12 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                     onClick = { startSignIn(AccountType.MICROSOFT, null) },
                 )
             }
+            item(key = "add-subscription") {
+                AddButton(
+                    text = stringResource(R.string.accounts_add_subscription),
+                    onClick = { subscribing = true },
+                )
+            }
             if (!viewModel.googleConfigured) {
                 item(key = "google-not-configured") {
                     Text(
@@ -214,8 +230,50 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
 
 /** The provider an account belongs to, as the user knows it. */
 @Composable
-private fun providerName(account: AccountEntity): String =
-    stringResource(if (account.type == AccountType.MICROSOFT.name) R.string.accounts_provider_microsoft else R.string.accounts_provider_google)
+private fun providerName(account: AccountEntity): String = stringResource(
+    when (account.type) {
+        AccountType.MICROSOFT.name -> R.string.accounts_provider_microsoft
+        AccountType.ICS_URL.name -> R.string.accounts_provider_subscription
+        else -> R.string.accounts_provider_google
+    },
+)
+
+/** Asks for the link of a calendar to subscribe to, and what to call it (optional). */
+@Composable
+private fun SubscribeDialog(onDismiss: () -> Unit, onSubscribe: (url: String, name: String) -> Unit) {
+    var url by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(28.dp),
+        containerColor = com.celander.app.ui.theme.LocalGlass.current.menu,
+        title = { Text(stringResource(R.string.accounts_subscription_title), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold) },
+        text = {
+            androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.accounts_subscription_body), style = MaterialTheme.typography.bodyMedium)
+                androidx.compose.material3.OutlinedTextField(
+                    value = url,
+                    onValueChange = { url = it },
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.accounts_subscription_url)) },
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Uri),
+                )
+                androidx.compose.material3.OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.accounts_subscription_name)) },
+                )
+            }
+        },
+        confirmButton = {
+            androidx.compose.material3.TextButton(enabled = url.isNotBlank(), onClick = { onSubscribe(url, name) }) {
+                Text(stringResource(R.string.accounts_subscription_confirm), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+            }
+        },
+        dismissButton = { androidx.compose.material3.TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+    )
+}
 
 /** The round mark of an account: its first letter. */
 @Composable

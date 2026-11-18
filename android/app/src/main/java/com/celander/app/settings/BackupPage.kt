@@ -103,6 +103,12 @@ internal fun BackupPage(backup: Backup) {
             ""
         }
     }
+    val icsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) run {
+            val r = backup.importIcs(uri)
+            resources.getString(R.string.backup_imported_data, r.events, r.tasks, r.skipped)
+        }
+    }
     pending?.let { (uri, contents) ->
         RestoreDialog(
             contents = contents,
@@ -130,6 +136,7 @@ internal fun BackupPage(backup: Backup) {
                 // out. Backup.inspect checks that it is a Celander backup and says so if it is not.
                 importLauncher.launch(arrayOf("*/*"))
             }
+            ChoiceChip(stringResource(R.string.backup_import_ics), selected = false, enabled = !working) { icsLauncher.launch(arrayOf("*/*")) }
         }
         val status = if (working) stringResource(R.string.backup_working) else message
         if (!status.isNullOrEmpty()) {

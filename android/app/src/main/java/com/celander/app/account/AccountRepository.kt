@@ -3,6 +3,8 @@ package com.celander.app.account
 import android.content.Intent
 import com.celander.app.account.auth.GoogleAuth
 import com.celander.app.account.auth.MicrosoftAuth
+import com.celander.app.account.ics.IcsUrlProvider
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import com.celander.app.account.auth.SignInOutcome
 import com.celander.app.account.auth.TokenStore
 import com.celander.app.core.database.AccountDao
@@ -47,6 +49,7 @@ class AccountRepository @Inject constructor(
     private val tokens: TokenStore,
     private val google: GoogleAuth,
     private val microsoft: MicrosoftAuth,
+    private val ics: IcsUrlProvider,
     private val scheduler: AccountSyncScheduler,
     private val googleTasks: GoogleTasksConnection,
 ) : AccountsReset {
@@ -66,6 +69,23 @@ class AccountRepository @Inject constructor(
     fun microsoftSignInIntent(loginHint: String? = null): Intent? = microsoft.signInIntent(loginHint)
 
     suspend fun addGoogle(data: Intent?): AddAccountResult = added(AccountType.GOOGLE, google.handleResult(data))
+
+    /**
+     * Subscribes to a calendar published as an .ics link (read only). The link is read once first, so a wrong one is refused;
+     * [name] is what the calendar is called here (the file's own name, or the host, when empty).
+     */
+    suspend fun addSubscription(url: String, name: String?): AddAccountResult {
+        val address = IcsUrlProvider.normalize(url)
+        val host = address.toHttpUrlOrNull()?.host ?: return AddAccountResult.Failed("url")
+        val feed = try { ics.fetch(address) } catch (e: java.io.IOException) { return AddAccountResult.Failed(e.message ?: "fetch") }
+        val title = name?.trim()?.takeIf { it.isNotEmpty() } ?: feed.name?.takeIf { it.isNotBlank() } ?: host
+        val existing = dao.account(AccountType.ICS_URL.name, address)
+        val id = existing?.id ?: dao.insertAccount(
+            AccountEntity(type = AccountType.ICS_URL.name, identifier = address, displayName = title, createdAt = System.currentTimeMillis()),
+        )
+        existing?.let { dao.updateAccount(it.copy(status = AccountStatus.OK.name, lastError = null)) }
+        return AddAccountResult.Added(id, title, syncAccount(id))
+    }
 
     suspend fun addMicrosoft(data: Intent?): AddAccountResult = added(AccountType.MICROSOFT, microsoft.handleResult(data))
 
