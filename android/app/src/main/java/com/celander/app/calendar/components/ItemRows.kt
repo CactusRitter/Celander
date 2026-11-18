@@ -1,7 +1,7 @@
 package com.celander.app.calendar.components
 
 import android.content.res.Resources
-import com.celander.app.ui.CalendarCheckbox
+import com.ce.kit.ui.CalendarCheckbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +41,8 @@ import com.celander.app.ui.CalendarColor
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.color
-import com.celander.app.ui.dimmed
-import com.celander.app.ui.springClickable
+import com.ce.kit.ui.dimmed
+import com.ce.kit.ui.springClickable
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

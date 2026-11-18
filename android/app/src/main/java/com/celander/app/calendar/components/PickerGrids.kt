@@ -2,7 +2,7 @@ package com.celander.app.calendar.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -52,8 +52,8 @@ import com.celander.app.R
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.PlainIconButton
-import com.celander.app.ui.WheelPicker
+import com.ce.kit.ui.PlainIconButton
+import com.ce.kit.ui.WheelPicker
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime

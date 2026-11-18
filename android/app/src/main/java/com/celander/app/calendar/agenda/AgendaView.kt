@@ -50,9 +50,9 @@ import com.celander.app.core.ui.Formats
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.SkeletonRows
-import com.celander.app.ui.TextAction
+import com.ce.kit.ui.TextAction
 import com.celander.app.ui.centeringPadding
-import com.celander.app.ui.dimmed
+import com.ce.kit.ui.dimmed
 import com.ce.kit.ui.glass.fadingTopEdge
 import java.time.Instant
 import java.time.LocalDate

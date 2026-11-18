@@ -4,7 +4,7 @@ import androidx.activity.compose.BackHandler
 import com.ce.kit.ui.glass.GlassBackground
 import com.ce.kit.ui.glass.LocalHazeState
 import com.celander.app.ui.LocalWindowLayout
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -64,8 +64,8 @@ import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.ErrorState
 import com.ce.kit.ui.glass.GlassLayers
 import com.celander.app.ui.GlassSnackbarHost
-import com.celander.app.ui.MotionConfig
-import com.celander.app.ui.MotionTokens
+import com.ce.kit.ui.MotionConfig
+import com.ce.kit.ui.MotionTokens
 import com.celander.app.ui.Sizes
 import com.ce.kit.ui.rememberHaptics
 import com.celander.app.event.EditorSheet

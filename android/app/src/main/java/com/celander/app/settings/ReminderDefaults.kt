@@ -2,7 +2,7 @@ package com.celander.app.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -2,7 +2,7 @@ package com.celander.app.event
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,17 +58,17 @@ import com.celander.app.core.model.EventTiming
 import com.celander.app.core.model.ReadOnlyReason
 import com.celander.app.core.recurrence.SeriesScope
 import com.celander.app.core.ui.Formats
-import com.celander.app.ui.AccentButton
+import com.ce.kit.ui.AccentButton
 import com.celander.app.ui.CalendarColor
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.GlassSheet
-import com.celander.app.ui.IconRow
-import com.celander.app.ui.SelectableChip
+import com.ce.kit.ui.GlassSheet
+import com.ce.kit.ui.IconRow
+import com.ce.kit.ui.SelectableChip
 import com.celander.app.ui.SkeletonRows
-import com.celander.app.ui.SoftButton
+import com.ce.kit.ui.SoftButton
 import com.celander.app.ui.color
-import com.celander.app.ui.rememberGlassSheetController
-import com.celander.app.ui.springClickable
+import com.ce.kit.ui.rememberGlassSheetController
+import com.ce.kit.ui.springClickable
 import java.time.ZoneId
 import kotlinx.coroutines.launch
 

@@ -51,7 +51,7 @@ import com.celander.app.core.ui.SnackbarMessage
 import com.celander.app.ui.ChoiceChip
 import com.celander.app.ui.GlassSnackbarHost
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.elastic
+import com.ce.kit.ui.elastic
 import com.ce.kit.ui.glass.GlassBackground
 import com.ce.kit.ui.glass.GlassKind
 import com.ce.kit.ui.glass.GlassLayers

@@ -2,7 +2,7 @@ package com.celander.app.event
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,8 +44,8 @@ import com.celander.app.calendar.components.DateGridPicker
 import com.celander.app.core.time.CalendarMath
 import com.celander.app.core.ui.Formats
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.SelectableChip
-import com.celander.app.ui.Stepper
+import com.ce.kit.ui.SelectableChip
+import com.ce.kit.ui.Stepper
 import java.time.DayOfWeek
 import java.time.LocalDate
 

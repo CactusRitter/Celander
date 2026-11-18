@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.recurrence.SeriesScope
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.GlassSheet
-import com.celander.app.ui.rememberGlassSheetController
-import com.celander.app.ui.springClickable
+import com.ce.kit.ui.GlassSheet
+import com.ce.kit.ui.rememberGlassSheetController
+import com.ce.kit.ui.springClickable
 
 /** Asks which occurrences of a series an action applies to. A sheet instead of a dialog. */
 @Composable

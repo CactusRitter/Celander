@@ -54,15 +54,15 @@ import com.celander.app.core.model.EntryKind
 import com.celander.app.core.model.ReminderDefaults
 import com.celander.app.core.ui.Formats
 import com.celander.app.core.ui.rememberFormats
-import com.celander.app.ui.AccentButton
+import com.ce.kit.ui.AccentButton
 import com.celander.app.ui.CalendarColor
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.ColorSwatch
-import com.celander.app.ui.GlassSheet
+import com.ce.kit.ui.ColorSwatch
+import com.ce.kit.ui.GlassSheet
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.SoftButton
+import com.ce.kit.ui.SoftButton
 import com.celander.app.ui.color
-import com.celander.app.ui.rememberGlassSheetController
+import com.ce.kit.ui.rememberGlassSheetController
 import com.celander.app.event.NewEntryReminders
 import com.celander.app.event.reminderDefaults
 

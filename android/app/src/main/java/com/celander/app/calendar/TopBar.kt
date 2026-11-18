@@ -4,7 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import com.ce.kit.ui.glass.GlassKind
 import com.ce.kit.ui.glass.glass
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -47,7 +47,7 @@ import com.celander.app.R
 import com.ce.kit.ui.theme.CeTheme
 import com.ce.kit.ui.glass.GlassIconButton
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.springClickable
+import com.ce.kit.ui.springClickable
 import java.time.LocalDate
 
 /**

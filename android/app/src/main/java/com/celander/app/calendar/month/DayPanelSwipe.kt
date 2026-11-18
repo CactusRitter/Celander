@@ -1,7 +1,7 @@
 package com.celander.app.calendar.month
 
 import androidx.compose.animation.core.AnimationSpec
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.animation.core.animate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -17,8 +17,8 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Velocity
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.MotionTokens
-import com.celander.app.ui.rubberBand
+import com.ce.kit.ui.MotionTokens
+import com.ce.kit.ui.rubberBand
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

@@ -28,10 +28,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
-import com.celander.app.ui.AccentButton
+import com.ce.kit.ui.AccentButton
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.SoftButton
-import com.celander.app.ui.blockTouchesBelow
+import com.ce.kit.ui.SoftButton
+import com.ce.kit.ui.blockTouchesBelow
 
 /** First-start card while the calendar is completely empty. */
 @OptIn(ExperimentalLayoutApi::class)

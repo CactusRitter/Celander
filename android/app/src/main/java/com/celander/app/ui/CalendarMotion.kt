@@ -1,5 +1,6 @@
 package com.celander.app.ui
 
+import com.ce.kit.ui.*
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -27,42 +28,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.ce.kit.ui.glass.pressScale
 import kotlinx.coroutines.delay
-
-/**
- * Keeps touches on a floating card from reaching what lies beneath it. Being hit, the card hides
- * them from the content underneath. Presses and releases that nothing inside the card took are
- * consumed after its children had them, so an ancestor such as a dialog's scrim does not read them
- * as a tap on itself. Moves stay untouched: consuming them would cancel buttons and drags inside.
- */
-fun Modifier.blockTouchesBelow(): Modifier = pointerInput(Unit) {
-    awaitPointerEventScope {
-        while (true) {
-            awaitPointerEvent(PointerEventPass.Main).changes.forEach { change ->
-                if (change.pressed != change.previousPressed) change.consume()
-            }
-        }
-    }
-}
-
-/** clickable + ripple + press scale; place it before background/clip so the whole element scales. */
-@Composable
-fun Modifier.springClickable(
-    enabled: Boolean = true,
-    role: Role? = null,
-    onClickLabel: String? = null,
-    shape: Shape? = null,
-    pressedScale: Float = MotionTokens.PRESS_SCALE,
-    onClick: () -> Unit,
-): Modifier {
-    return pressScale(pressedScale)
-        .then(if (shape != null) Modifier.clip(shape) else Modifier)
-        .clickable(
-            enabled = enabled,
-            onClickLabel = onClickLabel,
-            role = role,
-            onClick = onClick,
-        )
-}
 
 /**
  * True for a short moment after [key] changes. Lists use it so items fade in only when the list

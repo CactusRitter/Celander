@@ -4,7 +4,7 @@ import androidx.compose.foundation.Canvas
 import com.ce.kit.ui.glass.fadingTopEdge
 import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.isDark
+import com.ce.kit.ui.isDark
 import com.celander.app.ui.today
 import com.celander.app.ui.onToday
 import com.celander.app.ui.sunday
@@ -52,7 +52,7 @@ import com.celander.app.core.ui.Formats
 import com.celander.app.ui.CalendarColor
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.LimitedFontScale
-import com.celander.app.ui.elastic
+import com.ce.kit.ui.elastic
 import com.ce.kit.ui.glass.fadingTopEdge
 import com.ce.kit.ui.rememberHaptics
 import java.time.DayOfWeek

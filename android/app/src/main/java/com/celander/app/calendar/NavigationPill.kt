@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.ce.kit.ui.glass.GlassKind
 import com.ce.kit.ui.glass.glass
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
@@ -59,9 +59,9 @@ import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.blockTouchesBelow
+import com.ce.kit.ui.blockTouchesBelow
 import com.ce.kit.ui.rememberHaptics
-import com.celander.app.ui.springClickable
+import com.ce.kit.ui.springClickable
 import kotlinx.coroutines.launch
 
 val HomeDestination.icon: ImageVector

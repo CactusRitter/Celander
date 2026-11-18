@@ -1,7 +1,7 @@
 package com.celander.app
 
 import androidx.activity.compose.BackHandler
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,7 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.celander.app.calendar.HomeScreen
 import com.celander.app.calendar.LaunchRequests
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.MotionTokens
+import com.ce.kit.ui.MotionTokens
 import com.celander.app.account.ui.AccountsScreen
 import com.celander.app.settings.CalendarsScreen
 import com.celander.app.settings.LicensesScreen

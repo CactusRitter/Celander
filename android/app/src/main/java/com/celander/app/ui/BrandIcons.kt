@@ -1,5 +1,6 @@
 package com.celander.app.ui
 
+import com.ce.kit.ui.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable

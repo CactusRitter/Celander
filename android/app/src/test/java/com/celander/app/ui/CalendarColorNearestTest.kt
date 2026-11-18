@@ -1,5 +1,6 @@
 package com.celander.app.ui
 
+import com.ce.kit.ui.*
 import androidx.compose.ui.graphics.toArgb
 import org.junit.Assert.assertEquals
 import org.junit.Test

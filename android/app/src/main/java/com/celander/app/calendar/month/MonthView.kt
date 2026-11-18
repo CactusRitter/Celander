@@ -6,7 +6,7 @@ import com.ce.kit.ui.glass.glass
 import com.ce.kit.ui.glass.fadingBottomEdge
 import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.isDark
+import com.ce.kit.ui.isDark
 import com.celander.app.ui.today
 import com.celander.app.ui.onToday
 import com.celander.app.ui.sunday
@@ -101,10 +101,10 @@ import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.ChipTextStyle
 import com.celander.app.ui.EmptyState
 import com.celander.app.ui.LimitedFontScale
-import com.celander.app.ui.PlainIconButton
+import com.ce.kit.ui.PlainIconButton
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.SkeletonRows
-import com.celander.app.ui.elastic
+import com.ce.kit.ui.elastic
 import com.ce.kit.ui.glass.fadingBottomEdge
 import com.ce.kit.ui.glass.pressScale
 import com.celander.app.ui.pulseOn

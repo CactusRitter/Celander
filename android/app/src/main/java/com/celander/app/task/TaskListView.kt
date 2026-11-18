@@ -4,7 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import com.ce.kit.ui.glass.fadingTopEdge
 import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -63,11 +63,11 @@ import com.celander.app.core.model.TaskItem
 import com.celander.app.core.ui.Formats
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.EmptyState
-import com.celander.app.ui.PlainIconButton
+import com.ce.kit.ui.PlainIconButton
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.SkeletonRows
 import com.celander.app.ui.centeringPadding
-import com.celander.app.ui.elastic
+import com.ce.kit.ui.elastic
 import com.ce.kit.ui.glass.fadingTopEdge
 import java.time.Instant
 import java.time.LocalDate

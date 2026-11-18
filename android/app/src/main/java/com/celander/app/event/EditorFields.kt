@@ -32,7 +32,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.springClickable
+import com.ce.kit.ui.springClickable
 
 /** Borderless text field with a leading icon, used for location, description and notes. */
 @Composable

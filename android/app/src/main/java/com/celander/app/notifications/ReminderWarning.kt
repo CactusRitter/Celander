@@ -24,7 +24,7 @@ import androidx.compose.ui.semantics.semantics
 import com.celander.app.R
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.TextAction
+import com.ce.kit.ui.TextAction
 
 /** Shown where reminders are set when they would not appear, with the way to turn them on. */
 @Composable

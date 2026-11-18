@@ -21,7 +21,7 @@ import com.celander.app.R
 import com.celander.app.core.places.PlaceSuggestion
 import com.ce.kit.ui.theme.CeTheme
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.springClickable
+import com.ce.kit.ui.springClickable
 
 /**
  * Places found for the typed location, under the field. A tap takes the place, which stays editable

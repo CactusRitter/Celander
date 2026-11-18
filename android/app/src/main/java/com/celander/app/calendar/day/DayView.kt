@@ -1,10 +1,10 @@
 package com.celander.app.calendar.day
 
 import androidx.compose.foundation.background
-import com.celander.app.ui.CalendarCheckbox
+import com.ce.kit.ui.CalendarCheckbox
 import com.ce.kit.ui.glass.glassTile
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.isDark
+import com.ce.kit.ui.isDark
 import com.celander.app.ui.today
 import com.celander.app.ui.onToday
 import com.celander.app.ui.sunday
@@ -83,7 +83,7 @@ import com.celander.app.ui.LimitedFontScale
 import com.celander.app.ui.ChipTextStyle
 import com.celander.app.ui.Sizes
 import com.celander.app.ui.SkeletonBlock
-import com.celander.app.ui.TextAction
+import com.ce.kit.ui.TextAction
 import com.celander.app.ui.pulseOn
 import com.ce.kit.ui.rememberHaptics
 import java.time.DayOfWeek

@@ -2,7 +2,7 @@ package com.celander.app.event
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.MaterialTheme
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -28,11 +28,11 @@ import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.ui.Formats
 import com.ce.kit.ui.theme.CeTheme
-import com.celander.app.ui.RemovableChip
-import com.celander.app.ui.SelectableChip
+import com.ce.kit.ui.RemovableChip
+import com.ce.kit.ui.SelectableChip
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.SoftButton
-import com.celander.app.ui.Stepper
+import com.ce.kit.ui.SoftButton
+import com.ce.kit.ui.Stepper
 
 /** At most this many reminders per entry, and as defaults per kind. */
 internal const val MAX_REMINDERS = 4

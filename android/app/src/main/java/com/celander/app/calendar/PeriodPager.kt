@@ -1,7 +1,7 @@
 package com.celander.app.calendar
 
 import androidx.compose.foundation.pager.HorizontalPager
-import com.celander.app.ui.LocalMotion
+import com.ce.kit.ui.LocalMotion
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
