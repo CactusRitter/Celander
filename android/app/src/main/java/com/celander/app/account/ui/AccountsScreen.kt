@@ -59,11 +59,11 @@ import com.celander.app.settings.SettingsRow
 import com.celander.app.settings.SettingsScaffold
 import com.celander.app.settings.SettingsSwitchRow
 import com.celander.app.settings.settingsGroup
-import com.celander.app.ui.BigRow
+import com.ce.kit.ui.settings.BigRow
 import com.ce.kit.ui.GlassDialog
-import com.celander.app.ui.IconBubble
+import com.ce.kit.ui.settings.IconBubble
 import com.celander.app.ui.Sizes
-import com.celander.app.ui.SettingsCard
+import com.ce.kit.ui.settings.SettingsCard
 import com.ce.kit.ui.TextAction
 import com.ce.kit.ui.glass.GlassKind
 import com.ce.kit.ui.glass.glass

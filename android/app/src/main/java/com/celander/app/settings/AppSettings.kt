@@ -17,9 +17,9 @@ enum class WeekStart { SYSTEM, MONDAY, SUNDAY }
 enum class TimeFormat { SYSTEM, H24, H12 }
 
 data class AppSettings(
-    val accent: Accent = Accent.INDIGO,
+    override val accent: Accent = Accent.INDIGO,
     /** A colour of the free hue bar (0–360) instead of [accent]; null = the chosen accent. */
-    val customHue: Float? = null,
+    override val customHue: Float? = null,
     /** Light, dark or following the phone. */
     override val themeMode: ThemeMode = ThemeMode.SYSTEM,
     /** Background and glass tint of the glass look (only used with [Skin.GLASS]). */

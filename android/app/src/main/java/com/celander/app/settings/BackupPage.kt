@@ -35,8 +35,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
-import com.celander.app.ui.ChoiceChip
-import com.celander.app.ui.SettingsCard
+import com.ce.kit.ui.settings.ChoiceChip
+import com.ce.kit.ui.settings.SettingsCard
 import com.ce.kit.ui.glass.TaskCheckbox
 import com.ce.kit.ui.theme.LocalGlass
 import java.text.SimpleDateFormat

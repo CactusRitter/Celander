@@ -1,5 +1,7 @@
 package com.celander.app.ui
 
+import com.ce.kit.ui.settings.ChoiceChip
+import com.ce.kit.ui.settings.SettingsCard
 import com.ce.kit.ui.*
 import androidx.compose.foundation.clickable
 import com.ce.kit.update.DownloadState

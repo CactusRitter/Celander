@@ -48,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
 import com.celander.app.core.ui.SnackbarMessage
-import com.celander.app.ui.ChoiceChip
+import com.ce.kit.ui.settings.ChoiceChip
 import com.celander.app.ui.GlassSnackbarHost
 import com.celander.app.ui.Sizes
 import com.ce.kit.ui.elastic
