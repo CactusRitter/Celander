@@ -1,3 +1,6 @@
+## Unreleased
+- Vista de mes: el mes anterior ya no asoma por el borde izquierdo junto a los números de semana. El día seleccionado sigue el estilo de cada diseño (esquinas y grosor del contorno), y el panel de un día vacío ya no lleva el botón de abajo.
+
 ## 2.1.2
 - Icono nuevo de la app, con el estilo de Cemail y Cenotes: un calendario sobre fondo claro, también como icono temático.
 - Página nueva «Diagnóstico» en Ajustes (como en Cemail): un registro de actividad de inicios de sesión, sincronizaciones y actualizaciones, más el último error inesperado, que puedes compartir o copiar. Nunca guarda títulos de eventos, direcciones ni tokens.

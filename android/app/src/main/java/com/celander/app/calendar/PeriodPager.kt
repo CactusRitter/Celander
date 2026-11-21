@@ -1,6 +1,9 @@
 package com.celander.app.calendar
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.ui.draw.clipToBounds
 import com.ce.kit.ui.LocalMotion
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -84,7 +87,9 @@ fun PeriodPager(
             beyondViewportPageCount = 1,
             key = { base + (it - START_PAGE) },
         ) { page ->
-            content(base + (page - START_PAGE))
+            // Each page is clipped to its own area: the hard shadows of the tiles on its right edge (Brutalist) would otherwise
+            // spill into the next page and show up at the left edge, next to the week numbers.
+            Box(Modifier.fillMaxSize().clipToBounds()) { content(base + (page - START_PAGE)) }
         }
     }
 }

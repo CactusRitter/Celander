@@ -1,3 +1,6 @@
+## Unreleased
+- Month view: the previous month no longer peeks in at the left edge next to the week numbers. The selected day follows the look (corners and outline width of each design), and the empty day panel no longer has the extra button at the bottom.
+
 ## 2.1.2
 - New app icon in the style of Cemail and Cenotes: a calendar on a light background, also as a themed icon.
 - New Diagnostics page in Settings (as in Cemail): an activity log of account sign-ins, syncs and updates, plus the last unexpected error, that you can share or copy. It never holds event titles, addresses or tokens.

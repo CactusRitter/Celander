@@ -5,6 +5,8 @@ import com.ce.kit.ui.glass.GlassKind
 import com.ce.kit.ui.glass.glass
 import com.ce.kit.ui.glass.fadingBottomEdge
 import com.ce.kit.ui.glass.glassTile
+import com.ce.kit.ui.glass.selectedOutline
+import com.ce.kit.ui.theme.LocalSkin
 import androidx.compose.material3.MaterialTheme
 import com.ce.kit.ui.isDark
 import com.celander.app.ui.today
@@ -433,7 +435,8 @@ private fun DayCell(
 ) {
     val colors = MaterialTheme.colorScheme
     val haptics = rememberHaptics()
-    val shape = RoundedCornerShape(12.dp)
+    // The corners of the look (square in Retro 98 and Brutalist), so the selection outline follows the tile.
+    val shape = LocalSkin.current.shape(RoundedCornerShape(12.dp))
     val todayLabel = stringResource(R.string.today)
     val countLabel = pluralStringResource(R.plurals.entries_count, count, count)
     val description = listOfNotNull(formats.capitalize(date.format(formats.dayMonthLong)), todayLabel.takeIf { isToday }, countLabel)
@@ -445,7 +448,7 @@ private fun DayCell(
             .pressScale(0.95f)
             .alpha(if (inMonth) 1f else 0.5f)
             .glassTile(shape)
-            .then(if (isSelected) Modifier.border(1.5.dp, colors.primary, shape) else Modifier)
+            .then(if (isSelected) Modifier.selectedOutline(shape) else Modifier)
             .combinedClickable(
                 interactionSource = source,
                 indication = ripple(),
@@ -729,13 +732,15 @@ private fun DayPanel(
         }
         when {
             content == null -> SkeletonRows(3, Modifier.padding(16.dp))
-            content.isEmpty -> Column(Modifier.fillMaxSize().elastic().nestedScroll(swipe.nestedScroll).verticalScroll(rememberScrollState())) {
+            content.isEmpty -> Column(
+                Modifier.fillMaxSize().elastic().nestedScroll(swipe.nestedScroll).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
+            ) {
                 EndsPanelDragWhenGone(swipe)
                 EmptyState(
                     icon = Icons.Outlined.EventAvailable,
                     title = stringResource(R.string.day_empty_title),
                     message = stringResource(R.string.day_empty_message),
-                    primaryAction = stringResource(R.string.action_new_event) to onAdd,
                 )
             }
             else -> {

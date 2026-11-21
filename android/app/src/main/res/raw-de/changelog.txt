@@ -1,3 +1,6 @@
+## Unreleased
+- Monatsansicht: Der vorherige Monat blitzt nicht mehr am linken Rand neben den Kalenderwochen hervor. Der ausgewählte Tag folgt dem Stil jedes Designs (Ecken und Linienstärke), und das Panel eines leeren Tages hat den Knopf unten nicht mehr.
+
 ## 2.1.2
 - Neues App-Symbol im Stil von Cemail und Cenotes: ein Kalender auf hellem Hintergrund, auch als Themen-Symbol.
 - Neue Seite „Diagnose“ in den Einstellungen (wie in Cemail): ein Aktivitätsprotokoll zu Kontoanmeldungen, Synchronisierungen und Updates sowie der letzte unerwartete Fehler, die du teilen oder kopieren kannst. Es enthält nie Termintitel, Adressen oder Tokens.
