@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,7 +53,7 @@ import com.celander.app.ui.color
  * blurs everything behind it; the sheet around it is transparent and a tap outside closes it.
  */
 @Composable
-fun HomeDrawerContent(
+fun ColumnScope.HomeDrawerContent(
     current: HomeDestination,
     calendars: List<CalendarInfo>,
     onSelectView: (HomeDestination) -> Unit,
@@ -61,18 +62,7 @@ fun HomeDrawerContent(
     onOpenAccounts: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
-    Column(
-        Modifier
-            .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(12.dp)
-            .fillMaxWidth(0.82f)
-            // Swallows taps on the panel so only the area around it closes the drawer.
-            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {}
-            .glass(RoundedCornerShape(28.dp), GlassKind.Card, elevation = 12.dp)
-            .verticalScroll(rememberScrollState())
-            .padding(vertical = 16.dp, horizontal = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
+    run {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Box(
                 Modifier

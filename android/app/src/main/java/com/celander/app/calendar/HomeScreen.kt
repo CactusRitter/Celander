@@ -102,12 +102,7 @@ fun HomeScreen(
             drawerState = drawer,
             gesturesEnabled = state?.let { it.sheet == null && !it.searchOpen } ?: false,
             drawerContent = {
-                // The sheet itself is transparent and full height: a tap outside the glass panel closes the drawer.
-                androidx.compose.material3.ModalDrawerSheet(
-                    modifier = Modifier.clickable(interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }, indication = null) { drawerScope.launch { drawer.close() } },
-                    drawerContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    windowInsets = WindowInsets(0),
-                ) {
+                com.ce.kit.ui.GlassDrawerSheet(onDismiss = { drawerScope.launch { drawer.close() } }) {
                     HomeDrawerContent(
                         current = state?.destination ?: HomeDestination.MONTH,
                         calendars = calendarList,
