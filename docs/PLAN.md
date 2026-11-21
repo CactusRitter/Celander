@@ -7,8 +7,8 @@ Nada de esto está implementado. Rama local `ce/estilo-ce`. Estado de lo verific
 cd android
 # local.properties (ignorado por git):  sdk.dir=C:/Users/cesar/AppData/Local/Android/Sdk   (barras normales)
 ./gradlew.bat :app:assembleDebug            # JDK 17 ya en JAVA_HOME
-# Emulador (la política de PowerShell bloquea scripts/*.ps1; se lanza el exe directamente):
-powershell -NoProfile -ExecutionPolicy Bypass -File androidscriptsemulator.ps1 start
+# Emulador: siempre sin ventana, con el script (nunca a mano con -gpu host):
+powershell -NoProfile -ExecutionPolicy Bypass -File android\scripts\emulator.ps1 start
 adb -s emulator-5554 install -r app/build/outputs/apk/debug/app-debug.apk     # NUNCA installDebug sin ANDROID_SERIAL
 adb -s emulator-5554 shell am start -n com.celander.app/.MainActivity
 ```
