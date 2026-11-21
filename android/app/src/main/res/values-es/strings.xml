@@ -623,4 +623,9 @@
     <string name="accounts_subscription_failed">Ese enlace no funcionó. Revísalo e inténtalo de nuevo.</string>
     <string name="accounts_tasks_summary">Sincroniza en ambos sentidos las listas de tareas de esta cuenta.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
+    <string name="menu_open">Abrir el menú</string>
+    <string name="drawer_views">Vistas</string>
+    <string name="drawer_calendars">Calendarios</string>
+    <string name="drawer_manage_calendars">Gestionar calendarios</string>
+    <string name="drawer_accounts">Cuentas</string>
 </resources>

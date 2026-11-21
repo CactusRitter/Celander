@@ -25,7 +25,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -64,7 +64,7 @@ fun HomeTopBar(
     onToday: () -> Unit,
     onAdd: () -> Unit,
     onSearch: (() -> Unit)?,
-    onSettings: () -> Unit,
+    onMenu: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val motion = LocalMotion.current
@@ -72,7 +72,7 @@ fun HomeTopBar(
     Layout(
         modifier = modifier.fillMaxWidth().height(Sizes.topBar).padding(horizontal = 16.dp),
         content = {
-            GlassIconButton(Icons.Outlined.Settings, stringResource(R.string.action_settings), onSettings)
+            GlassIconButton(Icons.Outlined.Menu, stringResource(R.string.menu_open), onMenu)
             AnimatedContent(
                 targetState = title,
                 transitionSpec = { fadeIn(motion.fade()) togetherWith fadeOut(motion.fade()) },

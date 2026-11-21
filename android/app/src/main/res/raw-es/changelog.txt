@@ -30,3 +30,4 @@
 - Borrar todos los datos ahora también desconecta tus cuentas. Lo que está en Google o Microsoft se queda allí.
 - Volver a dejar una ocurrencia de un evento repetido como el original ya llega también a la cuenta.
 - Un solo fondo bajo todas las pantallas: al abrir o cerrar Ajustes el fondo ya no se desplaza ni cambia de tono durante la transición.
+- Menú lateral (☰) como en Cemail y Cenotes: vistas, calendarios con casilla de visibilidad (agrupados por cuenta), Gestionar calendarios, Cuentas y Ajustes. El ☰ sustituye al botón de Ajustes de la barra superior.

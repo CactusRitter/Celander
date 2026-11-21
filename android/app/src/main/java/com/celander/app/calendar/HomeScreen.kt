@@ -73,6 +73,9 @@ import com.celander.app.search.SearchOverlay
 import com.celander.app.task.TaskListView
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.MaterialTheme
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -80,6 +83,8 @@ import java.time.YearMonth
 @Composable
 fun HomeScreen(
     onOpenSettings: () -> Unit,
+    onOpenCalendars: () -> Unit,
+    onOpenAccounts: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -87,8 +92,35 @@ fun HomeScreen(
     val completingTasks by viewModel.completingTasks.collectAsStateWithLifecycle()
     val hazeState = com.ce.kit.ui.glass.LocalHazeState.current ?: rememberHazeState()
     val activity = LocalActivity.current
+    val drawer = androidx.compose.material3.rememberDrawerState(androidx.compose.material3.DrawerValue.Closed)
+    val drawerScope = androidx.compose.runtime.rememberCoroutineScope()
+    val calendarList by viewModel.calendarList.collectAsStateWithLifecycle()
 
     CompositionLocalProvider(LocalHazeState provides hazeState, LocalCompletingTasks provides completingTasks) {
+        BackHandler(enabled = drawer.isOpen) { drawerScope.launch { drawer.close() } }
+        androidx.compose.material3.ModalNavigationDrawer(
+            drawerState = drawer,
+            gesturesEnabled = state?.let { it.sheet == null && !it.searchOpen } ?: false,
+            drawerContent = {
+                // The sheet itself is transparent and full height: a tap outside the glass panel closes the drawer.
+                androidx.compose.material3.ModalDrawerSheet(
+                    modifier = Modifier.clickable(interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }, indication = null) { drawerScope.launch { drawer.close() } },
+                    drawerContainerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    windowInsets = WindowInsets(0),
+                ) {
+                    HomeDrawerContent(
+                        current = state?.destination ?: HomeDestination.MONTH,
+                        calendars = calendarList,
+                        onSelectView = { viewModel.selectDestination(it); drawerScope.launch { drawer.close() } },
+                        onToggleCalendar = { viewModel.setCalendarVisible(it.id, !it.visible) },
+                        onManageCalendars = { drawerScope.launch { drawer.close() }; onOpenCalendars() },
+                        onOpenAccounts = { drawerScope.launch { drawer.close() }; onOpenAccounts() },
+                        onOpenSettings = { drawerScope.launch { drawer.close() }; onOpenSettings() },
+                    )
+                }
+            },
+            scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f),
+        ) {
         Box(Modifier.fillMaxSize()) {
             val loadFailed by viewModel.loadFailed.collectAsStateWithLifecycle()
             if (loadFailed) {
@@ -275,7 +307,7 @@ fun HomeScreen(
                     },
                     onAdd = viewModel::newEntry,
                     onSearch = { viewModel.setSearchOpen(true) },
-                    onSettings = onOpenSettings,
+                    onMenu = { drawerScope.launch { drawer.open() } },
                 )
             }
 
@@ -379,6 +411,7 @@ fun HomeScreen(
                 }
                 null -> Unit
             }
+        }
         }
     }
 }

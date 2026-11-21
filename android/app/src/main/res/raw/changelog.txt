@@ -30,3 +30,4 @@
 - Delete all data now also disconnects your accounts. What is stored at Google or Microsoft stays there.
 - Changing one occurrence of a repeating event back to the original now reaches the account too.
 - One background under all screens: opening or closing Settings no longer slides the background or shifts its tone during the transition.
+- Side menu (☰) like Cemail and Cenotes: views, calendars with a visibility box (grouped by account), Manage calendars, Accounts and Settings. The ☰ replaces the Settings button in the top bar.

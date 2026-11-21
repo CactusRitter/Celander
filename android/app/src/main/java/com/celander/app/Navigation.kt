@@ -75,7 +75,11 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
         },
     ) {
         composable<HomeRoute> {
-            HomeScreen(onOpenSettings = { navController.navigate(SettingsRoute) })
+            HomeScreen(
+                onOpenSettings = { navController.navigate(SettingsRoute) },
+                onOpenCalendars = { navController.navigate(CalendarsRoute) },
+                onOpenAccounts = { navController.navigate(AccountsRoute) },
+            )
         }
         composable<SettingsRoute> {
             Page(navController) { back ->

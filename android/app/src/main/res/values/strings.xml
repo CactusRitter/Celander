@@ -598,4 +598,9 @@
     <string name="accounts_subscription_failed">That link did not work. Check it and try again.</string>
     <string name="accounts_tasks_summary">Syncs the task lists of this account both ways.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
+    <string name="menu_open">Open menu</string>
+    <string name="drawer_views">Views</string>
+    <string name="drawer_calendars">Calendars</string>
+    <string name="drawer_manage_calendars">Manage calendars</string>
+    <string name="drawer_accounts">Accounts</string>
 </resources>

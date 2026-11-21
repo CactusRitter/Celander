@@ -242,6 +242,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /** Every calendar (and task list), for the side drawer. */
+    val calendarList: StateFlow<List<com.celander.app.core.model.CalendarInfo>> =
+        calendars.calendars.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    fun setCalendarVisible(id: Long, visible: Boolean) {
+        viewModelScope.launch { calendars.setVisible(id, visible) }
+    }
+
     fun selectDestination(destination: HomeDestination) {
         savedState[KEY_DESTINATION] = destination.name
     }

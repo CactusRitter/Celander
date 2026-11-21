@@ -595,4 +595,9 @@
     <string name="accounts_subscription_failed">Dieser Link hat nicht funktioniert. Prüfe ihn und versuche es noch einmal.</string>
     <string name="accounts_tasks_summary">Synchronisiert die Aufgabenlisten dieses Kontos in beide Richtungen.</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
+    <string name="menu_open">Menü öffnen</string>
+    <string name="drawer_views">Ansichten</string>
+    <string name="drawer_calendars">Kalender</string>
+    <string name="drawer_manage_calendars">Kalender verwalten</string>
+    <string name="drawer_accounts">Konten</string>
 </resources>
