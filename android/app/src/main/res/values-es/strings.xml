@@ -562,23 +562,6 @@
     <!-- Widget blur -->
 
     <!-- Shared design system: accents, designs, styles and in-app updates (as in Celander and Cemail) -->
-    <string name="whatsnew_current">Novedades de la %1$s</string>
-    <string name="whatsnew_next">Novedades de la %1$s (próxima)</string>
-    <string name="whatsnew_earlier">Versiones anteriores</string>
-    <string name="whatsnew_none">Sin notas para esta versión.</string>
-    <string name="update_title">Celander %1$s está disponible</string>
-    <string name="update_body">Descárgala y Android te pedirá instalarla. Tus eventos, tareas y ajustes se quedan como están.</string>
-    <string name="update_allow">Primero permite instalar apps desde Celander en la pantalla que se ha abierto; después vuelve y pulsa Descargar otra vez.</string>
-    <string name="update_download">Descargar</string>
-    <string name="update_later">Ahora no</string>
-    <string name="update_install">Instalar</string>
-    <string name="update_progress">%1$s · %2$s de %3$s</string>
-    <string name="update_progress_unknown">%1$s descargados</string>
-    <string name="update_ready">Descargada. Pulsa Instalar y Android te pedirá confirmarlo.</string>
-    <string name="update_failed_network">La descarga se ha cortado. Revisa la conexión e inténtalo otra vez: seguirá donde se quedó.</string>
-    <string name="update_failed_incomplete">El archivo descargado no estaba completo. Inténtalo otra vez.</string>
-    <string name="update_cancel">Cancelar</string>
-    <string name="update_retry">Reintentar</string>
 
     <!-- Settings: appearance, backup and updates (as in Cemail and Celander) -->
     <string name="backup_import">Importar</string>
@@ -597,22 +580,6 @@
     <string name="settings_section_updates">Actualizaciones</string>
     <string name="settings_section_diagnostics">Diagnóstico</string>
     <string name="settings_row_diagnostics_body">Registro de actividad y último error</string>
-    <string name="settings_log_title">Registro de actividad</string>
-    <string name="settings_log_body">Un registro de lo que hace la app en este dispositivo (inicios de sesión de cuentas, sincronizaciones, actualizaciones, errores), sin títulos de eventos, direcciones ni tokens. Compártelo para poder leerlo cuando no hay cable.</string>
-    <string name="settings_log_share">Compartir registro</string>
-    <string name="settings_log_share_title">Compartir el registro</string>
-    <string name="settings_crash_title">Último error inesperado</string>
-    <string name="settings_crash_body">Se guarda solo en este dispositivo. Cópialo para enviárselo a quien mantiene la app.</string>
-    <string name="copy">Copiar</string>
-    <string name="clear">Borrar</string>
-    <string name="copied">Copiado</string>
-    <string name="settings_updates_title">Buscar versiones nuevas</string>
-    <string name="settings_updates_body">Una o dos veces al día, Celander pregunta a GitHub, donde se publican sus versiones, si hay una más nueva, y lo avisa arriba en el calendario. GitHub solo ve la dirección de tu conexión, nada de ti ni de tus eventos.</string>
-    <string name="settings_updates_now">Buscar ahora</string>
-    <string name="update_none">Tienes la última versión (%1$s).</string>
-    <string name="update_found">Hay una versión nueva: aparece arriba en el calendario.</string>
-    <string name="update_check_failed">No se pudo comprobar. Revisa la conexión.</string>
-    <string name="update_checking">Buscando…</string>
     <string name="backup">Copia de seguridad</string>
     <string name="backup_summary">Guarda tus ajustes, calendarios, eventos y tareas en un solo archivo .zip para llevarlos a otro dispositivo. Las cuentas no se incluyen: vuelve a iniciar sesión allí</string>
     <string name="backup_file_settings">Celander-copia-%1$s.zip</string>

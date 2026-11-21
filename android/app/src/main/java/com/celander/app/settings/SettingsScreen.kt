@@ -89,8 +89,6 @@ import com.ce.kit.ui.settings.SettingsCard
 import com.celander.app.ui.Sizes
 import com.ce.kit.ui.settings.SwitchRow
 import com.ce.kit.ui.TextAction
-import com.celander.app.ui.UpdateBanner
-import com.celander.app.ui.WhatsNew
 import com.ce.kit.ui.WheelPicker
 import com.ce.kit.ui.glass.GlassKind
 import com.ce.kit.ui.glass.GlassSlider
@@ -230,8 +228,8 @@ fun SettingsScreen(
                         SettingsRoute.REMINDERS -> RemindersPage(current, viewModel, formats, notifications, blocked)
                         SettingsRoute.DATA -> DataPage(hasSampleData, viewModel) { confirmDeleteAll = true }
                         SettingsRoute.BACKUP -> BackupPage(viewModel.backup)
-                        SettingsRoute.UPDATES -> UpdatesPage(current, viewModel)
-                        SettingsRoute.DIAGNOSTICS -> DiagnosticsPage()
+                        SettingsRoute.UPDATES -> com.ce.kit.ui.update.UpdatesPage(current.checkUpdates, { v -> viewModel.update { it.copy(checkUpdates = v) } }, rememberChangelog())
+                        SettingsRoute.DIAGNOSTICS -> com.ce.kit.ui.update.DiagnosticsPage()
                     }
                 }
             }
@@ -512,43 +510,10 @@ private fun DataPage(hasSampleData: Boolean?, viewModel: SettingsViewModel, onDe
     }
 }
 
-// --- Updates ---
-
-/** Settings → Updates: this version, looking on GitHub for a newer one (by itself, or now), and what each version brought. */
 @Composable
-private fun UpdatesPage(settings: AppSettings, viewModel: SettingsViewModel) {
+private fun rememberChangelog(): String {
     val context = LocalContext.current
-    val updates = (context.applicationContext as CelanderApp).updates
-    val scope = rememberCoroutineScope()
-    // What "Look now" found: null = not asked yet; then a version, "up to date" or "could not check".
-    var result by remember { mutableStateOf<String?>(null) }
-    var checking by remember { mutableStateOf(false) }
-    val upToDate = stringResource(R.string.update_none, BuildConfig.VERSION_NAME)
-    val failed = stringResource(R.string.update_check_failed)
-    val foundText = stringResource(R.string.update_found)
-    SwitchRow(R.string.settings_updates_title, R.string.settings_updates_body, settings.checkUpdates) { value ->
-        viewModel.update { it.copy(checkUpdates = value) }
-    }
-    UpdateBanner(allowLater = false)
-    SettingsCard {
-        Text(stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), style = MaterialTheme.typography.titleSmall)
-        result?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        ChoiceChip(stringResource(if (checking) R.string.update_checking else R.string.settings_updates_now), false, enabled = !checking) {
-            if (checking) return@ChoiceChip
-            checking = true
-            scope.launch {
-                result = try {
-                    if (updates.check(force = true) != null) foundText else upToDate
-                } catch (e: kotlinx.coroutines.CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    failed
-                }
-                checking = false
-            }
-        }
-    }
-    WhatsNew()
+    return remember { context.resources.openRawResource(R.raw.changelog).bufferedReader().use { it.readText() } }
 }
 
 /** A glass card for settings rows that have their own padding (the same card as a group of the sub-pages). */
@@ -643,42 +608,3 @@ private val DURATION_PRESETS = listOf(15, 30, 45, 60, 90, 120)
 private const val CUSTOM_DURATION = -1
 private val HOURS = (0..23).toList()
 private val MINUTES = (0 until 60 step MINUTE_STEP).toList()
-
-/** The activity log can always be shared; the last crash shows only if there was one (as in Cemail). */
-@Composable
-private fun DiagnosticsPage() {
-    val context = LocalContext.current
-    var crash by remember { mutableStateOf(CrashLog.read(context)) }
-    val copiedLabel = stringResource(R.string.copied)
-    fun copy(text: String) {
-        val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-        clipboard.setPrimaryClip(android.content.ClipData.newPlainText(copiedLabel, text))
-    }
-    SettingsCard {
-        Text(stringResource(R.string.settings_log_title), style = MaterialTheme.typography.titleSmall)
-        Text(stringResource(R.string.settings_log_body), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            val shareTitle = stringResource(R.string.settings_log_share_title)
-            TextAction(stringResource(R.string.settings_log_share), onClick = { AppLog.share(context, shareTitle) })
-            TextAction(stringResource(R.string.copy), onClick = { copy(AppLog.text(context)) })
-            TextAction(stringResource(R.string.clear), onClick = {
-                AppLog.clear(context)
-                crash = null
-            }, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-    }
-    crash?.let { text ->
-        SettingsCard {
-            Text(stringResource(R.string.settings_crash_title), style = MaterialTheme.typography.titleSmall)
-            Text(stringResource(R.string.settings_crash_body), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 6, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                TextAction(stringResource(R.string.copy), onClick = { copy(text) })
-                TextAction(stringResource(R.string.clear), onClick = {
-                    CrashLog.clear(context)
-                    crash = null
-                }, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        }
-    }
-}
