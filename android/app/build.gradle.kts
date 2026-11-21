@@ -63,7 +63,8 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.findByName("celander") ?: signingConfigs.getByName("debug")
+            // Never the debug key: without the release key the APK stays unsigned (and release.ps1 refuses to publish it).
+            signingConfigs.findByName("celander")?.let { signingConfig = it }
         }
     }
 
