@@ -33,7 +33,7 @@ Es una de las sesiones de app de la familia Ce. La **sesión líder Ce** (carpet
 ## Comandos que funcionan (Windows, probado 2026-11-17)
 - `android/local.properties` (ignorado por git): `sdk.dir=C:/Users/cesar/AppData/Local/Android/Sdk` (barras normales; con `\` falla con «El nombre de archivo… no son correctos»).
 - Compilar: `cd android && ./gradlew.bat :app:assembleDebug` (JDK 17; la primera vez ~5 min).
-- Emulador: `scripts/*.ps1` están bloqueados por la política de PowerShell; lanzar `%LOCALAPPDATA%\Android\Sdk\emulator\emulator.exe -avd Pixel_API_36 -no-snapshot-save -no-audio -no-boot-anim -gpu host`. (Sin ventana y con `swiftshader_indirect` se colgó adb.)
+- Emulador: SIEMPRE SIN VENTANA (orden de César, 2026-11-21): `powershell -NoProfile -ExecutionPolicy Bypass -File android\scripts\emulator.ps1 start` (lleva `-no-window -gpu swiftshader_indirect`), `stop` y `shot out.png`; con turno de `emu-lock`. NUNCA lanzar `emulator.exe` a mano ni con `-gpu host` (abre ventana) ni usar `window` salvo que César lo pida. Si adb se cuelga: `stop` y `start` de nuevo.
 - Instalar SIEMPRE con `adb -s emulator-5554 install -r android/app/build/outputs/apk/debug/app-debug.apk` (hay dos dispositivos reales conectados). `scripts/preview.sh` es de macOS.
 - Plan por fases (borrador): `docs/PLAN.md`.
 
