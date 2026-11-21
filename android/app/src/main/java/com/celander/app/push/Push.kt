@@ -205,11 +205,21 @@ class PushManager @Inject constructor(
             val body = JSONObject().put("id", id).put("type", "web_hook").put("address", Push.relay("/gcal")).put("token", secret)
                 .put("params", JSONObject().put("ttl", "604800"))
             val url = "https://www.googleapis.com/calendar/v3/calendars/" + java.net.URLEncoder.encode(calendar.remoteId, "UTF-8").replace("+", "%20") + "/events/watch"
-            val answer = authorized(account) { token -> send(token, "POST", url, body) }
+            val answer = try {
+                authorized(account) { token -> send(token, "POST", url, body) }
+            } catch (e: HttpFailure) {
+                // A calendar that cannot be watched (holidays, birthdays…) is left to the polling; the others go on.
+                if (e.code == 400 || e.code == 403 || e.code == 404) {
+                    AppLog.i("push", "calendar ...${calendar.calendarId} not watched: ${e.message}")
+                    continue
+                }
+                throw e
+            }
             channels += GoogleChannel(calendar.remoteId, id, answer.getString("resourceId"), secret, answer.optString("expiration").toLongOrNull() ?: (now + 6 * DAY_MILLIS))
             // The channel it replaces is no longer needed.
             existing?.let { stopChannel(account, it) }
         }
+        if (channels.isEmpty()) return null
         // Calendars that are gone from the account.
         old.filter { o -> calendars.none { it.remoteId == o.calendarId } }.forEach { stopChannel(account, it) }
         val state = JSONObject().put("channels", JSONArray(channels.map { JSONObject().put("calendarId", it.calendarId).put("channelId", it.channelId).put("resourceId", it.resourceId).put("token", it.token).put("expiresAt", it.expiresAt) }))
@@ -276,15 +286,18 @@ class PushManager @Inject constructor(
         }
     }
 
-    private class HttpFailure(val code: Int) : IOException("HTTP $code")
+    private class HttpFailure(val code: Int, val reason: String? = null) : IOException("HTTP $code" + (reason?.let { " · $it" } ?: ""))
 
     private fun send(token: String, method: String, url: String, body: JSONObject?): JSONObject {
         val request = Request.Builder().url(url).header("Authorization", "Bearer $token")
             .method(method, if (method == "GET" || method == "DELETE") null else (body ?: JSONObject()).toString().toRequestBody(json))
             .build()
         client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw HttpFailure(response.code)
             val text = response.body?.string().orEmpty()
+            if (!response.isSuccessful) {
+                val reason = runCatching { JSONObject(text).getJSONObject("error").let { e -> e.optString("message") + " [" + (e.optJSONArray("errors")?.optJSONObject(0)?.optString("reason") ?: e.optString("status")) + "]" } }.getOrNull()
+                throw HttpFailure(response.code, reason)
+            }
             return if (text.isBlank()) JSONObject() else JSONObject(text)
         }
     }
