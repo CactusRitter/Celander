@@ -1,9 +1,10 @@
 package com.celander.app.account
 
 import android.content.Context
-import com.celander.app.account.auth.GoogleAuth
-import com.celander.app.account.auth.MicrosoftAuth
-import com.celander.app.account.auth.TokenStore
+import com.celander.app.BuildConfig
+import com.ce.kit.auth.GoogleAuth
+import com.ce.kit.auth.MicrosoftAuth
+import com.ce.kit.auth.TokenStore
 import com.celander.app.account.google.GoogleCalendarApi
 import com.celander.app.account.google.GoogleCalendarProvider
 import com.celander.app.account.ics.IcsUrlProvider
@@ -25,13 +26,13 @@ import okhttp3.OkHttpClient
 @InstallIn(SingletonComponent::class)
 object AccountModule {
     @Provides @Singleton
-    fun tokenStore(@ApplicationContext context: Context) = TokenStore(context)
+    fun tokenStore(@ApplicationContext context: Context) = TokenStore(context, AuthConfig.TOKEN_ALIAS, AuthConfig.TOKEN_PREFS)
 
     @Provides @Singleton
-    fun googleAuth(@ApplicationContext context: Context) = GoogleAuth(context)
+    fun googleAuth(@ApplicationContext context: Context) = GoogleAuth(context, BuildConfig.GOOGLE_OAUTH_CLIENT_ID, AuthConfig.GOOGLE_SCOPES)
 
     @Provides @Singleton
-    fun microsoftAuth(@ApplicationContext context: Context) = MicrosoftAuth(context)
+    fun microsoftAuth(@ApplicationContext context: Context) = MicrosoftAuth(context, BuildConfig.MICROSOFT_OAUTH_CLIENT_ID, AuthConfig.MICROSOFT_SCOPES, AuthConfig.MICROSOFT_REDIRECT)
 
     @Provides @Singleton
     fun icsUrlProvider(client: OkHttpClient, @IoDispatcher io: CoroutineDispatcher) = IcsUrlProvider(client, io)

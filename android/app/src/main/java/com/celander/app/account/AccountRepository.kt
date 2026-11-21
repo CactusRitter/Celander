@@ -2,12 +2,12 @@ package com.celander.app.account
 
 import com.ce.kit.log.AppLog
 import android.content.Intent
-import com.celander.app.account.auth.GoogleAuth
-import com.celander.app.account.auth.MicrosoftAuth
+import com.ce.kit.auth.GoogleAuth
+import com.ce.kit.auth.MicrosoftAuth
 import com.celander.app.account.ics.IcsUrlProvider
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import com.celander.app.account.auth.SignInOutcome
-import com.celander.app.account.auth.TokenStore
+import com.ce.kit.auth.SignInOutcome
+import com.ce.kit.auth.TokenStore
 import com.celander.app.core.database.AccountDao
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountStatus
@@ -94,7 +94,7 @@ class AccountRepository @Inject constructor(
      * Google's consent page for the extra permission (read the contacts) of [account]; hand what comes back to [enableBirthdays].
      * The account stays signed in as it is: nothing changes until the answer is good.
      */
-    fun birthdaysConsentIntent(account: AccountEntity): Intent? = google.signInIntent(account.identifier, GoogleAuth.CONTACTS_SCOPE)
+    fun birthdaysConsentIntent(account: AccountEntity): Intent? = google.signInIntent(account.identifier, AuthConfig.CONTACTS_SCOPE)
 
     /**
      * Finishes the consent: the new tokens (which carry the contacts permission) replace the old ones only if the same account
