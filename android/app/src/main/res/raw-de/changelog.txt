@@ -1,3 +1,9 @@
+﻿## 2.2.0
+- Gemeinsamer Design-Code mit den anderen Ce-Apps (neues gemeinsames Modul): Dialoge, Menüs, Schaltflächen, Chips und Schalter folgen jetzt überall dem gewählten Design (Glas, Modern, AMOLED, Retro 98, Papier, Brutalistisch). Menüs und Hinweise sind nicht mehr so durchsichtig, dass sie sich mit dem Text darunter vermischen.
+- Einstellungen → Aussehen, Updates und Diagnose sind jetzt in allen Ce-Apps gleich.
+- Termin-Editor: Schalter, Schaltflächen und die Auswahl Termin/Aufgabe folgen Retro 98 und den anderen Designs.
+- Die Akzentfarben heißen jetzt Ocker und Rost, wie in den anderen Apps.
+
 ## Unreleased
 - Monatsansicht: Der vorherige Monat blitzt nicht mehr am linken Rand neben den Kalenderwochen hervor. Der ausgewählte Tag folgt dem Stil jedes Designs (Ecken und Linienstärke), und das Panel eines leeren Tages hat den Knopf unten nicht mehr.
 
