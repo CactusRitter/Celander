@@ -52,7 +52,6 @@ import com.ce.kit.ui.settings.ChoiceChip
 import com.celander.app.ui.GlassSnackbarHost
 import com.celander.app.ui.Sizes
 import com.ce.kit.ui.elastic
-import com.ce.kit.ui.glass.GlassBackground
 import com.ce.kit.ui.glass.GlassKind
 import com.ce.kit.ui.glass.GlassLayers
 import com.ce.kit.ui.glass.GlassPill
@@ -80,12 +79,11 @@ fun SettingsScaffold(
     overlay: @Composable BoxScope.() -> Unit = {},
     content: LazyListScope.() -> Unit,
 ) {
-    val hazeState = rememberHazeState()
+    val hazeState = com.ce.kit.ui.glass.LocalHazeState.current ?: rememberHazeState()
     val listState = rememberLazyListState()
     CompositionLocalProvider(LocalHazeState provides hazeState) {
         Box(Modifier.fillMaxSize()) {
             val hiddenWhileModal = if (modalOpen) Modifier.clearAndSetSemantics { } else Modifier
-            GlassBackground(Modifier.hazeSource(hazeState, zIndex = GlassLayers.BACKGROUND).then(hiddenWhileModal)) {}
             run {
                 Box(Modifier.fillMaxSize().hazeSource(hazeState, zIndex = GlassLayers.CONTENT).then(hiddenWhileModal)) {
                     LazyColumn(

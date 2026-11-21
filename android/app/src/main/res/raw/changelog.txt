@@ -29,3 +29,4 @@
 - Backup in one .zip with check boxes: settings, and the calendars, events and tasks of this device. Accounts are not in the backup: sign in again.
 - Delete all data now also disconnects your accounts. What is stored at Google or Microsoft stays there.
 - Changing one occurrence of a repeating event back to the original now reaches the account too.
+- One background under all screens: opening or closing Settings no longer slides the background or shifts its tone during the transition.

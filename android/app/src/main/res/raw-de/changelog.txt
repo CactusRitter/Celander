@@ -29,3 +29,4 @@
 - Sicherung in einer einzigen .zip mit Kontrollkästchen: Einstellungen sowie Kalender, Termine und Aufgaben dieses Geräts. Konten sind nicht enthalten: Melde dich neu an.
 - „Alle Daten löschen“ trennt jetzt auch deine Konten. Was bei Google oder Microsoft liegt, bleibt dort.
 - Eine Änderung an einem Einzeltermin einer Serie, die wieder auf das Original zurückgesetzt wird, kommt jetzt auch im Konto an.
+- Ein einziger Hintergrund unter allen Bildschirmen: Beim Öffnen und Schließen der Einstellungen verschiebt sich der Hintergrund nicht mehr und ändert seinen Ton nicht.

@@ -29,3 +29,4 @@
 - Copia de seguridad en un solo .zip con casillas: los ajustes, y los calendarios, eventos y tareas de este dispositivo. Las cuentas no van en la copia: vuelve a iniciar sesión.
 - Borrar todos los datos ahora también desconecta tus cuentas. Lo que está en Google o Microsoft se queda allí.
 - Volver a dejar una ocurrencia de un evento repetido como el original ya llega también a la cuenta.
+- Un solo fondo bajo todas las pantallas: al abrir o cerrar Ajustes el fondo ya no se desplaza ni cambia de tono durante la transición.

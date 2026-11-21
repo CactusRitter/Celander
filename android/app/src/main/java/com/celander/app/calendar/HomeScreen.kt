@@ -1,7 +1,6 @@
 package com.celander.app.calendar
 
 import androidx.activity.compose.BackHandler
-import com.ce.kit.ui.glass.GlassBackground
 import com.ce.kit.ui.glass.LocalHazeState
 import com.celander.app.ui.LocalWindowLayout
 import com.ce.kit.ui.LocalMotion
@@ -86,14 +85,13 @@ fun HomeScreen(
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
     val now by viewModel.now.collectAsStateWithLifecycle()
     val completingTasks by viewModel.completingTasks.collectAsStateWithLifecycle()
-    val hazeState = rememberHazeState()
+    val hazeState = com.ce.kit.ui.glass.LocalHazeState.current ?: rememberHazeState()
     val activity = LocalActivity.current
 
     CompositionLocalProvider(LocalHazeState provides hazeState, LocalCompletingTasks provides completingTasks) {
         Box(Modifier.fillMaxSize()) {
             val loadFailed by viewModel.loadFailed.collectAsStateWithLifecycle()
             if (loadFailed) {
-                GlassBackground {}
                 ErrorState(
                     message = stringResource(R.string.error_loading),
                     retryLabel = stringResource(R.string.action_retry),
@@ -103,7 +101,6 @@ fun HomeScreen(
                 return@Box
             }
             if (state == null) {
-                GlassBackground {}
                 return@Box
             }
             val zone = state.zone
@@ -153,7 +150,6 @@ fun HomeScreen(
             }
             KeyboardShortcutHandler { shortcut -> viewModel.onShortcut(shortcut, pickerOpen = jumpOpen, agendaFirst = LocalDate.ofEpochDay(agendaFirstDate), dayShowsWeek = dayShowsWeek) }
 
-            GlassBackground(Modifier.hazeSource(hazeState, zIndex = GlassLayers.BACKGROUND)) {}
             Box(Modifier.fillMaxSize().hazeSource(hazeState, zIndex = GlassLayers.CONTENT)) {
                 val motion = LocalMotion.current
                 AnimatedContent(

@@ -8,6 +8,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.fillMaxSize
+import dev.chrisbanes.haze.hazeSource
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavHostController
@@ -50,6 +52,12 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
     val reduced = motion.reduced
     // Pages sit side by side: forward, the new page pushes the old one out to the left; back, the page
     // slides out to the right and pulls the one below back in. Both move the full width on one eased curve.
+    // One background for the whole app, under every page: pages are transparent, so it stays put while they slide
+    // (and it is the blur source of every page's glass).
+    val hazeState = dev.chrisbanes.haze.rememberHazeState()
+    androidx.compose.runtime.CompositionLocalProvider(com.ce.kit.ui.glass.LocalHazeState provides hazeState) {
+    androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.fillMaxSize()) {
+    com.ce.kit.ui.glass.GlassBackground(androidx.compose.ui.Modifier.hazeSource(hazeState, zIndex = com.ce.kit.ui.glass.GlassLayers.BACKGROUND)) {}
     NavHost(
         navController = navController,
         startDestination = HomeRoute,
@@ -88,6 +96,8 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
         composable<LicensesRoute> {
             Page(navController) { back -> LicensesScreen(onBack = back) }
         }
+    }
+    }
     }
 }
 
