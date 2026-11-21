@@ -1,8 +1,8 @@
 package com.celander.app.task.google
 
 import com.celander.app.account.AccountTokens
-import com.celander.app.account.auth.GoogleAuth
-import com.celander.app.account.auth.TokenStore
+import com.ce.kit.auth.GoogleAuth
+import com.ce.kit.auth.TokenStore
 import com.celander.app.core.database.AccountDao
 import com.celander.app.core.di.IoDispatcher
 import dagger.Binds
