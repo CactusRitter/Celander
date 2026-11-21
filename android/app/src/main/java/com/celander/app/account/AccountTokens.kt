@@ -1,8 +1,8 @@
 package com.celander.app.account
 
-import com.ce.kit.auth.GoogleAuth
-import com.ce.kit.auth.MicrosoftAuth
-import com.ce.kit.auth.TokenStore
+import com.celander.app.account.auth.GoogleAuth
+import com.celander.app.account.auth.MicrosoftAuth
+import com.celander.app.account.auth.TokenStore
 import com.celander.app.account.google.AccessTokens
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountType

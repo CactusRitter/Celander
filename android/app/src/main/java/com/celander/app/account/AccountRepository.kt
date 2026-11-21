@@ -2,12 +2,12 @@ package com.celander.app.account
 
 import com.ce.kit.log.AppLog
 import android.content.Intent
-import com.ce.kit.auth.GoogleAuth
-import com.ce.kit.auth.MicrosoftAuth
+import com.celander.app.account.auth.GoogleAuth
+import com.celander.app.account.auth.MicrosoftAuth
 import com.celander.app.account.ics.IcsUrlProvider
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import com.ce.kit.auth.SignInOutcome
-import com.ce.kit.auth.TokenStore
+import com.celander.app.account.auth.SignInOutcome
+import com.celander.app.account.auth.TokenStore
 import com.celander.app.core.database.AccountDao
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountStatus
