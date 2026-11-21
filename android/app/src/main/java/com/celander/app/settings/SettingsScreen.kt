@@ -147,6 +147,7 @@ fun SettingsScreen(
     val resources = LocalResources.current
     val notifications = rememberNotificationAccess()
     var confirmDeleteAll by rememberSaveable { mutableStateOf(false) }
+    val backupController = rememberBackupController(viewModel.backup)
     val defaultCalendarName = stringResource(R.string.default_calendar_name)
 
     var route by rememberSaveable { mutableStateOf(SettingsRoute.MAIN) }
@@ -172,7 +173,7 @@ fun SettingsScreen(
         snackbar = snackbar,
         onSnackbarAction = viewModel::onSnackbarAction,
         onSnackbarTimeout = viewModel::onSnackbarTimeout,
-        modalOpen = confirmDeleteAll,
+        modalOpen = confirmDeleteAll || backupController.modalOpen,
         overlay = {
             // The only confirmation dialog in the app: this cannot be undone.
             GlassDialog(
@@ -187,6 +188,7 @@ fun SettingsScreen(
                 onDismiss = { confirmDeleteAll = false },
                 destructive = true,
             )
+            BackupDialogs(backupController)
         },
     ) {
         item(key = "page") {
@@ -227,7 +229,7 @@ fun SettingsScreen(
                         SettingsRoute.CALENDAR -> CalendarPage(current, viewModel, formats, calendars, onOpenCalendars)
                         SettingsRoute.REMINDERS -> RemindersPage(current, viewModel, formats, notifications, blocked)
                         SettingsRoute.DATA -> DataPage(hasSampleData, viewModel) { confirmDeleteAll = true }
-                        SettingsRoute.BACKUP -> BackupPage(viewModel.backup)
+                        SettingsRoute.BACKUP -> BackupPage(backupController)
                         SettingsRoute.UPDATES -> com.ce.kit.ui.update.UpdatesPage(current.checkUpdates, { v -> viewModel.update { it.copy(checkUpdates = v) } }, rememberChangelog())
                         SettingsRoute.DIAGNOSTICS -> com.ce.kit.ui.update.DiagnosticsPage()
                     }

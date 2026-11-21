@@ -11,56 +11,64 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.celander.app.R
+import com.ce.kit.ui.GlassDialog
 import com.ce.kit.ui.settings.ChoiceChip
 import com.ce.kit.ui.settings.SettingsCard
 import com.ce.kit.ui.glass.TaskCheckbox
-import com.ce.kit.ui.theme.LocalGlass
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Backups are one .zip the user saves and picks with the system file picker (Drive, Downloads, a USB stick…). A dialog
- * asks what goes in (check boxes). Importing looks inside the file and asks what to restore. See [Backup] for the container.
+ * What the backup page and its dialogs share. It lives in the settings screen, not in the page, because [GlassDialog]
+ * draws inside its parent and so has to sit at the root of the screen ([BackupDialogs] goes in the overlay).
  */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-internal fun BackupPage(backup: Backup) {
-    val resources = LocalResources.current
-    val scope = rememberCoroutineScope()
+@Stable
+internal class BackupController(
+    private val backup: Backup,
+    private val scope: CoroutineScope,
+    private val resources: android.content.res.Resources,
+) {
+    /** The "what to back up" dialog is open. */
+    var creating by mutableStateOf(false)
+    /** The "what to restore" dialog is open; [pendingUri] and [pendingContents] stay set while it fades out. */
+    var restoring by mutableStateOf(false)
+    var pendingUri by mutableStateOf<Uri?>(null)
+    var pendingContents by mutableStateOf<Backup.Contents?>(null)
+    /** The check boxes of whichever dialog is open. */
+    var dialogSettings by mutableStateOf(true)
+    var dialogData by mutableStateOf(true)
+    var working by mutableStateOf(false)
+    var message by mutableStateOf<String?>(null)
     // What the user chose in the create dialog, kept while the file picker is open.
-    var creating by rememberSaveable { mutableStateOf(false) }
-    var chosenSettings by rememberSaveable { mutableStateOf(true) }
-    var chosenData by rememberSaveable { mutableStateOf(true) }
-    // The file the user picked and what is inside it, while they choose what to restore.
-    var pending by remember { mutableStateOf<Pair<Uri, Backup.Contents>?>(null) }
-    var working by remember { mutableStateOf(false) }
-    var message by rememberSaveable { mutableStateOf<String?>(null) }
+    var chosenSettings = true
+    var chosenData = true
+    /** Set by the page, which owns the file picker. */
+    var launchCreate: ((fileDate: String) -> Unit)? = null
+
+    val modalOpen get() = creating || restoring
 
     fun run(block: suspend () -> String) {
         working = true
@@ -79,58 +87,80 @@ internal fun BackupPage(backup: Backup) {
         }
     }
 
-    val createLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
-        if (uri != null) run {
-            backup.export(uri, chosenSettings, chosenData)
-            resources.getString(R.string.backup_exported_settings)
+    fun openCreate() {
+        dialogSettings = true
+        dialogData = true
+        creating = true
+    }
+
+    fun onPicked(uri: Uri) = run {
+        val contents = backup.inspect(uri)
+        pendingUri = uri
+        pendingContents = contents
+        dialogSettings = contents.settings
+        dialogData = contents.data
+        restoring = true
+        ""
+    }
+
+    fun export(uri: Uri) = run {
+        backup.export(uri, chosenSettings, chosenData)
+        resources.getString(R.string.backup_exported_settings)
+    }
+
+    fun importIcs(uri: Uri) = run {
+        val r = backup.importIcs(uri)
+        resources.getString(R.string.backup_imported_data, r.events, r.tasks, r.skipped)
+    }
+
+    fun restore() {
+        val uri = pendingUri ?: return
+        val settings = dialogSettings
+        val data = dialogData
+        restoring = false
+        run {
+            val r = backup.import(uri, settings, data)
+            listOfNotNull(
+                resources.getString(R.string.backup_imported_settings).takeIf { r.settingsRestored },
+                r.data?.let { resources.getString(R.string.backup_imported_data, it.events, it.tasks, it.skipped) },
+            ).joinToString(" ")
         }
     }
-    if (creating) {
-        CreateDialog(
-            onDismiss = { creating = false },
-            onCreate = { settings, data ->
-                creating = false
-                chosenSettings = settings
-                chosenData = data
-                val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(Date())
-                createLauncher.launch(resources.getString(R.string.backup_file_settings, date))
-            },
-        )
+}
+
+@Composable
+internal fun rememberBackupController(backup: Backup): BackupController {
+    val scope = rememberCoroutineScope()
+    val resources = LocalResources.current
+    return remember(backup) { BackupController(backup, scope, resources) }
+}
+
+/**
+ * Backups are one .zip the user saves and picks with the system file picker (Drive, Downloads, a USB stick…). A dialog
+ * asks what goes in (check boxes). Importing looks inside the file and asks what to restore. See [Backup] for the container.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+internal fun BackupPage(controller: BackupController) {
+    val createLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
+        if (uri != null) controller.export(uri)
     }
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) run {
-            pending = uri to backup.inspect(uri)
-            ""
-        }
+        if (uri != null) controller.onPicked(uri)
     }
     val icsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) run {
-            val r = backup.importIcs(uri)
-            resources.getString(R.string.backup_imported_data, r.events, r.tasks, r.skipped)
-        }
+        if (uri != null) controller.importIcs(uri)
     }
-    pending?.let { (uri, contents) ->
-        RestoreDialog(
-            contents = contents,
-            onDismiss = { pending = null },
-            onRestore = { settings, data ->
-                pending = null
-                run {
-                    val r = backup.import(uri, settings, data)
-                    listOfNotNull(
-                        resources.getString(R.string.backup_imported_settings).takeIf { r.settingsRestored },
-                        r.data?.let { resources.getString(R.string.backup_imported_data, it.events, it.tasks, it.skipped) },
-                    ).joinToString(" ")
-                }
-            },
-        )
-    }
+    val resources = LocalResources.current
+    // The create dialog asks the page to open the file picker.
+    controller.launchCreate = { name -> createLauncher.launch(resources.getString(R.string.backup_file_settings, name)) }
+    val working = controller.working
 
     SettingsCard {
         Text(stringResource(R.string.backup), style = MaterialTheme.typography.titleSmall)
         Text(stringResource(R.string.backup_summary), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ChoiceChip(stringResource(R.string.backup_create), selected = false, enabled = !working) { creating = true }
+            ChoiceChip(stringResource(R.string.backup_create), selected = false, enabled = !working) { controller.openCreate() }
             ChoiceChip(stringResource(R.string.backup_import), selected = false, enabled = !working) {
                 // Any file: some devices label a .zip with another type (x-zip, x-compressed…) and the picker would grey it
                 // out. Backup.inspect checks that it is a Celander backup and says so if it is not.
@@ -138,61 +168,50 @@ internal fun BackupPage(backup: Backup) {
             }
             ChoiceChip(stringResource(R.string.backup_import_ics), selected = false, enabled = !working) { icsLauncher.launch(arrayOf("*/*")) }
         }
-        val status = if (working) stringResource(R.string.backup_working) else message
+        val status = if (working) stringResource(R.string.backup_working) else controller.message
         if (!status.isNullOrEmpty()) {
             Text(status, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
 
-/** Asks what to back up (at least one thing). */
+/** The create and restore dialogs. Put them as the last child of a screen-sized box (see [BackupController]). */
 @Composable
-private fun CreateDialog(onDismiss: () -> Unit, onCreate: (settings: Boolean, data: Boolean) -> Unit) {
-    var settings by rememberSaveable { mutableStateOf(true) }
-    var data by rememberSaveable { mutableStateOf(true) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        shape = RoundedCornerShape(28.dp),
-        containerColor = LocalGlass.current.menu,
-        title = { Text(stringResource(R.string.backup_create_title), fontWeight = FontWeight.Bold) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                RestoreRow(R.string.backup_restore_settings, settings) { settings = it }
-                RestoreRow(R.string.backup_restore_data, data) { data = it }
-            }
+internal fun BackupDialogs(controller: BackupController) {
+    GlassDialog(
+        visible = controller.creating,
+        title = stringResource(R.string.backup_create_title),
+        message = "",
+        confirmLabel = stringResource(R.string.backup_create_confirm),
+        confirmEnabled = controller.dialogSettings || controller.dialogData,
+        onDismiss = { controller.creating = false },
+        onConfirm = {
+            controller.creating = false
+            controller.chosenSettings = controller.dialogSettings
+            controller.chosenData = controller.dialogData
+            controller.launchCreate?.invoke(SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).format(Date()))
         },
-        confirmButton = {
-            TextButton(enabled = settings || data, onClick = { onCreate(settings, data) }) {
-                Text(stringResource(R.string.backup_create_confirm), fontWeight = FontWeight.Bold)
-            }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
-    )
-}
-
-/** Asks what to restore from a backup, with a check box only for what the file carries. */
-@Composable
-private fun RestoreDialog(contents: Backup.Contents, onDismiss: () -> Unit, onRestore: (settings: Boolean, data: Boolean) -> Unit) {
-    var settings by remember { mutableStateOf(contents.settings) }
-    var data by remember { mutableStateOf(contents.data) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        shape = RoundedCornerShape(28.dp),
-        containerColor = LocalGlass.current.menu,
-        title = { Text(stringResource(R.string.backup_restore_title), fontWeight = FontWeight.Bold) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                if (contents.settings) RestoreRow(R.string.backup_restore_settings, settings) { settings = it }
-                if (contents.data) RestoreRow(R.string.backup_restore_data, data) { data = it }
-            }
-        },
-        confirmButton = {
-            TextButton(enabled = settings || data, onClick = { onRestore(settings, data) }) {
-                Text(stringResource(R.string.backup_restore_confirm), fontWeight = FontWeight.Bold)
-            }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
-    )
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            RestoreRow(R.string.backup_restore_settings, controller.dialogSettings) { controller.dialogSettings = it }
+            RestoreRow(R.string.backup_restore_data, controller.dialogData) { controller.dialogData = it }
+        }
+    }
+    val contents = controller.pendingContents
+    GlassDialog(
+        visible = controller.restoring,
+        title = stringResource(R.string.backup_restore_title),
+        message = "",
+        confirmLabel = stringResource(R.string.backup_restore_confirm),
+        confirmEnabled = controller.dialogSettings || controller.dialogData,
+        onDismiss = { controller.restoring = false },
+        onConfirm = controller::restore,
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            if (contents?.settings == true) RestoreRow(R.string.backup_restore_settings, controller.dialogSettings) { controller.dialogSettings = it }
+            if (contents?.data == true) RestoreRow(R.string.backup_restore_data, controller.dialogData) { controller.dialogData = it }
+        }
+    }
 }
 
 /**

@@ -24,8 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
+import com.ce.kit.ui.glass.GlassSwitch
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -177,10 +177,9 @@ private fun CalendarListRow(row: CalendarRow, onEdit: () -> Unit, onVisibleChang
             Text(summary, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant)
         }
         val visibleLabel = stringResource(R.string.settings_calendar_visible, calendar.name)
-        Switch(
+        GlassSwitch(
             checked = calendar.visible,
             onCheckedChange = onVisibleChange,
-            colors = SwitchDefaults.colors(checkedTrackColor = colors.primary),
             modifier = Modifier.semantics { contentDescription = visibleLabel },
         )
     }

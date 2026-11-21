@@ -44,8 +44,8 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
+import com.ce.kit.ui.glass.GlassSwitch
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -705,11 +705,7 @@ private fun SwitchRow(
         modifier = Modifier.toggleable(value = checked, role = Role.Switch, onValueChange = onCheckedChange),
     ) {
         trailing()
-        Switch(
-            checked = checked,
-            onCheckedChange = null,
-            colors = SwitchDefaults.colors(checkedTrackColor = MaterialTheme.colorScheme.primary),
-        )
+        GlassSwitch(checked = checked, onCheckedChange = null)
     }
 }
 

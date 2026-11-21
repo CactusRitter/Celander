@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
+import com.ce.kit.ui.glass.GlassSwitch
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.Saver
@@ -103,7 +103,7 @@ internal fun CalendarReminderDefaults(
                     color = colors.onSurfaceVariant,
                 )
             }
-            Switch(checked = useDefaults, onCheckedChange = null, colors = SwitchDefaults.colors(checkedTrackColor = colors.primary))
+            GlassSwitch(checked = useDefaults, onCheckedChange = null)
         }
         AnimatedVisibility(!useDefaults, enter = LocalMotion.current.expandIn(), exit = LocalMotion.current.shrinkOut()) {
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {

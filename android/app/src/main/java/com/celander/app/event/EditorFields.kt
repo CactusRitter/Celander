@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.ce.kit.ui.theme.CeTheme
+import com.ce.kit.ui.SelectableChip
 import com.celander.app.ui.Sizes
 import com.ce.kit.ui.springClickable
 
@@ -78,20 +79,13 @@ fun EditorTextField(
 /** A tappable value chip (date, time, calendar) that opens an inline picker. */
 @Composable
 fun ValueChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, label: String? = null) {
-    val colors = MaterialTheme.colorScheme
-    Box(
-        modifier
-            // The chip looks 40 dp high; its touch area keeps the 48 dp minimum.
-            .minimumInteractiveComponentSize()
-            .springClickable(role = Role.Button, shape = CircleShape, onClick = onClick)
-            .glassTile(CircleShape, tint = if (selected) colors.primaryContainer else null)
-            .heightIn(min = 40.dp)
-            .then(if (label != null) Modifier.semantics { contentDescription = "$label, $text" } else Modifier)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(text, style = MaterialTheme.typography.labelLarge, color = if (selected) colors.primary else colors.onSurface, maxLines = 1)
-    }
+    SelectableChip(
+        text = text,
+        selected = selected,
+        onClick = onClick,
+        modifier = modifier.then(if (label != null) Modifier.semantics { contentDescription = "$label, $text" } else Modifier),
+        role = Role.Button,
+    )
 }
 
 /** Label + content row with the standard leading icon column; without a label the content fills the row. */
