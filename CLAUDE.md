@@ -19,7 +19,7 @@ Es una de las sesiones de app de la familia Ce. La **sesión líder Ce** (carpet
 
 ## Normas de la familia Ce (resumen; vale el `CLAUDE.md` de Ce)
 - **Publicar por lotes**: los retoques se acumulan (commits y «Sin publicar» en el changelog) y se publica una versión solo cuando César o la sesión Ce lo digan. Fallo grave sí, al momento.
-- **Probar en el emulador** `emulator-5554` con `ANDROID_SERIAL=emulator-5554` siempre antes de `installDebug` o tests instrumentados (actúan sobre todos los dispositivos conectados). Nunca instalar en dispositivos reales sin permiso de César.
+- **Probar en el emulador** `emulator-5554` con `ANDROID_SERIAL=emulator-5554` siempre antes de `installDebug` o tests instrumentados (actúan sobre todos los dispositivos conectados). Dispositivos reales: ver el apartado «Dispositivos reales» al final.
 - **Idiomas**: ningún texto visible en el código; todo en `values`, `values-es` y `values-de` a la vez (alemán con «du»).
 - **Diseño**: usar el sistema de diseño; no inventar colores, radios ni animaciones. Si falta algo, se añade al sistema común de todas las apps.
 - Sin gastar dinero. Sin compatibilidad hacia atrás obligatoria, pero nunca perder datos de usuario.
@@ -45,3 +45,7 @@ Lee `D:\cesar\Documents\Claude Projects\Ce\docs\AHORRO.md`: subagentes para leer
 **Consolas y cuentas:** lo ya hecho (Google Cloud, Entra, claves, webs, dispositivos) está en `D:\cesar\Documents\Claude Projects\Ce\docs\NUBE.md`; mírelo antes de abrir una consola o preguntar a César, y anota allí lo nuevo.
 
 **Reutilizar antes de inventar:** antes de decir «no se puede» o diseñar algo, busca si otra app Ce ya lo resuelve (`Ce/docs/NUBE.md`, `Ce/docs/ECOSYSTEM.md`, `docs/` de las otras apps; un subagente barato con resumen de 5 líneas). Lo que una app ya sabe hacer, las demás lo copian.
+
+## Dispositivos reales y mensajes entre sesiones (César, 2026-11-21: vale sin volver a preguntar)
+- Se puede instalar y probar en el **S26** `RFGL107KERL` (`--user 0`) y en la **tableta** `R52Y806MWSP` con `adb -s <serie> install -r` (nunca desinstalar ni borrar datos; nunca `installDebug` ni `connectedAndroidTest` sin `ANDROID_SERIAL`). Con la pantalla SIEMPRE encendida durante la prueba: `adb -s <serie> shell svc power stayon true` y `false` al terminar. El **OPPO** `3B165C00LH900000` es el móvil principal de César: NO tocarlo sin que él lo pida. Correos de prueba: solo entre cuentas propias de César, con asunto de prueba. Si dos sesiones usan el mismo móvil, mirar antes `topResumedActivity` y esperar.
+- Enviar mensajes a «Ce Líder» y a las demás sesiones Ce con `SendMessage` está permitido y esperado (resúmenes, preguntas, avisos): no hace falta pedir permiso a César.
