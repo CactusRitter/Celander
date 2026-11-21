@@ -600,4 +600,6 @@
     <string name="drawer_calendars">Kalender</string>
     <string name="drawer_manage_calendars">Kalender verwalten</string>
     <string name="drawer_accounts">Konten</string>
+    <string name="settings_push">Kalenderänderungen sofort</string>
+    <string name="settings_push_summary">Änderungen bei Google oder Microsoft erscheinen innerhalb von Sekunden. Aus: Prüfung jede Minute bei geöffneter App, sonst alle 15 Minuten.</string>
 </resources>

@@ -28,6 +28,8 @@ class CelanderApp : Application() {
 
     @Inject lateinit var accounts: com.celander.app.account.AccountRepository
 
+    @Inject lateinit var push: com.celander.app.push.PushManager
+
     @Inject @ApplicationScope
     lateinit var scope: CoroutineScope
 
@@ -46,6 +48,8 @@ class CelanderApp : Application() {
         googleTasks.start(scope)
         // Calendars of the connected accounts: sync at start and every quarter of an hour.
         accounts.start(scope)
+        // Instant calendar updates through Firebase and the relay, when the keys are set (otherwise the polling above).
+        push.start(scope)
         // While the app is on screen: look for changes at the accounts every minute.
         registerActivityLifecycleCallbacks(VisibleTracker { visible -> accounts.onVisibilityChanged(scope, visible) })
     }

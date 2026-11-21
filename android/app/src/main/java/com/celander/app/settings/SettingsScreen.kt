@@ -377,6 +377,12 @@ private fun CalendarPage(
             checked = current.showWeekNumbers,
             onCheckedChange = { value -> viewModel.update { it.copy(showWeekNumbers = value) } },
         )
+        if (com.celander.app.push.Push.available) {
+            SettingsDivider()
+            SwitchRow(R.string.settings_push, R.string.settings_push_summary, current.pushEnabled) { value ->
+                viewModel.update { it.copy(pushEnabled = value) }
+            }
+        }
         SettingsDivider()
         SettingsChoiceRow(
             title = stringResource(R.string.settings_time_format),

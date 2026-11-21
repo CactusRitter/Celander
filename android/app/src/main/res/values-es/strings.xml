@@ -628,4 +628,6 @@
     <string name="drawer_calendars">Calendarios</string>
     <string name="drawer_manage_calendars">Gestionar calendarios</string>
     <string name="drawer_accounts">Cuentas</string>
+    <string name="settings_push">Cambios del calendario al instante</string>
+    <string name="settings_push_summary">Los cambios hechos en Google o Microsoft aparecen en segundos. Desactivado: se comprueban cada minuto con la app abierta y cada 15 minutos si no.</string>
 </resources>

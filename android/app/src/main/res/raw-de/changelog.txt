@@ -31,3 +31,4 @@
 - Eine Änderung an einem Einzeltermin einer Serie, die wieder auf das Original zurückgesetzt wird, kommt jetzt auch im Konto an.
 - Ein einziger Hintergrund unter allen Bildschirmen: Beim Öffnen und Schließen der Einstellungen verschiebt sich der Hintergrund nicht mehr und ändert seinen Ton nicht.
 - Seitenmenü (☰) wie in Cemail und Cenotes: Ansichten, Kalender mit Sichtbarkeits-Kästchen (nach Konto gruppiert), Kalender verwalten, Konten und Einstellungen. Das ☰ ersetzt die Einstellungen-Schaltfläche in der oberen Leiste.
+- Sofortige Kalenderaktualisierung (Push) mit Google und Microsoft, mit Schalter unter Einstellungen › Kalender (aus: Prüfung jede Minute bei geöffneter App, sonst alle 15 Minuten; ohne Play-Dienste ebenso). Nur aktiv, wenn die App die Dienstschlüssel enthält.

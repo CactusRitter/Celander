@@ -31,3 +31,4 @@
 - Volver a dejar una ocurrencia de un evento repetido como el original ya llega también a la cuenta.
 - Un solo fondo bajo todas las pantallas: al abrir o cerrar Ajustes el fondo ya no se desplaza ni cambia de tono durante la transición.
 - Menú lateral (☰) como en Cemail y Cenotes: vistas, calendarios con casilla de visibilidad (agrupados por cuenta), Gestionar calendarios, Cuentas y Ajustes. El ☰ sustituye al botón de Ajustes de la barra superior.
+- Actualizaciones instantáneas del calendario (push) con Google y Microsoft, con interruptor en Ajustes › Calendario (apagado: se comprueba cada minuto con la app abierta y cada 15 minutos si no; sin Play Services también). Solo activo cuando la app lleva las claves del servicio.

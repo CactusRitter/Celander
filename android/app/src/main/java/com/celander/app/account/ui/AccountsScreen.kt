@@ -7,7 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.OutlinedTextField
+import com.ce.kit.ui.GlassTextField
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -123,20 +123,20 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                 confirmEnabled = subscriptionUrl.isNotBlank(),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedTextField(
+                    GlassTextField(
                         value = subscriptionUrl,
                         onValueChange = { subscriptionUrl = it },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text(stringResource(R.string.accounts_subscription_url)) },
+                        label = stringResource(R.string.accounts_subscription_url),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     )
-                    OutlinedTextField(
+                    GlassTextField(
                         value = subscriptionName,
                         onValueChange = { subscriptionName = it },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        label = { Text(stringResource(R.string.accounts_subscription_name)) },
+                        label = stringResource(R.string.accounts_subscription_name),
                     )
                 }
             }

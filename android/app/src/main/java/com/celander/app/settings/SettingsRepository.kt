@@ -50,6 +50,7 @@ class SettingsRepository @Inject constructor(
         /** Until it is set, the widgets keep the app's transparency they used to share. */
         val widgetTransparency = floatPreferencesKey("widget_transparency")
         val reduceMotion = booleanPreferencesKey("reduce_motion")
+        val pushEnabled = booleanPreferencesKey("push_enabled")
         val weekStart = stringPreferencesKey("week_start")
         val weekNumbers = booleanPreferencesKey("week_numbers")
         val timeFormat = stringPreferencesKey("time_format")
@@ -106,6 +107,7 @@ class SettingsRepository @Inject constructor(
             checkUpdates = this[Keys.checkUpdates] ?: d.checkUpdates,
             widgetTransparency = this[Keys.widgetTransparency] ?: (transparency / 100f),
             reduceMotion = this[Keys.reduceMotion] ?: d.reduceMotion,
+            pushEnabled = this[Keys.pushEnabled] ?: d.pushEnabled,
             weekStart = this[Keys.weekStart].toEnum(d.weekStart),
             showWeekNumbers = this[Keys.weekNumbers] ?: d.showWeekNumbers,
             timeFormat = this[Keys.timeFormat].toEnum(d.timeFormat),
@@ -135,6 +137,7 @@ class SettingsRepository @Inject constructor(
         remove(Keys.legacyGlass)
         this[Keys.widgetTransparency] = s.widgetTransparency
         this[Keys.reduceMotion] = s.reduceMotion
+        this[Keys.pushEnabled] = s.pushEnabled
         this[Keys.weekStart] = s.weekStart.name
         this[Keys.weekNumbers] = s.showWeekNumbers
         this[Keys.timeFormat] = s.timeFormat.name

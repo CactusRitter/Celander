@@ -31,3 +31,4 @@
 - Changing one occurrence of a repeating event back to the original now reaches the account too.
 - One background under all screens: opening or closing Settings no longer slides the background or shifts its tone during the transition.
 - Side menu (☰) like Cemail and Cenotes: views, calendars with a visibility box (grouped by account), Manage calendars, Accounts and Settings. The ☰ replaces the Settings button in the top bar.
+- Instant calendar updates (push) with Google and Microsoft, with a switch in Settings › Calendar (off: checked every minute while the app is open and every 15 minutes otherwise; same without Play Services). Only active when the app ships with the service keys.

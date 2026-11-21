@@ -36,6 +36,13 @@ android {
         buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleClientId\"")
         // Microsoft's application (client) ID from Entra, a public client: no secret. Empty until set in local.properties.
         buildConfigField("String", "MICROSOFT_OAUTH_CLIENT_ID", "\"${localProp("celander.oauth.microsoft.clientId")}\"")
+        // Instant calendar updates (push): Firebase + the relay on Cloudflare; empty = the app works without push (polling).
+        buildConfigField("String", "FIREBASE_PROJECT_ID", "\"${localProp("celander.firebase.projectId")}\"")
+        buildConfigField("String", "FIREBASE_SENDER_ID", "\"${localProp("celander.firebase.senderId")}\"")
+        buildConfigField("String", "FIREBASE_APP_ID", "\"${localProp("celander.firebase.appId")}\"")
+        buildConfigField("String", "FIREBASE_API_KEY", "\"${localProp("celander.firebase.apiKey")}\"")
+        buildConfigField("String", "PUSH_URL", "\"${localProp("celander.push.url")}\"")
+        buildConfigField("String", "PUSH_APP_KEY", "\"${localProp("celander.push.appKey")}\"")
         // Google asks Android clients for the client ID reversed as the redirect scheme.
         manifestPlaceholders["appAuthRedirectScheme"] =
             if (googleClientId.isBlank()) "com.celander.app" else "com.googleusercontent.apps." + googleClientId.removeSuffix(".apps.googleusercontent.com")
@@ -142,6 +149,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     // Google Tasks sync: sign-in and consent, the REST client, foreground detection.
     implementation(libs.okhttp)
+    implementation(libs.firebase.messaging)
     implementation(libs.androidx.lifecycle.process)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
