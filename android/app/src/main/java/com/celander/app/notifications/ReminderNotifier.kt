@@ -1,5 +1,6 @@
 package com.celander.app.notifications
 
+import com.ce.kit.notify.Notifications
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -38,20 +39,18 @@ class ReminderNotifier @Inject constructor(
     private val manager = NotificationManagerCompat.from(context)
 
     fun ensureChannels() {
-        val system = context.getSystemService(NotificationManager::class.java)
-        system.createNotificationChannels(
-            listOf(
-                // Heads-up with sound and vibration; users change this per channel in the system settings,
-                // which then win: Android applies these values only when the channel is first created.
-                NotificationChannel(CHANNEL_EVENTS, context.getString(R.string.channel_events), NotificationManager.IMPORTANCE_HIGH).apply {
-                    description = context.getString(R.string.channel_events_description)
-                    enableVibration(true)
-                    setSound(Settings.System.DEFAULT_NOTIFICATION_URI, EVENT_SOUND)
-                },
-                NotificationChannel(CHANNEL_TASKS, context.getString(R.string.channel_tasks), NotificationManager.IMPORTANCE_HIGH).apply {
-                    description = context.getString(R.string.channel_tasks_description)
-                },
-            ),
+        // Heads-up with sound and vibration; users change this per channel in the system settings,
+        // which then win: Android applies these values only when the channel is first created.
+        Notifications.ensureChannel(
+            context, CHANNEL_EVENTS, context.getString(R.string.channel_events), context.getString(R.string.channel_events_description),
+            NotificationManager.IMPORTANCE_HIGH,
+        ) {
+            enableVibration(true)
+            setSound(Settings.System.DEFAULT_NOTIFICATION_URI, EVENT_SOUND)
+        }
+        Notifications.ensureChannel(
+            context, CHANNEL_TASKS, context.getString(R.string.channel_tasks), context.getString(R.string.channel_tasks_description),
+            NotificationManager.IMPORTANCE_HIGH,
         )
     }
 

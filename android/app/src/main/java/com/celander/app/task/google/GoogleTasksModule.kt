@@ -29,11 +29,7 @@ abstract class GoogleTasksModule {
 
         @Provides
         @Singleton
-        fun okHttpClient(): OkHttpClient = OkHttpClient.Builder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+        fun okHttpClient(): OkHttpClient = com.ce.kit.net.CeHttp.client
 
         @Provides
         @Singleton

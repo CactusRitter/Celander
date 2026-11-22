@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.celander.app.R
 import com.celander.app.account.AccountRepository
-import com.celander.app.account.AccountPhotos
+import com.ce.kit.auth.AccountPhotos
+import com.ce.kit.auth.PhotoProvider
 import com.celander.app.account.AddAccountResult
 import com.celander.app.account.BirthdaysResult
 import com.celander.app.core.database.AccountEntity
@@ -41,11 +42,11 @@ class AccountsViewModel @Inject constructor(
     /** Changes whenever any account picture does. */
     val photoVersion: StateFlow<Int> = photos.version
 
-    fun photoFile(accountId: Long): java.io.File = photos.file(accountId)
+    fun photoFile(accountId: Long): java.io.File = photos.file(accountId.toString())
 
     init {
         // The pictures of the accounts, fetched the first time and checked again every few days.
-        viewModelScope.launch { repository.accounts.collect { list -> list.forEach { photos.refreshIfStale(it) } } }
+        viewModelScope.launch { repository.accounts.collect { list -> list.forEach { photos.refreshIfStale(it.id.toString(), when (it.type) { AccountType.GOOGLE.name -> PhotoProvider.GOOGLE; AccountType.MICROSOFT.name -> PhotoProvider.MICROSOFT; else -> null }) } } }
     }
     val snackbarMessage: StateFlow<SnackbarMessage?> = snackbar.current
 
@@ -168,7 +169,7 @@ class AccountsViewModel @Inject constructor(
     fun remove(id: Long) {
         viewModelScope.launch {
             repository.remove(id)
-            photos.remove(id)
+            photos.remove(id.toString())
         }
     }
 

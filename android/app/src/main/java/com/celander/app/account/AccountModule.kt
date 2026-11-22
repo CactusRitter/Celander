@@ -1,5 +1,8 @@
 package com.celander.app.account
 
+import com.ce.kit.auth.AccountPhotos
+import com.ce.kit.auth.PhotoProvider
+import com.ce.kit.auth.TokenProvider
 import android.content.Context
 import com.celander.app.BuildConfig
 import com.ce.kit.auth.GoogleAuth
@@ -39,7 +42,11 @@ object AccountModule {
 
     @Provides @Singleton
     fun accountPhotos(@ApplicationContext context: Context, client: OkHttpClient, tokens: TokenStore, google: GoogleAuth, microsoft: MicrosoftAuth) =
-        AccountPhotos(context, client, AccountTokens(tokens, google, microsoft))
+        AccountPhotos(context, client) { key, provider ->
+            TokenProvider(tokens).accessToken(AccountTokens.key(key.toLong())) {
+                if (provider == PhotoProvider.GOOGLE) google.freshAccessToken(it) else microsoft.freshAccessToken(it)
+            }
+        }
 
     @Provides @Singleton
     fun accountSync(

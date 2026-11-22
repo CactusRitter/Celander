@@ -1,5 +1,6 @@
 package com.celander.app.notifications
 
+import com.ce.kit.notify.Notifications
 import android.Manifest
 import android.app.ActivityManager
 import android.app.AlarmManager
@@ -43,11 +44,9 @@ data class ReminderStatus(
     companion object {
         fun read(context: Context): ReminderStatus {
             val notifications = NotificationManagerCompat.from(context)
-            val channels = context.getSystemService(NotificationManager::class.java)
-            fun channelOn(id: String) = channels.getNotificationChannel(id)?.importance != NotificationManager.IMPORTANCE_NONE
+            fun channelOn(id: String) = Notifications.channelOn(context, id)
             return ReminderStatus(
-                permissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                    ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED,
+                permissionGranted = Notifications.permissionGranted(context),
                 notificationsEnabled = notifications.areNotificationsEnabled(),
                 eventChannelOn = channelOn(ReminderNotifier.CHANNEL_EVENTS),
                 taskChannelOn = channelOn(ReminderNotifier.CHANNEL_TASKS),
