@@ -88,3 +88,10 @@ adb -s RFGL107KERL logcat -d -s Accounts            # trazas del flujo de cuenta
 2. Revisar el aspecto del cajón y del fondo único en Retro 98, Paper y AMOLED; fondo único con ×1.
 3. Averiguar qué calendarios no admiten `watch` (si se quiere mostrarlo en Ajustes).
 4. Lo del «Pendiente, EN ORDEN» de arriba sigue vigente (pruebas con César en el S26 de Microsoft, ics, copias, widgets).
+
+## Cierre de sesión (2026-11-22, a petición de Ce Líder; César aprueba cerrar y abrir sesiones bajo demanda)
+- Una sesión nueva empieza leyendo: este archivo, `CLAUDE.md`, `Ce/CLAUDE.md` y `Ce/docs/ECOSYSTEM.md`. Rama `ce/estilo-ce` (subida a `origin` = `CactusRitter/Celander`; nada a `upstream`). Rama `f4-auth` local: auth del kit (F4), de Ce Kit.
+- `android/CeKit` es un submódulo que **Ce Kit** está moviendo (adopción de F6): no lo pises ni lo confirmes desde aquí; si aparece modificado en `git status`, no es tuyo.
+- Dispositivos: turnos con `Ce/scripts/emu-lock.ps1 acquire Celander [-Dev s26|tableta]` (+ burn-in según `Ce/CLAUDE.md`); detalles en «Normas de dispositivos».
+- Sin publicar: todo lo de `ce/estilo-ce` (Unreleased en `res/raw*/changelog.txt`). No publicar versión hasta que César o Ce Líder lo digan.
+- Pendiente de probar, resumido: push de Microsoft (`mscal`), renovación a las 24 h, interruptor de push apagado, ids locales 3 y 4 que Google rechaza con 400 en `watch` (quedan en sondeo; ver cuáles son), temas Retro 98/Paper/AMOLED y ×1 con fondo único.
