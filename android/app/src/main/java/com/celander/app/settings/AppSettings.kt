@@ -35,8 +35,6 @@ data class AppSettings(
     /** The cards of all home screen widgets, set apart from [transparency]. */
     val widgetTransparency: Float = GlassTokens.DEFAULT_TRANSPARENCY,
     val reduceMotion: Boolean = false,
-    /** Calendar changes at Google or Microsoft arrive at once (push); off = checked every minute while open, every 15 minutes otherwise. */
-    val pushEnabled: Boolean = true,
     val weekStart: WeekStart = WeekStart.SYSTEM,
     val showWeekNumbers: Boolean = true,
     val timeFormat: TimeFormat = TimeFormat.SYSTEM,

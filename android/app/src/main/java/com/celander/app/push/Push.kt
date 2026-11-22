@@ -114,11 +114,11 @@ class PushManager @Inject constructor(
     fun start(scope: CoroutineScope) {
         Push.initFirebase(context)
         scope.launch {
-            combine(settings.settings.map { it.pushEnabled }, dao.observeAccounts().map { list -> list.map { it.id to it.identifier } }) { on, list -> on to list }
+            dao.observeAccounts().map { list -> list.map { it.id to it.identifier } }
                 .distinctUntilChanged()
-                .collect { (on, _) ->
-                    PushRenewWorker.schedule(context, on && Push.available)
-                    runCatching { sync(on) }
+                .collect {
+                    PushRenewWorker.schedule(context, Push.available)
+                    runCatching { sync(true) }
                 }
         }
     }
@@ -332,7 +332,38 @@ class PushManager @Inject constructor(
         accounts.syncAccount(account.id)
     }
 
-    suspend fun pushEnabled(): Boolean = settings.current().pushEnabled
+    /**
+     * Accounts are about to be removed: their channels and subscriptions are stopped at Google/Microsoft (the tokens are
+     * still there) and the relay forgets them (`/cal/unregister`). Never throws; what could not be told to the relay stays
+     * in the saved state and the next [sync] sends it as "previous".
+     */
+    suspend fun forget(accountIds: List<Long>) = lock.withLock {
+        withContext(Dispatchers.IO) {
+            runCatching {
+                if (!Push.available) return@runCatching
+                val saved = loadState()
+                val gone = dao.accounts().filter { it.id in accountIds && (it.type == AccountType.GOOGLE.name || it.type == AccountType.MICROSOFT.name) }
+                val emails = mutableListOf<String>()
+                for (account in gone) {
+                    val email = account.identifier.lowercase()
+                    val before = saved[email] ?: continue
+                    try {
+                        if (AccountType.valueOf(account.type) == AccountType.GOOGLE) googleSetup(account, before, false) else microsoftSetup(account, before, false)
+                    } catch (e: Exception) {
+                        AppLog.e("push", "...${account.id} could not be stopped", e)
+                    }
+                    emails += email
+                }
+                if (emails.isEmpty()) return@runCatching
+                val token = fcmToken() ?: return@runCatching
+                if (post("/cal/unregister", JSONObject().put("token", token).put("emails", JSONArray(emails)))) {
+                    val rest = JSONObject()
+                    saved.forEach { (k, v) -> if (k !in emails) rest.put(k, v) }
+                    saveState(rest)
+                }
+            }.onFailure { AppLog.e("push", "forget failed", it) }
+        }
+    }
 
     private fun <T> JSONArray?.toList(map: (JSONObject) -> T): List<T> =
         if (this == null) emptyList() else (0 until length()).map { map(getJSONObject(it)) }
@@ -361,7 +392,7 @@ class PushService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         val push = manager()
-        scope.launch { runCatching { push.sync(push.pushEnabled()) } }
+        scope.launch { runCatching { push.sync(true) } }
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -380,7 +411,7 @@ class PushService : FirebaseMessagingService() {
 class PushRenewWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val push = EntryPointAccessors.fromApplication(applicationContext, PushEntryPoint::class.java).push()
-        return if (push.sync(push.pushEnabled())) Result.success() else Result.retry()
+        return if (push.sync(true)) Result.success() else Result.retry()
     }
 
     companion object {

@@ -13,6 +13,7 @@ import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountStatus
 import com.celander.app.core.model.AccountType
 import com.celander.app.task.google.GoogleTasksConnection
+import dagger.Lazy
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +54,7 @@ class AccountRepository @Inject constructor(
     private val ics: IcsUrlProvider,
     private val scheduler: AccountSyncScheduler,
     private val googleTasks: GoogleTasksConnection,
+    private val push: Lazy<com.celander.app.push.PushManager>,
 ) : AccountsReset {
     val accounts: Flow<List<AccountEntity>> = dao.observeAccounts()
 
@@ -119,8 +121,9 @@ class AccountRepository @Inject constructor(
         return retry
     }
 
-    /** Removes an account with its calendars, events and Google Tasks lists on this device and its tokens. The server is not touched. */
+    /** Removes an account with its calendars, events and Google Tasks lists on this device and its tokens. Push channels and the relay are told first (PushManager.forget). */
     suspend fun remove(id: Long) = lock.withLock {
+        push.get().forget(listOf(id))
         dao.account(id)?.takeIf { it.type == AccountType.GOOGLE.name }?.let { googleTasks.disconnect(it.identifier) }
         sync.remove(id)
         tokens.clear(AccountTokens.key(id))
@@ -131,6 +134,7 @@ class AccountRepository @Inject constructor(
      * reset itself (before this), so it is not touched here. Nothing is sent to any server.
      */
     override suspend fun removeAll() = lock.withLock {
+        push.get().forget(dao.accounts().map { it.id })
         dao.accounts().forEach {
             sync.remove(it.id)
             tokens.clear(AccountTokens.key(it.id))

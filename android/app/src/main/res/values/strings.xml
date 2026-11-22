@@ -603,6 +603,4 @@
     <string name="drawer_calendars">Calendars</string>
     <string name="drawer_manage_calendars">Manage calendars</string>
     <string name="drawer_accounts">Accounts</string>
-    <string name="settings_push">Instant calendar updates</string>
-    <string name="settings_push_summary">Changes made at Google or Microsoft show up within seconds. Off: checked every minute while the app is open and every 15 minutes otherwise.</string>
 </resources>

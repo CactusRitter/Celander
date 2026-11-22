@@ -377,12 +377,6 @@ private fun CalendarPage(
             checked = current.showWeekNumbers,
             onCheckedChange = { value -> viewModel.update { it.copy(showWeekNumbers = value) } },
         )
-        if (com.celander.app.push.Push.available) {
-            SettingsDivider()
-            SwitchRow(R.string.settings_push, R.string.settings_push_summary, current.pushEnabled) { value ->
-                viewModel.update { it.copy(pushEnabled = value) }
-            }
-        }
         SettingsDivider()
         SettingsChoiceRow(
             title = stringResource(R.string.settings_time_format),
@@ -494,19 +488,22 @@ private fun RemindersPage(
 
 @Composable
 private fun DataPage(hasSampleData: Boolean?, viewModel: SettingsViewModel, onDeleteAll: () -> Unit) {
+    // Until the database says whether samples exist the card stays out: showing it with one row and then
+    // growing it made the page height jump (and the card look cut off) while the page was animating in.
+    if (hasSampleData == null) return
     SettingsGroupCard {
-        when (hasSampleData) {
-            true -> SettingsRow(
+        if (hasSampleData) {
+            SettingsRow(
                 title = stringResource(R.string.settings_samples_clear),
                 summary = stringResource(R.string.settings_samples_clear_summary),
                 onClick = viewModel::clearSampleData,
             )
-            false -> SettingsRow(
+        } else {
+            SettingsRow(
                 title = stringResource(R.string.welcome_samples),
                 summary = stringResource(R.string.settings_samples_load_summary),
                 onClick = viewModel::loadSampleData,
             )
-            null -> Unit
         }
         SettingsDivider()
         SettingsRow(

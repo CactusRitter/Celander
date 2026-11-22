@@ -3,6 +3,7 @@
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+- Ajustes: Datos ya no se corta por abajo (la tarjeta espera a saber si hay datos de ejemplo); la fila de Calendario es una fila normal de la tarjeta; se quita el interruptor del push (siempre activo, con el sondeo de respaldo); quitar una cuenta o «Borrar todos los datos» detiene los canales/suscripciones y llama a /cal/unregister.
 - Arreglo: las novedades de la versión actual salían vacías en Actualizaciones (el changelog empezaba con BOM y la versión más nueva no se leía). El kit ignora el BOM y release.ps1 escribe sin BOM. Probado en emulador.
 
 ## 2.3.0 — 2026-11-22
