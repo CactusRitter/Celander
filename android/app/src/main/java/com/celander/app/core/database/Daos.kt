@@ -50,6 +50,9 @@ interface CalendarDao {
     @Query("UPDATE calendars SET visible = :visible WHERE id = :id")
     suspend fun setVisible(id: Long, visible: Boolean)
 
+    @Query("UPDATE calendars SET enabled = :enabled WHERE id = :id")
+    suspend fun setEnabled(id: Long, enabled: Boolean)
+
     @Query("SELECT (SELECT COUNT(*) FROM events WHERE calendarId = :id) + (SELECT COUNT(*) FROM tasks WHERE calendarId = :id)")
     suspend fun entryCount(id: Long): Int
 
@@ -90,7 +93,7 @@ interface EventDao {
     @Query(
         """
         SELECT e.* FROM events e INNER JOIN calendars c ON c.id = e.calendarId
-        WHERE (c.visible = 1 OR :includeHidden) AND (
+        WHERE (c.visible = 1 AND c.enabled = 1 OR :includeHidden) AND (
             (e.rrule IS NOT NULL AND ((e.allDay = 0 AND e.startUtc < :endUtc) OR (e.allDay = 1 AND e.startDay <= :lastDay)))
             OR (e.rrule IS NULL AND e.allDay = 0 AND e.startUtc < :endUtc AND e.endUtc >= :startUtc)
             OR (e.rrule IS NULL AND e.allDay = 1 AND e.startDay <= :lastDay AND e.endDay >= :firstDay)
@@ -108,7 +111,7 @@ interface EventDao {
     @Query(
         """
         SELECT e.* FROM events e INNER JOIN calendars c ON c.id = e.calendarId
-        WHERE (c.visible = 1 OR :includeHidden) AND (
+        WHERE (c.visible = 1 AND c.enabled = 1 OR :includeHidden) AND (
             (e.rrule IS NOT NULL AND ((e.allDay = 0 AND e.startUtc < :endUtc) OR (e.allDay = 1 AND e.startDay <= :lastDay)))
             OR (e.rrule IS NULL AND e.allDay = 0 AND e.startUtc < :endUtc AND e.endUtc >= :startUtc)
             OR (e.rrule IS NULL AND e.allDay = 1 AND e.startDay <= :lastDay AND e.endDay >= :firstDay)
@@ -141,7 +144,7 @@ interface EventDao {
         SELECT e.* FROM events e
         INNER JOIN events_fts f ON f.rowid = e.id
         INNER JOIN calendars c ON c.id = e.calendarId
-        WHERE events_fts MATCH :match AND c.visible = 1
+        WHERE events_fts MATCH :match AND c.visible = 1 AND c.enabled = 1
         """,
     )
     suspend fun search(match: String): List<EventEntity>
@@ -210,7 +213,7 @@ interface ExceptionDao {
         SELECT x.* FROM event_exceptions x
         INNER JOIN events e ON e.id = x.eventId
         INNER JOIN calendars c ON c.id = e.calendarId
-        WHERE c.visible = 1 AND e.rrule IS NOT NULL AND x.cancelled = 0
+        WHERE c.visible = 1 AND c.enabled = 1 AND e.rrule IS NOT NULL AND x.cancelled = 0
             AND (x.title IS NOT NULL OR x.location IS NOT NULL OR x.description IS NOT NULL)
         """,
     )
@@ -228,7 +231,7 @@ interface TaskDao {
     @Query(
         """
         SELECT t.* FROM tasks t INNER JOIN calendars c ON c.id = t.calendarId
-        WHERE t.done = 0 AND t.dueDay BETWEEN :firstDay AND :lastDay AND (c.visible = 1 OR :includeHidden)
+        WHERE t.done = 0 AND t.dueDay BETWEEN :firstDay AND :lastDay AND (c.visible = 1 AND c.enabled = 1 OR :includeHidden)
         """,
     )
     fun observeOpenDue(firstDay: Long, lastDay: Long, includeHidden: Boolean): Flow<List<TaskEntity>>
@@ -236,12 +239,12 @@ interface TaskDao {
     @Query(
         """
         SELECT t.* FROM tasks t INNER JOIN calendars c ON c.id = t.calendarId
-        WHERE t.done = 0 AND t.dueDay BETWEEN :firstDay AND :lastDay AND (c.visible = 1 OR :includeHidden)
+        WHERE t.done = 0 AND t.dueDay BETWEEN :firstDay AND :lastDay AND (c.visible = 1 AND c.enabled = 1 OR :includeHidden)
         """,
     )
     suspend fun getOpenDue(firstDay: Long, lastDay: Long, includeHidden: Boolean): List<TaskEntity>
 
-    @Query("SELECT t.* FROM tasks t INNER JOIN calendars c ON c.id = t.calendarId WHERE c.visible = 1")
+    @Query("SELECT t.* FROM tasks t INNER JOIN calendars c ON c.id = t.calendarId WHERE c.visible = 1 AND c.enabled = 1")
     fun observeVisible(): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM tasks ORDER BY id")
@@ -261,7 +264,7 @@ interface TaskDao {
         SELECT t.* FROM tasks t
         INNER JOIN tasks_fts f ON f.rowid = t.id
         INNER JOIN calendars c ON c.id = t.calendarId
-        WHERE tasks_fts MATCH :match AND c.visible = 1
+        WHERE tasks_fts MATCH :match AND c.visible = 1 AND c.enabled = 1
         """,
     )
     suspend fun search(match: String): List<TaskEntity>

@@ -116,7 +116,7 @@ fun CalendarsScreen(
         settingsGroup(groupTitle) {
             local.forEachIndexed { index, row ->
                 if (index > 0) SettingsDivider()
-                CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setVisible(row.calendar.id, it) })
+                CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setEnabled(row.calendar.id, it) })
             }
         }
         item(key = "hint") {
@@ -140,7 +140,7 @@ fun CalendarsScreen(
             settingsGroup(account ?: accountsTitle) {
                 accountRows.forEachIndexed { index, row ->
                     if (index > 0) SettingsDivider()
-                    CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setVisible(row.calendar.id, it) })
+                    CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setEnabled(row.calendar.id, it) })
                 }
             }
         }
@@ -149,7 +149,7 @@ fun CalendarsScreen(
             settingsGroup(tasksTitle) {
                 taskLists.forEachIndexed { index, row ->
                     if (index > 0) SettingsDivider()
-                    CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setVisible(row.calendar.id, it) })
+                    CalendarListRow(row, onEdit = { editing = row.calendar.id }, onVisibleChange = { viewModel.setEnabled(row.calendar.id, it) })
                 }
             }
         }
@@ -178,7 +178,7 @@ private fun CalendarListRow(row: CalendarRow, onEdit: () -> Unit, onVisibleChang
         }
         val visibleLabel = stringResource(R.string.settings_calendar_visible, calendar.name)
         GlassSwitch(
-            checked = calendar.visible,
+            checked = calendar.enabled,
             onCheckedChange = onVisibleChange,
             modifier = Modifier.semantics { contentDescription = visibleLabel },
         )
@@ -268,7 +268,7 @@ private fun CalendarEditSheet(
                 onOwnChange = { ownReminders = it },
             )
             val canBeDefault = row != null && when (row.calendar.source) {
-                CalendarSource.GOOGLE_TASKS -> !row.isTaskDefault && row.calendar.visible
+                CalendarSource.GOOGLE_TASKS -> !row.isTaskDefault && row.calendar.enabled
                 else -> !row.isDefault && row.calendar.offers(EntryKind.EVENT)
             }
             if (canBeDefault) {

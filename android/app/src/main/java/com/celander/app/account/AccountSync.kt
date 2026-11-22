@@ -82,6 +82,7 @@ class AccountSync(
                             name = remote.name,
                             colorKey = colorKey(remote.color),
                             visible = remote.selected,
+                            enabled = remote.selected,
                             sortOrder = calendarDao.maxSortOrder() + 1,
                             createdAt = now(),
                             source = CalendarSource.ACCOUNT.name,

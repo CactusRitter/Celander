@@ -362,7 +362,7 @@
     <string name="settings_libraries">Bibliotheken</string>
     <string name="settings_license_apache">Apache License 2.0</string>
     <string name="settings_your_calendars">Deine Kalender</string>
-    <string name="settings_hidden_hint">Ausgeblendete Kalender verschwinden aus allen Ansichten und der Suche. Ihre Erinnerungen kommen weiterhin, damit nichts versehentlich untergeht.</string>
+    <string name="settings_hidden_hint">Die ausgeschalteten Kalender verschwinden aus der Seitenleiste, allen Ansichten und der Suche. Ihre Erinnerungen kommen weiterhin, damit nichts versehentlich untergeht.</string>
     <string name="settings_new_calendar">Neuer Kalender</string>
     <string name="settings_edit_calendar">Kalender bearbeiten</string>
     <string name="settings_calendar_name">Name</string>

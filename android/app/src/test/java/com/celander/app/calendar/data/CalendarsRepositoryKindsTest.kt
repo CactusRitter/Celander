@@ -69,12 +69,23 @@ class CalendarsRepositoryKindsTest {
     }
 
     @Test
-    fun hiddenCalendarsAreNotOffered() = runBlocking {
+    fun disabledCalendarsAreNotOffered() = runBlocking {
         val work = env.calendars.create("Work", "blue")
         env.settings.update { it.copy(lastUsedCalendarId = work, defaultTaskCalendarId = googleList) }
-        env.calendars.setVisible(work, false)
-        env.calendars.setVisible(googleList, false)
+        env.calendars.setEnabled(work, false)
+        env.calendars.setEnabled(googleList, false)
         assertEquals(personal, env.calendars.preferredId(EntryKind.EVENT))
         assertEquals(personal, env.calendars.preferredId(EntryKind.TASK))
+    }
+
+    @Test
+    fun theDrawerCheckDoesNotChangeWhatIsOffered() = runBlocking {
+        val work = env.calendars.create("Work", "blue")
+        env.settings.update { it.copy(lastUsedCalendarId = work) }
+        env.calendars.setVisible(work, false)
+        val info = env.calendars.first().first { it.id == work }
+        assertEquals(true, info.enabled)
+        assertEquals(false, info.shown)
+        assertEquals(work, env.calendars.preferredId(EntryKind.EVENT))
     }
 }

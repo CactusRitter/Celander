@@ -109,7 +109,7 @@ class CalendarsRepository @Inject constructor(
     suspend fun update(calendar: CalendarInfo) {
         val current = dao.getById(calendar.id) ?: return
         val name = if (current.source == CalendarSource.LOCAL.name) calendar.name else current.name
-        dao.update(current.copy(name = name, colorKey = calendar.colorKey, visible = calendar.visible))
+        dao.update(current.copy(name = name, colorKey = calendar.colorKey, visible = calendar.visible, enabled = calendar.enabled))
     }
 
     /** The calendar's own default reminders for new entries; null goes back to the app-wide ones. */
@@ -119,6 +119,9 @@ class CalendarsRepository @Inject constructor(
     }
 
     suspend fun setVisible(id: Long, visible: Boolean) = dao.setVisible(id, visible)
+
+    /** The "Manage calendars" switch. */
+    suspend fun setEnabled(id: Long, enabled: Boolean) = dao.setEnabled(id, enabled)
 
     /** Makes [id] the default for what it holds: a Google list for tasks, any other calendar for events. */
     suspend fun setDefault(id: Long) {

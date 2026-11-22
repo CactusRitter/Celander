@@ -86,8 +86,8 @@ class SettingsViewModel @Inject constructor(
         liveChanges.value = transform
     }
 
-    fun setVisible(id: Long, visible: Boolean) {
-        viewModelScope.launch { calendars.setVisible(id, visible) }
+    fun setEnabled(id: Long, enabled: Boolean) {
+        viewModelScope.launch { calendars.setEnabled(id, enabled) }
     }
 
     fun setDefault(id: Long) {

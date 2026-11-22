@@ -66,7 +66,7 @@ class SearchViewModel @Inject constructor(
         }
 
     val state: StateFlow<SearchUiState> = combine(filter, calendars.calendars, results) { f, list, r ->
-        SearchUiState(filter = f, calendars = list.filter { it.visible }, results = r)
+        SearchUiState(filter = f, calendars = list.filter { it.shown }, results = r)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SearchUiState())
 
     fun setQuery(value: String) {

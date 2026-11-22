@@ -365,7 +365,7 @@
     <string name="settings_libraries">Libraries</string>
     <string name="settings_license_apache">Apache License 2.0</string>
     <string name="settings_your_calendars">Your calendars</string>
-    <string name="settings_hidden_hint">Hidden calendars disappear from all views and the search. Their reminders still come, so nothing is missed by accident.</string>
+    <string name="settings_hidden_hint">Switched-off calendars disappear from the drawer, all views and the search. Their reminders still come, so nothing is missed by accident.</string>
     <string name="settings_new_calendar">New calendar</string>
     <string name="settings_edit_calendar">Edit calendar</string>
     <string name="settings_calendar_name">Name</string>

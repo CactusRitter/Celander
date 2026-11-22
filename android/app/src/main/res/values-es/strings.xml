@@ -382,7 +382,7 @@
     <string name="settings_libraries">Bibliotecas</string>
     <string name="settings_license_apache">Apache License 2.0</string>
     <string name="settings_your_calendars">Tus calendarios</string>
-    <string name="settings_hidden_hint">Los calendarios ocultos desaparecen de todas las vistas y de la búsqueda. Sus recordatorios siguen llegando, para que no se te pase nada por error.</string>
+    <string name="settings_hidden_hint">Los calendarios desactivados desaparecen del cajón, de todas las vistas y de la búsqueda. Sus recordatorios siguen llegando, para que no se te pase nada por error.</string>
     <string name="settings_new_calendar">Nuevo calendario</string>
     <string name="settings_edit_calendar">Editar calendario</string>
     <string name="settings_calendar_name">Nombre</string>

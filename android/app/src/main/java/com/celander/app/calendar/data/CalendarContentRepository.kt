@@ -40,7 +40,7 @@ class CalendarContentRepository @Inject constructor(
             exceptionDao.observeAll(),
             taskDao.observeOpenDue(start.toEpochDay(), endExclusive.toEpochDay() - 1, includeHidden = false),
         ) { calendars, eventEntities, exceptionEntities, taskEntities ->
-            val visible = calendars.filter { it.visible }.associate { it.id to it.toModel() }
+            val visible = calendars.filter { it.visible && it.enabled }.associate { it.id to it.toModel() }
             val events = eventEntities.map { it.toModel() }
             val zones = events.associate { it.id to it.zone }
             val exceptions = exceptionEntities

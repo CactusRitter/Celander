@@ -117,4 +117,23 @@ class MigrationTest {
             db.close()
         }
     }
+
+    @Test
+    fun version5KeepsWhatWasSwitchedOffAsDisabled() {
+        createVersion(5)
+        SQLiteDatabase.openDatabase(context.getDatabasePath(name).path, null, SQLiteDatabase.OPEN_READWRITE).use { db ->
+            db.execSQL("INSERT INTO calendars (id, name, colorKey, visible, sortOrder, isSample, createdAt, source) VALUES (1, 'On', 'indigo', 1, 0, 0, 0, 'LOCAL')")
+            db.execSQL("INSERT INTO calendars (id, name, colorKey, visible, sortOrder, isSample, createdAt, source) VALUES (2, 'Off', 'teal', 0, 1, 0, 0, 'LOCAL')")
+        }
+        val db = Room.databaseBuilder(context, CelanderDatabase::class.java, name).build()
+        try {
+            runBlocking {
+                val all = db.calendarDao().getAll().associateBy { it.name }
+                assertTrue(all.getValue("On").enabled)
+                assertTrue(!all.getValue("Off").enabled)
+            }
+        } finally {
+            db.close()
+        }
+    }
 }

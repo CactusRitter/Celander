@@ -14,6 +14,8 @@ data class CalendarEntity(
     val name: String,
     val colorKey: String,
     val visible: Boolean = true,
+    /** The "Manage calendars" switch: off takes the calendar out of the drawer, views, search and defaults. */
+    @ColumnInfo(defaultValue = "1") val enabled: Boolean = true,
     val sortOrder: Int = 0,
     val isSample: Boolean = false,
     val createdAt: Long,

@@ -27,6 +27,8 @@ data class CalendarInfo(
     val name: String,
     val colorKey: String,
     val visible: Boolean = true,
+    /** The "Manage calendars" switch; a disabled calendar is out of the drawer, views, search and defaults. */
+    val enabled: Boolean = true,
     val isSample: Boolean = false,
     val source: CalendarSource = CalendarSource.LOCAL,
     val writable: Boolean = true,
@@ -43,7 +45,10 @@ data class CalendarInfo(
     fun canHold(kind: EntryKind): Boolean = writable && if (kind == EntryKind.EVENT) holdsEvents else holdsTasks
 
     /** Offered for new entries of [kind]: it can hold them and is switched on in "Manage calendars". */
-    fun offers(kind: EntryKind): Boolean = visible && canHold(kind)
+    fun offers(kind: EntryKind): Boolean = enabled && canHold(kind)
+
+    /** Its entries appear in the views: enabled in "Manage calendars" and checked in the drawer. */
+    val shown: Boolean get() = enabled && visible
 }
 
 /**

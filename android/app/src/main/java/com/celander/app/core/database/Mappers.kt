@@ -17,6 +17,7 @@ fun CalendarEntity.toModel() = CalendarInfo(
     name = name,
     colorKey = colorKey,
     visible = visible,
+    enabled = enabled,
     isSample = isSample,
     source = runCatching { CalendarSource.valueOf(source) }.getOrDefault(CalendarSource.LOCAL),
     reminderDefaults = reminderDefaultsOf(eventReminders, allDayReminders, taskReminders),

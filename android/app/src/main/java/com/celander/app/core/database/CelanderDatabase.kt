@@ -28,6 +28,13 @@ class Converters {
 @DeleteTable(tableName = "device_calendar_prefs")
 class DropDeviceCalendarPrefs : AutoMigrationSpec
 
+/** Version 6: the "Manage calendars" switch (`enabled`) is separate from the drawer check (`visible`); what was switched off stays off. */
+class AddCalendarEnabled : AutoMigrationSpec {
+    override fun onPostMigrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+        db.execSQL("UPDATE calendars SET enabled = visible")
+    }
+}
+
 @Database(
     entities = [
         CalendarEntity::class,
@@ -44,9 +51,9 @@ class DropDeviceCalendarPrefs : AutoMigrationSpec
         EventLinkEntity::class,
         ExceptionLinkEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4), AutoMigration(from = 4, to = 5, spec = DropDeviceCalendarPrefs::class)],
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4), AutoMigration(from = 4, to = 5, spec = DropDeviceCalendarPrefs::class), AutoMigration(from = 5, to = 6, spec = AddCalendarEnabled::class)],
 )
 @TypeConverters(Converters::class)
 abstract class CelanderDatabase : RoomDatabase() {

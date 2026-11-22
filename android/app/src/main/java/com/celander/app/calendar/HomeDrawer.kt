@@ -88,7 +88,7 @@ fun ColumnScope.HomeDrawerContent(
         HorizontalDivider(Modifier.padding(vertical = 6.dp, horizontal = 8.dp), color = MaterialTheme.colorScheme.outlineVariant)
         SectionTitle(R.string.drawer_calendars)
         // Local calendars first, then one block per account.
-        calendars.groupBy { it.account }.toList().sortedBy { it.first != null }.forEach { (account, list) ->
+        calendars.filter { it.enabled }.groupBy { it.account }.toList().sortedBy { it.first != null }.forEach { (account, list) ->
             if (account != null) {
                 Text(
                     account,

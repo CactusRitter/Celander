@@ -87,7 +87,7 @@ class SearchRepository @Inject constructor(
 
     private suspend fun find(text: String, filter: SearchFilter): List<SearchHit> {
         val match = FtsQuery.build(text) ?: return emptyList()
-        val calendars = calendarDao.getAll().filter { it.visible }.map { it.toModel() }.associateBy { it.id }
+        val calendars = calendarDao.getAll().filter { it.visible && it.enabled }.map { it.toModel() }.associateBy { it.id }
         val allowed = { calendarId: Long -> calendarId in calendars && (filter.calendarIds.isEmpty() || calendarId in filter.calendarIds) }
         val matched = eventDao.search(match).map { it.toModel() }.filter { allowed(it.calendarId) }
         val matchedIds = matched.map { it.id }.toSet()
