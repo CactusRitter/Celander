@@ -3,6 +3,8 @@
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+
+## 2.4.2 — 2026-11-22
 - Arreglo: los cumpleaños de Google ya guardados desaparecen siempre al activar «Cumpleaños de los contactos», aunque la sincronización larga de una cuenta recién añadida acabe después (antes podían quedar duplicados). Probado en el S26.
 - Arreglo: la foto de la cuenta de Google no salía en algún móvil (un intento fallido se daba por bueno durante 7 días). Ahora un fallo se reintenta a las 6 horas y el motivo queda en Diagnóstico. Probado en la OPPO: la foto aparece.
 

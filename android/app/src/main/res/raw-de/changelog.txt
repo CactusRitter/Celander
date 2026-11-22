@@ -1,3 +1,7 @@
+## 2.4.2
+- Behoben: Bereits gespeicherte Google-Geburtstage verschwinden beim Aktivieren der Kontakt-Geburtstage immer, auch wenn die lange Synchronisierung eines neuen Kontos später endet (vorher konnten Duplikate bleiben).
+- Behoben: Das Google-Kontofoto wurde auf manchen Handys nicht angezeigt; ein Fehlversuch wird jetzt nach 6 Stunden wiederholt und der Grund steht in der Diagnose.
+
 ## 2.4.1
 - Behoben: Beim Aktivieren der Kontakt-Geburtstage entstehen keine Duplikate mehr; die bereits von Google gespeicherten Geburtstage verschwinden beim Aktivieren.
 

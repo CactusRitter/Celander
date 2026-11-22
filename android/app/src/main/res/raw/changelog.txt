@@ -1,3 +1,7 @@
+## 2.4.2
+- Fixed: Google birthdays already saved always disappear when you turn on contact birthdays, even if a new account's long sync finishes later (duplicates could remain before).
+- Fixed: the Google account photo did not show on some phones; a failed attempt is now retried after 6 hours and the reason appears in Diagnostics.
+
 ## 2.4.1
 - Fixed: turning on contact birthdays no longer leaves duplicates; the birthdays Google had already saved disappear when you enable it.
 
