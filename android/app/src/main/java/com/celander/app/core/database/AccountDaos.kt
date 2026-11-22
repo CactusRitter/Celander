@@ -58,6 +58,10 @@ interface AccountDao {
     @Upsert
     suspend fun upsertRemoteCalendar(calendar: RemoteCalendarEntity)
 
+    /** The next sync of every calendar of [accountId] starts over from the whole calendar (what is no longer there goes away). */
+    @Query("UPDATE remote_calendars SET syncToken = NULL WHERE accountId = :accountId")
+    suspend fun forgetSyncTokens(accountId: Long)
+
     @Query("DELETE FROM remote_calendars WHERE calendarId = :calendarId")
     suspend fun deleteRemoteCalendar(calendarId: Long)
 

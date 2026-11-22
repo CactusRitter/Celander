@@ -111,6 +111,8 @@ class AccountRepository @Inject constructor(
                 // Google may leave out the refresh token when it was given before: the old one still works.
                 tokens.save(AccountTokens.key(accountId), outcome.result.tokens.let { it.copy(refreshToken = it.refreshToken ?: old?.refreshToken) })
                 birthdays.enable(accountId)
+                // Google's own birthday events stored so far are only filtered out of what a sync brings: start over so they go away.
+                dao.forgetSyncTokens(accountId)
                 syncAccount(accountId)
                 if (birthdays.enabled(accountId)) BirthdaysResult.Enabled else BirthdaysResult.Refused
             }
