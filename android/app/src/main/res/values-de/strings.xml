@@ -594,6 +594,13 @@
     <string name="accounts_subscription_confirm">Abonnieren</string>
     <string name="accounts_subscription_failed">Dieser Link hat nicht funktioniert. Prüfe ihn und versuche es noch einmal.</string>
     <string name="accounts_tasks_summary">Synchronisiert die Aufgabenlisten dieses Kontos in beide Richtungen.</string>
+    <string name="birthdays_title">Geburtstage</string>
+    <string name="birthdays_switch">Geburtstage aus Kontakten</string>
+    <string name="birthdays_summary">Zeigt die Geburtstage deiner Google-Kontakte in einem eigenen Kalender. Fragt Google nach der Erlaubnis, deine Kontakte zu lesen; nichts verlässt dein Handy.</string>
+    <string name="birthdays_failed_summary">Google hat das Lesen deiner Kontakte nicht erlaubt (Fehler %1$d). Prüfe, ob du die Berechtigung erteilt hast, und versuche es erneut.</string>
+    <string name="birthdays_consent_failed">Die Berechtigung zum Lesen deiner Kontakte konnte nicht erteilt werden.</string>
+    <string name="birthdays_refused_message">Google hat die Kontakte nicht freigegeben. Die Geburtstage bleiben aus.</string>
+    <string name="birthdays_calendar_name">Geburtstage</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
     <string name="menu_open">Menü öffnen</string>
     <string name="drawer_views">Ansichten</string>

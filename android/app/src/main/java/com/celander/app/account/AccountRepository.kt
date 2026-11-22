@@ -38,6 +38,18 @@ sealed interface AddAccountResult {
     data class Failed(val reason: String) : AddAccountResult
 }
 
+/** How switching on "Birthdays from contacts" ended. */
+enum class BirthdaysResult {
+    Enabled,
+    Cancelled,
+
+    /** The consent did not work (another account answered, a problem with Google). */
+    Failed,
+
+    /** Consent given, but the People API refused (permission missing, or the API is not enabled for the app); the switch went off again. */
+    Refused,
+}
+
 /** What "Delete all data" needs from the accounts: to forget every one of them on this device. */
 fun interface AccountsReset {
     suspend fun removeAll()
@@ -55,6 +67,7 @@ class AccountRepository @Inject constructor(
     private val scheduler: AccountSyncScheduler,
     private val googleTasks: GoogleTasksConnection,
     private val push: Lazy<com.celander.app.push.PushManager>,
+    private val birthdays: BirthdayPrefs,
 ) : AccountsReset {
     val accounts: Flow<List<AccountEntity>> = dao.observeAccounts()
 
@@ -72,6 +85,43 @@ class AccountRepository @Inject constructor(
     fun microsoftSignInIntent(loginHint: String? = null): Intent? = microsoft.signInIntent(loginHint)
 
     suspend fun addGoogle(data: Intent?): AddAccountResult = added(AccountType.GOOGLE, google.handleResult(data))
+
+    /** The accounts with "Birthdays from contacts" on, and the code with which the People API refused one that went off by itself. */
+    val birthdaysOn = birthdays.enabledAccounts
+    val birthdayFailures = birthdays.failureCodes
+
+    /**
+     * Google's consent page for the extra permission (read the contacts) of [account]; hand what comes back to [enableBirthdays].
+     * The account stays signed in as it is: nothing changes until the answer is good.
+     */
+    fun birthdaysConsentIntent(account: AccountEntity): Intent? = google.signInIntent(account.identifier, GoogleAuth.CONTACTS_SCOPE)
+
+    /**
+     * Finishes the consent: the new tokens (which carry the contacts permission) replace the old ones only if the same account
+     * answered; then the birthdays are switched on and read straight away. A cancelled or failed consent changes nothing.
+     */
+    suspend fun enableBirthdays(accountId: Long, data: Intent?): BirthdaysResult {
+        val account = dao.account(accountId) ?: return BirthdaysResult.Failed
+        return when (val outcome = google.handleResult(data)) {
+            SignInOutcome.Cancelled -> BirthdaysResult.Cancelled
+            SignInOutcome.NotConfigured, is SignInOutcome.Failed -> BirthdaysResult.Failed
+            is SignInOutcome.Success -> {
+                if (!outcome.result.email.equals(account.identifier, ignoreCase = true)) return BirthdaysResult.Failed
+                val old = tokens.load(AccountTokens.key(accountId))
+                // Google may leave out the refresh token when it was given before: the old one still works.
+                tokens.save(AccountTokens.key(accountId), outcome.result.tokens.let { it.copy(refreshToken = it.refreshToken ?: old?.refreshToken) })
+                birthdays.enable(accountId)
+                syncAccount(accountId)
+                if (birthdays.enabled(accountId)) BirthdaysResult.Enabled else BirthdaysResult.Refused
+            }
+        }
+    }
+
+    /** Switches the birthdays off: their calendar goes with its events at the next sync, which runs now. */
+    suspend fun disableBirthdays(accountId: Long) {
+        birthdays.disable(accountId)
+        syncAccount(accountId)
+    }
 
     /**
      * Subscribes to a calendar published as an .ics link (read only). The link is read once first, so a wrong one is refused;
@@ -127,6 +177,7 @@ class AccountRepository @Inject constructor(
         dao.account(id)?.takeIf { it.type == AccountType.GOOGLE.name }?.let { googleTasks.disconnect(it.identifier) }
         sync.remove(id)
         tokens.clear(AccountTokens.key(id))
+        birthdays.forget(id)
     }
 
     /**
@@ -138,6 +189,7 @@ class AccountRepository @Inject constructor(
         dao.accounts().forEach {
             sync.remove(it.id)
             tokens.clear(AccountTokens.key(it.id))
+            birthdays.forget(it.id)
         }
     }
 

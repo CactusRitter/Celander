@@ -48,12 +48,13 @@ object AccountModule {
         google: GoogleAuth,
         microsoft: MicrosoftAuth,
         ics: IcsUrlProvider,
+        birthdays: BirthdayPrefs,
         @IoDispatcher io: CoroutineDispatcher,
     ): AccountSync = AccountSync(
         db, db.accountDao(), db.calendarDao(), db.eventDao(), db.exceptionDao(),
         providers = AccountTokens(tokens, google, microsoft).let { accountTokens ->
             mapOf(
-                AccountType.GOOGLE to GoogleCalendarProvider(GoogleCalendarApi(client, io), accountTokens),
+                AccountType.GOOGLE to GoogleCalendarProvider(GoogleCalendarApi(client, io), accountTokens, birthdays = birthdays, people = com.celander.app.account.google.PeopleApi(client, io)),
                 AccountType.MICROSOFT to MicrosoftCalendarProvider(GraphCalendarApi(client, io), accountTokens),
                 AccountType.ICS_URL to ics,
             )

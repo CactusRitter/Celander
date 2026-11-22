@@ -50,10 +50,11 @@ class GoogleAuth(context: Context) {
      * Intent that opens Google's sign-in page; deliver the result to [handleResult]. [loginHint] (an address, e.g. an
      * account of a restored backup) makes Google offer that account first.
      */
-    fun signInIntent(loginHint: String? = null): Intent? {
+    fun signInIntent(loginHint: String? = null, extraScope: String? = null): Intent? {
         if (!isConfigured) return null
         val request = AuthorizationRequest.Builder(config, clientId, ResponseTypeValues.CODE, redirectUri)
-            .setScope(SCOPES)
+            .setScope(if (extraScope == null) SCOPES else "$SCOPES $extraScope")
+            .apply { if (extraScope != null) { setPrompt(AuthorizationRequest.Prompt.CONSENT); setAdditionalParameters(mapOf("include_granted_scopes" to "true")) } }
             .setLoginHint(loginHint)
             .build()
         return service.getAuthorizationRequestIntent(request)
@@ -112,6 +113,9 @@ class GoogleAuth(context: Context) {
     }
 
     companion object {
+        /** Asked only when the user switches on "Birthdays from contacts" (incremental consent): reads names and birthdays of the contacts. */
+        const val CONTACTS_SCOPE = "https://www.googleapis.com/auth/contacts.readonly"
+
         const val SCOPES = "openid email profile " +
             "https://www.googleapis.com/auth/calendar.events " +
             "https://www.googleapis.com/auth/calendar.calendarlist.readonly " +

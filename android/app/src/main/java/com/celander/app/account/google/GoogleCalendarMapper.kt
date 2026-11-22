@@ -121,7 +121,10 @@ object GoogleCalendarMapper {
             recurrenceTimeZone = original?.zone,
             cancelled = cancelled,
         )
-        return RemoteEvent(id, etag, updated, ical, reminders = reminders(json.obj("reminders")))
+        return RemoteEvent(
+            id, etag, updated, ical, reminders = reminders(json.obj("reminders")),
+            eventType = json.str("eventType"), birthdayContact = json.obj("birthdayProperties")?.str("contact"),
+        )
     }
 
     /** The popup reminders an event carries; null when it uses the calendar's own defaults (which the app does not know). */

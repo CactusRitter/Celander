@@ -8,6 +8,7 @@ import com.celander.app.R
 import com.celander.app.account.AccountRepository
 import com.celander.app.account.AccountPhotos
 import com.celander.app.account.AddAccountResult
+import com.celander.app.account.BirthdaysResult
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountType
 import com.celander.app.core.ui.SnackbarManager
@@ -73,7 +74,29 @@ class AccountsViewModel @Inject constructor(
     /** The browser sign-in for an account of [type]; [loginHint] names the address to offer first. */
     fun signInIntent(type: AccountType, loginHint: String? = null): Intent? {
         signingIn = type
+        consentFor = null
         return if (type == AccountType.MICROSOFT) repository.microsoftSignInIntent(loginHint) else repository.googleSignInIntent(loginHint)
+    }
+
+    /** The accounts with "Birthdays from contacts" on. */
+    val birthdaysOn: StateFlow<Set<Long>> = repository.birthdaysOn
+
+    /** The code with which the People API refused, by account, for the ones that went off by themselves. */
+    val birthdayFailures: StateFlow<Map<Long, Int>> = repository.birthdayFailures
+
+    /** The account whose contacts consent the browser is showing; its answer is not a sign-in. */
+    private var consentFor: Long? = null
+
+    /** The browser page that asks for the contacts permission, or null (then a message says why). */
+    fun birthdaysConsentIntent(account: AccountEntity): Intent? {
+        val intent = repository.birthdaysConsentIntent(account)
+        consentFor = if (intent != null) account.id else null
+        if (intent == null) snackbar.show(UiText.Res(R.string.accounts_google_missing))
+        return intent
+    }
+
+    fun disableBirthdays(accountId: Long) {
+        viewModelScope.launch { repository.disableBirthdays(accountId) }
     }
 
     /** Subscribes to the calendar at [url]; [name] may be empty. */
@@ -90,6 +113,18 @@ class AccountsViewModel @Inject constructor(
     fun onSignInResult(data: Intent?) {
         AppLog.i("accounts", "browser returned, data=" + (data != null))
         val type = signingIn
+        val consent = consentFor
+        consentFor = null
+        if (consent != null) {
+            viewModelScope.launch {
+                when (repository.enableBirthdays(consent, data)) {
+                    BirthdaysResult.Enabled, BirthdaysResult.Cancelled -> Unit
+                    BirthdaysResult.Failed -> snackbar.show(UiText.Res(R.string.birthdays_consent_failed))
+                    BirthdaysResult.Refused -> snackbar.show(UiText.Res(R.string.birthdays_refused_message))
+                }
+            }
+            return
+        }
         viewModelScope.launch {
             val outcome = if (type == AccountType.MICROSOFT) repository.addMicrosoft(data) else repository.addGoogle(data)
             when (val result = outcome) {

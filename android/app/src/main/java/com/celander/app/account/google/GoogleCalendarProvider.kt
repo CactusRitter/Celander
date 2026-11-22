@@ -9,6 +9,7 @@ import com.celander.app.account.RemoteCalendar
 import com.celander.app.account.RemoteEvent
 import com.celander.app.account.RemoteWrite
 import com.celander.app.core.ical.ICalEvent
+import com.celander.app.core.model.AccessRole
 import kotlinx.serialization.json.JsonObject
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.database.RemoteCalendarEntity
@@ -26,15 +27,28 @@ class GoogleCalendarProvider(
     private val api: GoogleCalendarApi,
     private val tokens: AccessTokens,
     private val now: () -> Instant = Instant::now,
+    /** The user's own birthdays from the contacts (People API); null where that is not offered (tests, Tasks). */
+    private val birthdays: BirthdaySource? = null,
+    private val people: PeopleApi? = null,
+    private val zone: java.time.ZoneId = java.time.ZoneId.systemDefault(),
 ) : CalendarProvider {
     override val type = AccountType.GOOGLE
 
     override val capabilities = ProviderCapabilities(canWrite = true, maxReminders = null, hasCalendarList = true)
 
-    override suspend fun listCalendars(account: AccountEntity): List<RemoteCalendar> =
-        authorized(account) { api.calendarList(it) }.mapNotNull(GoogleCalendarMapper::calendar)
+    override suspend fun listCalendars(account: AccountEntity): List<RemoteCalendar> {
+        val listed = authorized(account) { api.calendarList(it) }.mapNotNull(GoogleCalendarMapper::calendar)
+        val source = birthdays ?: return listed
+        if (!source.enabled(account.id)) return listed
+        // Not a Google calendar: it lives only here, read only, and is filled from the contacts.
+        return listed + RemoteCalendar(
+            remoteId = BirthdayEvents.CALENDAR_ID, name = source.calendarName(), color = BirthdayEvents.COLOR, accessRole = AccessRole.READER,
+            isPrimary = false, selected = true, defaultReminders = emptyList(), timeZone = null,
+        )
+    }
 
     override suspend fun syncEvents(account: AccountEntity, calendar: RemoteCalendarEntity): EventSyncResult {
+        if (calendar.remoteId == BirthdayEvents.CALENDAR_ID) return syncBirthdays(account, calendar)
         val withToken = calendar.syncToken
         return try {
             fetch(account, calendar, withToken).copy(full = withToken == null)
@@ -52,11 +66,52 @@ class GoogleCalendarProvider(
         val timeMin = if (syncToken == null) now().minus(HISTORY_DAYS, ChronoUnit.DAYS).toString() else null
         do {
             val result = authorized(account) { api.events(it, calendar.remoteId, syncToken, timeMin, page) }
-            result.items.mapNotNullTo(events) { GoogleCalendarMapper.event(it, calendar.timeZone) }
+            val ownBirthdays = birthdays?.enabled(account.id) == true
+            result.items.mapNotNullTo(events) { item ->
+                GoogleCalendarMapper.event(item, calendar.timeZone)?.let { event ->
+                    // Google's own birthday events would show every contact twice: the contacts are the source here.
+                    if (ownBirthdays && event.eventType == "birthday") event.copy(ical = null) else event
+                }
+            }
             page = result.nextPageToken
             next = result.nextSyncToken
         } while (page != null)
         return EventSyncResult(events, next, full = syncToken == null)
+    }
+
+    /**
+     * The birthdays calendar: the contacts are read at most once a day (the first time, and after switching it on, straight away).
+     * Any problem leaves what is stored as it is and does not stop the other calendars; a refusal by the People API (401, 403,
+     * i.e. no permission or the API is not enabled) switches the birthdays off, see [BirthdaySource.failed].
+     */
+    private suspend fun syncBirthdays(account: AccountEntity, calendar: RemoteCalendarEntity): EventSyncResult {
+        val unchanged = EventSyncResult(emptyList(), calendar.syncToken, full = false)
+        val source = birthdays ?: return unchanged
+        val api = people ?: return unchanged
+        val at = now()
+        if (calendar.lastFullSyncAt != 0L && at.toEpochMilli() - calendar.lastFullSyncAt < BIRTHDAYS_REFRESH_MILLIS) return unchanged
+        return try {
+            val contacts = peopleCall(account) { api.birthdays(it) }
+            EventSyncResult(BirthdayEvents.build(contacts, at.atZone(zone).toLocalDate(), at.toEpochMilli()), null, full = true)
+        } catch (_: TokenRejectedException) {
+            source.failed(account.id, 401)
+            unchanged
+        } catch (e: CalendarApiException) {
+            if (e.code == 403 || e.code == 401) source.failed(account.id, e.code)
+            unchanged
+        } catch (_: java.io.IOException) {
+            unchanged // offline or a server problem: tried again at the next sync
+        }
+    }
+
+    /** Like [authorized], but a token refused twice is an error of the People API (the permission is missing), not a lost sign-in. */
+    private suspend fun <T> peopleCall(account: AccountEntity, call: suspend (String) -> T): T {
+        val first = tokens.token(account, forceRefresh = false) ?: throw NeedsSignInException()
+        return try {
+            call(first)
+        } catch (_: TokenRejectedException) {
+            call(tokens.token(account, forceRefresh = true) ?: throw NeedsSignInException())
+        }
     }
 
     override suspend fun create(account: AccountEntity, calendar: RemoteCalendarEntity, master: ICalEvent, reminders: List<Int>): RemoteWrite {
@@ -117,5 +172,8 @@ class GoogleCalendarProvider(
     private companion object {
         /** How far back the first sync of a calendar reaches. */
         const val HISTORY_DAYS = 730L
+
+        /** The contacts' birthdays are read again after this long. */
+        const val BIRTHDAYS_REFRESH_MILLIS = 24 * 60 * 60 * 1000L
     }
 }

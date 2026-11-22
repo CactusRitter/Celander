@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cake
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -116,6 +117,10 @@ fun OccurrenceRow(
             Text(title, style = MaterialTheme.typography.bodyLarge, color = colors.onSurface, maxLines = 2, overflow = TextOverflow.Ellipsis)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(time, style = MaterialTheme.typography.bodySmall, color = colors.onSurfaceVariant, maxLines = 1)
+                if (occurrence.isBirthday) {
+                    Spacer(Modifier.width(4.dp))
+                    Icon(Icons.Outlined.Cake, null, tint = colors.onSurfaceVariant, modifier = Modifier.width(Sizes.iconSmall - 3.dp))
+                }
                 if (occurrence.isRecurring) {
                     Spacer(Modifier.width(4.dp))
                     Icon(Icons.Outlined.Repeat, null, tint = colors.onSurfaceVariant, modifier = Modifier.width(Sizes.iconSmall - 3.dp))

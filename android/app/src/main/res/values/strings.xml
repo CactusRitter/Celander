@@ -597,6 +597,13 @@
     <string name="accounts_subscription_confirm">Subscribe</string>
     <string name="accounts_subscription_failed">That link did not work. Check it and try again.</string>
     <string name="accounts_tasks_summary">Syncs the task lists of this account both ways.</string>
+    <string name="birthdays_title">Birthdays</string>
+    <string name="birthdays_switch">Birthdays from contacts</string>
+    <string name="birthdays_summary">Shows the birthdays of your Google contacts in a calendar of its own. Asks Google for permission to read your contacts; nothing leaves your phone.</string>
+    <string name="birthdays_failed_summary">Google did not allow reading your contacts (error %1$d). Check that you granted the permission and try again.</string>
+    <string name="birthdays_consent_failed">The permission to read your contacts could not be granted.</string>
+    <string name="birthdays_refused_message">Google refused to share your contacts. The birthdays stay off.</string>
+    <string name="birthdays_calendar_name">Birthdays</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
     <string name="menu_open">Open menu</string>
     <string name="drawer_views">Views</string>

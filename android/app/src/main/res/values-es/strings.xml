@@ -622,6 +622,13 @@
     <string name="accounts_subscription_confirm">Suscribirse</string>
     <string name="accounts_subscription_failed">Ese enlace no funcionó. Revísalo e inténtalo de nuevo.</string>
     <string name="accounts_tasks_summary">Sincroniza en ambos sentidos las listas de tareas de esta cuenta.</string>
+    <string name="birthdays_title">Cumpleaños</string>
+    <string name="birthdays_switch">Cumpleaños de los contactos</string>
+    <string name="birthdays_summary">Muestra los cumpleaños de tus contactos de Google en un calendario propio. Pide a Google permiso para leer tus contactos; nada sale de tu teléfono.</string>
+    <string name="birthdays_failed_summary">Google no permitió leer tus contactos (error %1$d). Comprueba que diste el permiso e inténtalo de nuevo.</string>
+    <string name="birthdays_consent_failed">No se pudo conceder el permiso para leer tus contactos.</string>
+    <string name="birthdays_refused_message">Google no quiso compartir tus contactos. Los cumpleaños siguen apagados.</string>
+    <string name="birthdays_calendar_name">Cumpleaños</string>
     <string name="accounts_row_body">%1$s · %2$s</string>
     <string name="menu_open">Abrir el menú</string>
     <string name="drawer_views">Vistas</string>

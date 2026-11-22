@@ -192,7 +192,8 @@ class PushManager @Inject constructor(
             return null
         }
         val now = System.currentTimeMillis()
-        val calendars = dao.remoteCalendars(account.id)
+        // The birthdays calendar is made here from the contacts; Google has no such calendar to watch.
+        val calendars = dao.remoteCalendars(account.id).filter { it.remoteId != com.celander.app.account.google.BirthdayEvents.CALENDAR_ID }
         val channels = mutableListOf<GoogleChannel>()
         for (calendar in calendars) {
             val existing = old.firstOrNull { it.calendarId == calendar.remoteId }

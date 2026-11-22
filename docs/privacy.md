@@ -23,12 +23,13 @@ When you add a Google account, you grant the app these permissions:
 | Google Calendar events (`https://www.googleapis.com/auth/calendar.events`) | To read your events and to create, edit and delete them, at your request. |
 | Your list of Google calendars (`https://www.googleapis.com/auth/calendar.calendarlist.readonly`) | To show which calendars you have, with their names and colours. The app cannot change this list. |
 | Google Tasks (`https://www.googleapis.com/auth/tasks`) | To read your task lists and tasks and to create, edit, complete and delete them, at your request. |
+| Your Google contacts, read only (`https://www.googleapis.com/auth/contacts.readonly`), **only if you switch on "Birthdays from contacts"** | To read the names and birth dates of your contacts so the app can show their birthdays in a calendar of its own. It is requested separately, when you switch that setting on; without it the app never asks for it. The contacts are not stored or sent anywhere: only the resulting birthdays are kept, on your phone. |
 
 When you add a Microsoft account (Outlook.com, Hotmail, Microsoft 365), you grant these permissions: your sign-in identity, email address and basic profile (`openid`, `email`, `profile`, `User.Read`), read and write access to your calendars and events (`Calendars.ReadWrite`) and keeping you signed in (`offline_access`).
 
 The app uses this access only to provide the features you see in the app, at your request.
 
-The app also asks Android for permission to show **notifications**, to schedule **exact alarms** so that event reminders arrive on time, and to re-schedule them after your phone restarts. The app does not read the calendar of the Android system (the calendar provider) and does not ask for access to your files, photos or contacts.
+The app also asks Android for permission to show **notifications**, to schedule **exact alarms** so that event reminders arrive on time, and to re-schedule them after your phone restarts. The app does not read the calendar of the Android system (the calendar provider) and does not ask for access to your files or photos. Your contacts are read only through Google, with the separate permission above, if you switch on "Birthdays from contacts".
 
 ## How information is stored
 - Your calendars, events, tasks and reminders are kept in a **local database on your phone** so the app works quickly and offline.
@@ -37,7 +38,7 @@ The app also asks Android for permission to show **notifications**, to schedule 
 - Home screen widgets show data from that local database and make no network connection of their own.
 - If Android backup is turned on on your phone, Android may back up the app's local data to your Google account under your phone's backup settings; sign-in tokens are excluded from that backup. Backup files you create yourself in the app (ZIP) contain your settings and, if you tick the box, your local calendars, events and tasks; they never contain your Google or Microsoft accounts or sign-in tokens, and they are saved where you choose.
 - Nothing is sent to me or to any third party, except what the instant-notification relay receives (see below). The only network connections the app makes are to:
-  - Google's services (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), when you use a Google account;
+  - Google's services (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`, and `people.googleapis.com` only if you switch on "Birthdays from contacts"), when you use a Google account;
   - Microsoft's services (`login.microsoftonline.com`, `graph.microsoft.com`), when you use a Microsoft account;
   - the web address of a calendar you subscribe to with a link (`.ics`), only to download that calendar, from whichever server hosts it;
   - the place-suggestion service Photon by komoot (`photon.komoot.io`, built on OpenStreetMap data), only while you type a location for an event: it receives the text you typed and the app's language, never your position or any other data;
@@ -90,12 +91,13 @@ Al añadir una cuenta de Google concedes a la app estos permisos:
 | Eventos de Google Calendar (`https://www.googleapis.com/auth/calendar.events`) | Para leer tus eventos y crearlos, editarlos y borrarlos, a petición tuya. |
 | Lista de tus calendarios de Google (`https://www.googleapis.com/auth/calendar.calendarlist.readonly`) | Para mostrar qué calendarios tienes, con su nombre y su color. La app no puede cambiar esta lista. |
 | Google Tasks (`https://www.googleapis.com/auth/tasks`) | Para leer tus listas de tareas y tareas y crearlas, editarlas, completarlas y borrarlas, a petición tuya. |
+| Tus contactos de Google, solo lectura (`https://www.googleapis.com/auth/contacts.readonly`), **solo si activas «Cumpleaños de los contactos»** | Para leer los nombres y las fechas de nacimiento de tus contactos y mostrar sus cumpleaños en un calendario propio. Se pide aparte, cuando activas ese ajuste; si no lo activas, la app nunca lo pide. Los contactos no se guardan ni se envían a ningún sitio: solo se conservan los cumpleaños resultantes, en tu teléfono. |
 
 Al añadir una cuenta de Microsoft (Outlook.com, Hotmail, Microsoft 365) concedes estos permisos: tu identidad de inicio de sesión, correo y perfil básico (`openid`, `email`, `profile`, `User.Read`), lectura y escritura de tus calendarios y eventos (`Calendars.ReadWrite`) y mantener la sesión iniciada (`offline_access`).
 
 La app usa este acceso solo para ofrecer las funciones que ves en ella, a petición tuya.
 
-La app también pide a Android permiso para mostrar **notificaciones**, programar **alarmas exactas** para que los recordatorios de eventos lleguen a su hora y reprogramarlos cuando el teléfono se reinicia. La app no lee el calendario del sistema Android (el proveedor de calendarios) y no pide acceso a tus archivos, fotos ni contactos.
+La app también pide a Android permiso para mostrar **notificaciones**, programar **alarmas exactas** para que los recordatorios de eventos lleguen a su hora y reprogramarlos cuando el teléfono se reinicia. La app no lee el calendario del sistema Android (el proveedor de calendarios) y no pide acceso a tus archivos ni fotos. Tus contactos se leen solo a través de Google, con el permiso aparte de arriba, si activas «Cumpleaños de los contactos».
 
 ## Cómo se guarda la información
 - Tus calendarios, eventos, tareas y recordatorios se guardan en una **base de datos local en tu teléfono** para que la app funcione rápido y sin conexión.
@@ -104,7 +106,7 @@ La app también pide a Android permiso para mostrar **notificaciones**, programa
 - Los widgets de la pantalla de inicio muestran datos de esa base de datos local y no hacen conexiones de red por su cuenta.
 - Si la copia de seguridad de Android está activada en tu teléfono, Android puede guardar los datos locales de la app en tu cuenta de Google según los ajustes de copia de tu teléfono; los tokens de inicio de sesión no se incluyen en esa copia. Los archivos de copia (ZIP) que crees tú mismo en la app contienen tus ajustes y, si marcas la casilla, tus calendarios, eventos y tareas locales; nunca incluyen tus cuentas de Google o Microsoft ni los tokens de inicio de sesión, y se guardan donde elijas.
 - No se envía nada a mí ni a terceros, salvo lo que recibe el servicio de avisos instantáneos (ver abajo). Las únicas conexiones de red de la app son con:
-  - los servicios de Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), si usas una cuenta de Google;
+  - los servicios de Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com` y, solo si activas «Cumpleaños de los contactos», `people.googleapis.com`), si usas una cuenta de Google;
   - los servicios de Microsoft (`login.microsoftonline.com`, `graph.microsoft.com`), si usas una cuenta de Microsoft;
   - la dirección web de un calendario al que te suscribes con un enlace (`.ics`), solo para descargarlo, del servidor que lo aloje;
   - el servicio de sugerencias de lugares Photon de komoot (`photon.komoot.io`, con datos de OpenStreetMap), solo mientras escribes el lugar de un evento: recibe el texto que escribes y el idioma de la app, nunca tu posición ni otros datos;
@@ -157,12 +159,13 @@ Wenn du ein Google-Konto hinzufügst, erteilst du der App diese Berechtigungen:
 | Google-Kalendertermine (`https://www.googleapis.com/auth/calendar.events`) | Um deine Termine zu lesen und auf deinen Wunsch anzulegen, zu ändern und zu löschen. |
 | Liste deiner Google-Kalender (`https://www.googleapis.com/auth/calendar.calendarlist.readonly`) | Um anzuzeigen, welche Kalender du hast, mit Namen und Farben. Die App kann diese Liste nicht ändern. |
 | Google Tasks (`https://www.googleapis.com/auth/tasks`) | Um deine Aufgabenlisten und Aufgaben zu lesen und auf deinen Wunsch anzulegen, zu ändern, abzuhaken und zu löschen. |
+| Deine Google-Kontakte, nur lesend (`https://www.googleapis.com/auth/contacts.readonly`), **nur wenn du „Geburtstage aus Kontakten“ einschaltest** | Um Namen und Geburtsdaten deiner Kontakte zu lesen und ihre Geburtstage in einem eigenen Kalender anzuzeigen. Die Berechtigung wird getrennt angefragt, wenn du diese Einstellung einschaltest; ohne sie fragt die App nie danach. Die Kontakte werden nirgendwohin gesendet: nur die daraus entstehenden Geburtstage bleiben auf deinem Handy gespeichert. |
 
 Wenn du ein Microsoft-Konto hinzufügst (Outlook.com, Hotmail, Microsoft 365), erteilst du diese Berechtigungen: deine Anmeldeidentität, E-Mail-Adresse und das Basisprofil (`openid`, `email`, `profile`, `User.Read`), Lese- und Schreibzugriff auf deine Kalender und Termine (`Calendars.ReadWrite`) sowie das dauerhafte Angemeldetbleiben (`offline_access`).
 
 Die App nutzt diesen Zugriff nur, um dir die Funktionen bereitzustellen, die du in der App siehst, auf deinen Wunsch.
 
-Außerdem bittet die App Android um die Erlaubnis, **Benachrichtigungen** anzuzeigen, **exakte Alarme** zu planen, damit Termin-Erinnerungen pünktlich kommen, und sie nach einem Neustart des Telefons neu zu planen. Die App liest nicht den Kalender des Android-Systems (den Kalenderanbieter) und fragt nicht nach Zugriff auf deine Dateien, Fotos oder Kontakte.
+Außerdem bittet die App Android um die Erlaubnis, **Benachrichtigungen** anzuzeigen, **exakte Alarme** zu planen, damit Termin-Erinnerungen pünktlich kommen, und sie nach einem Neustart des Telefons neu zu planen. Die App liest nicht den Kalender des Android-Systems (den Kalenderanbieter) und fragt nicht nach Zugriff auf deine Dateien oder Fotos. Deine Kontakte werden nur über Google gelesen, mit der oben genannten separaten Berechtigung, wenn du „Geburtstage aus Kontakten“ einschaltest.
 
 ## Wie Informationen gespeichert werden
 - Deine Kalender, Termine, Aufgaben und Erinnerungen liegen in einer **lokalen Datenbank auf deinem Telefon**, damit die App schnell und auch offline funktioniert.
@@ -171,7 +174,7 @@ Außerdem bittet die App Android um die Erlaubnis, **Benachrichtigungen** anzuze
 - Widgets auf dem Startbildschirm zeigen Daten aus dieser lokalen Datenbank und bauen selbst keine Netzwerkverbindung auf.
 - Wenn die Android-Datensicherung auf deinem Telefon eingeschaltet ist, kann Android die lokalen Daten der App gemäß den Sicherungseinstellungen deines Telefons in deinem Google-Konto sichern; Anmelde-Tokens sind von dieser Sicherung ausgenommen. Sicherungsdateien (ZIP), die du selbst in der App erstellst, enthalten deine Einstellungen und, wenn du das Kästchen anhakst, deine lokalen Kalender, Termine und Aufgaben; sie enthalten nie deine Google- oder Microsoft-Konten oder Anmelde-Tokens und werden dort gespeichert, wo du es festlegst.
 - Es wird nichts an mich oder an Dritte gesendet, außer dem, was der Vermittlungsdienst für Sofortbenachrichtigungen erhält (siehe unten). Die App verbindet sich nur mit:
-  - den Diensten von Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), wenn du ein Google-Konto nutzt;
+  - den Diensten von Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com` und, nur wenn du „Geburtstage aus Kontakten“ einschaltest, `people.googleapis.com`), wenn du ein Google-Konto nutzt;
   - den Diensten von Microsoft (`login.microsoftonline.com`, `graph.microsoft.com`), wenn du ein Microsoft-Konto nutzt;
   - der Webadresse eines Kalenders, den du per Link (`.ics`) abonnierst, nur um diesen Kalender herunterzuladen, vom Server, der ihn bereitstellt;
   - dem Ortsvorschlagsdienst Photon von komoot (`photon.komoot.io`, auf Basis von OpenStreetMap-Daten), nur während du einen Ort für einen Termin eintippst: Er erhält den eingetippten Text und die Sprache der App, nie deinen Standort oder andere Daten;

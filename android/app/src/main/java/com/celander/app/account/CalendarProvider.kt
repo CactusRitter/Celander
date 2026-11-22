@@ -48,6 +48,10 @@ data class RemoteEvent(
     val ical: ICalEvent?,
     /** Minutes before the start, as the event carries them; null when the calendar's defaults apply. */
     val reminders: List<Int>? = null,
+    /** Google's `eventType` ("default", "birthday"…), for events that have one. */
+    val eventType: String? = null,
+    /** For a Google birthday event: the contact it is about (`people/cNNN`, from `birthdayProperties`). */
+    val birthdayContact: String? = null,
 )
 
 /** What a sync of one calendar brought. */

@@ -227,6 +227,9 @@ data class EventOccurrence(
     val key: String get() = "${event.id}:$originalStart"
     val colorKey: String get() = event.colorKey ?: calendar.colorKey
     val isRecurring: Boolean get() = event.isRecurring
+
+    /** A birthday made from the contacts (see [com.celander.app.account.google.BirthdayEvents]). */
+    val isBirthday: Boolean get() = event.uid.startsWith(com.celander.app.account.google.BirthdayEvents.UID_PREFIX)
     val allDay: Boolean get() = timing is EventTiming.AllDay
 }
 

@@ -98,6 +98,9 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
     val startSignIn = { type: AccountType, hint: String? -> viewModel.signInIntent(type, hint)?.let(signIn::launch) ?: viewModel.onSignInResult(null) }
     val title = stringResource(R.string.accounts_title)
     val tasksTitle = stringResource(R.string.google_tasks_title)
+    val birthdaysTitle = stringResource(R.string.birthdays_title)
+    val birthdaysOn by viewModel.birthdaysOn.collectAsStateWithLifecycle()
+    val birthdayFailures by viewModel.birthdayFailures.collectAsStateWithLifecycle()
 
     SettingsScaffold(
         title = account?.displayName ?: if (adding) stringResource(R.string.accounts_add_title) else title,
@@ -236,6 +239,19 @@ fun AccountsScreen(onBack: () -> Unit, viewModel: AccountsViewModel = hiltViewMo
                         checked = tasks != null,
                         onCheckedChange = { viewModel.setTasks(account.identifier, it) },
                         summary = tasks?.let { tasksSummary(it) } ?: stringResource(R.string.accounts_tasks_summary),
+                    )
+                }
+                // Incremental consent: switching it on opens Google's page to grant reading the contacts; off removes the calendar.
+                settingsGroup(birthdaysTitle) {
+                    val failure = birthdayFailures[account.id]
+                    SettingsSwitchRow(
+                        title = stringResource(R.string.birthdays_switch),
+                        checked = account.id in birthdaysOn,
+                        onCheckedChange = { on ->
+                            if (on) viewModel.birthdaysConsentIntent(account)?.let(signIn::launch) else viewModel.disableBirthdays(account.id)
+                        },
+                        summary = if (failure != null) stringResource(R.string.birthdays_failed_summary, failure) else stringResource(R.string.birthdays_summary),
+                        summaryColor = if (failure != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

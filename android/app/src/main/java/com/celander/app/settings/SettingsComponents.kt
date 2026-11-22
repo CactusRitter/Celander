@@ -192,7 +192,7 @@ fun SettingsRow(
 }
 
 @Composable
-fun SettingsSwitchRow(title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit, summary: String? = null) {
+fun SettingsSwitchRow(title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit, summary: String? = null, summaryColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -203,7 +203,7 @@ fun SettingsSwitchRow(title: String, checked: Boolean, onCheckedChange: (Boolean
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(title, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
-            if (summary != null) Text(summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (summary != null) Text(summary, style = MaterialTheme.typography.bodySmall, color = summaryColor)
         }
         GlassSwitch(checked = checked, onCheckedChange = null)
     }
