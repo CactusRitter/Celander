@@ -1,3 +1,6 @@
+## 2.4.3
+- Cuentas y red pasan al módulo común (CeKit): sin cambios visibles. La sesión se mantiene.
+
 ## 2.4.2
 - Arreglo: los cumpleaños de Google ya guardados desaparecen siempre al activar los cumpleaños de los contactos, aunque la sincronización larga de una cuenta nueva acabe después (antes podían quedar duplicados).
 - Arreglo: la foto de la cuenta de Google no salía en algún móvil; ahora un fallo se reintenta a las 6 horas y el motivo queda en Diagnóstico.

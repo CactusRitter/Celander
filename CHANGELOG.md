@@ -3,6 +3,8 @@
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+
+## 2.4.3 — 2026-11-22
 - Cuentas y red (CeKit F4, parte 2): la foto de cuenta pasa al kit (AccountPhotos, con el reintento a las 6 h y la clave `checked_v2_` de la 2.4.2), el proveedor de tokens (TokenProvider; el consentimiento incremental de contactos va ahora en el GoogleAuth del kit), un único cliente HTTP (CeHttp: IPv4 primero, tiempos de espera y User-Agent «Celander/versión (Android)») y los canales/permiso de notificaciones (Notifications). Compila y pasan los tests; sin probar en emulador ni móvil.
 - Inicio de sesión (Google, Microsoft) y almacén de tokens pasan al kit (CeKit F4): mismo cifrado, mismo alias del Keystore (`celander_tokens`), mismas preferencias (`account_tokens`) y claves: las sesiones existentes no se cierran. Sin probar con un inicio de sesión real tras el cambio.
 
