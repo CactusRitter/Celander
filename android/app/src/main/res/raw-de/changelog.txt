@@ -1,3 +1,9 @@
+## 2.4.0
+- Geburtstage der Kontakte (Einstellungen → Konten → Google-Konto, standardmäßig aus): in einem eigenen schreibgeschützten Kalender „Geburtstage“ in Seitenleiste, Ansichten, Suche und Widgets. Die Kontakte-Berechtigung wird separat angefragt.
+- Seitenleiste: Die Kalenderliste zeigt nur die unter Konten → Kalender verwalten aktivierten Kalender; deaktivierte verschwinden aus Seitenleiste, Ansichten, Suche und Standardauswahl (ihre Erinnerungen kommen weiter an).
+- Einstellungen: Daten wird unten nicht mehr abgeschnitten; der Push-Schalter entfällt (Push ist immer aktiv); beim Entfernen eines Kontos oder Löschen aller Daten werden dessen Benachrichtigungen beendet.
+- Behoben: „Neuigkeiten“ unter Einstellungen → Updates war für die aktuelle Version leer.
+
 ## 2.3.0
 - Die Sicherung nutzt jetzt den gemeinsamen Ce-Code (gleiches .zip-Format).
 - Gemeinsames Design-Modul (CeKit) aktualisiert.

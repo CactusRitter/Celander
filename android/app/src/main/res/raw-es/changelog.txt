@@ -1,3 +1,9 @@
+## 2.4.0
+- Cumpleaños de los contactos (Ajustes → Cuentas → cuenta Google, apagado por defecto): se muestran en su propio calendario «Cumpleaños» de solo lectura, en el cajón, las vistas, la búsqueda y los widgets. Pide aparte el permiso de contactos.
+- Cajón: la lista de calendarios solo muestra los activados en Cuentas → Gestionar calendarios; los desactivados desaparecen del cajón, las vistas, la búsqueda y los calendarios predeterminados (sus avisos siguen llegando).
+- Ajustes: Datos ya no se corta por abajo; se quita el interruptor del push (siempre activo); quitar una cuenta o borrar todos los datos detiene sus avisos.
+- Arreglo: las «Novedades» de Ajustes → Actualizaciones salían vacías en la versión actual.
+
 ## 2.3.0
 - La copia de seguridad usa el código común de las apps Ce (mismo formato .zip).
 - Módulo de diseño común (CeKit) actualizado.

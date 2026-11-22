@@ -1,3 +1,9 @@
+## 2.4.0
+- Contact birthdays (Settings → Accounts → Google account, off by default): shown in their own read-only "Birthdays" calendar in the drawer, views, search and widgets. It asks for contacts permission separately.
+- Drawer: the calendar list only shows the calendars enabled in Accounts → Manage calendars; disabled ones disappear from the drawer, views, search and default pickers (their reminders still arrive).
+- Settings: Data is no longer cut off at the bottom; the push switch is gone (push is always on); removing an account or deleting all data stops its notifications.
+- Fixed: "What's new" in Settings → Updates was empty for the current version.
+
 ## 2.3.0
 - Backup now uses the common Ce code (same .zip format).
 - Updated shared design module (CeKit).

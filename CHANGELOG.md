@@ -1,8 +1,10 @@
-﻿# Historial de versiones de Celander
+# Historial de versiones de Celander
 
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+
+## 2.4.0 — 2026-11-22
 - Cumpleaños de los contactos (Ajustes > Cuentas > cuenta Google, apagado por defecto): pide aparte el permiso `contacts.readonly` (AppAuth, sin tocar el login base ni los tokens existentes), lee nombres y fechas con la People API como mucho una vez al día y los muestra en un calendario propio «Cumpleaños» (solo lectura, rosa, icono de pastel, «Ana · 34» si hay año) en cajón, Gestionar calendarios, vistas, búsqueda y widgets. Un evento de Google `eventType=birthday` se descarta mientras esté activo (sin duplicados). Si la People API falla (401/403) el interruptor se apaga con aviso y la sincronización sigue. Sin cambios de BD (sin migración). Política de privacidad en en/es/de. Tests unitarios; sin probar en emulador ni móvil. Requiere habilitar People API y el ámbito en Google Cloud (ver `Ce/docs/NUBE.md`).
 - Cajón ☰: la lista de calendarios muestra solo los activados en Cuentas → Gestionar calendarios; la casilla del cajón sigue siendo solo para mostrar u ocultar al vuelo. «Gestionar calendarios» tiene ahora su propio interruptor (`enabled`, BD v6; lo que estaba apagado sigue apagado); lo desactivado no sale en cajón, vistas, búsqueda ni lo ofrece como calendario o lista predeterminados (sus avisos siguen llegando). Tests unitarios y de migración; sin probar en emulador.
 - Ajustes: Datos ya no se corta por abajo (la tarjeta espera a saber si hay datos de ejemplo); la fila de Calendario es una fila normal de la tarjeta; se quita el interruptor del push (siempre activo, con el sondeo de respaldo); quitar una cuenta o «Borrar todos los datos» detiene los canales/suscripciones y llama a /cal/unregister.
