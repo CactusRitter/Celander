@@ -3,6 +3,8 @@
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+
+## 2.3.0 — 2026-11-22
 - Copia de seguridad: usa el contenedor común del kit (BackupFormat: manifiesto, límites, comprobaciones), sin cambiar el formato del zip. Probado en S26: crear y restaurar.
 
 ## 2.2.0 — 2026-11-21

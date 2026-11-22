@@ -1,4 +1,8 @@
-﻿## 2.2.0
+﻿## 2.3.0
+- La copia de seguridad usa el código común de las apps Ce (mismo formato .zip).
+- Módulo de diseño común (CeKit) actualizado.
+
+## 2.2.0
 - Código de diseño compartido con las otras apps Ce (módulo común nuevo): diálogos, menús, botones, chips e interruptores siguen ahora el diseño elegido en todas partes (Cristal, Moderno, AMOLED, Retro 98, Papel, Brutalista). Los menús y avisos ya no son tan transparentes como para mezclarse con el texto de debajo.
 - Ajustes → Apariencia, Actualizaciones y Diagnóstico son ahora iguales en todas las apps Ce.
 - Editor de eventos: interruptores, botones y selector Evento/Tarea siguen Retro 98 y los demás diseños.

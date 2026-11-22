@@ -1,4 +1,8 @@
-﻿## 2.2.0
+﻿## 2.3.0
+- Die Sicherung nutzt jetzt den gemeinsamen Ce-Code (gleiches .zip-Format).
+- Gemeinsames Design-Modul (CeKit) aktualisiert.
+
+## 2.2.0
 - Gemeinsamer Design-Code mit den anderen Ce-Apps (neues gemeinsames Modul): Dialoge, Menüs, Schaltflächen, Chips und Schalter folgen jetzt überall dem gewählten Design (Glas, Modern, AMOLED, Retro 98, Papier, Brutalistisch). Menüs und Hinweise sind nicht mehr so durchsichtig, dass sie sich mit dem Text darunter vermischen.
 - Einstellungen → Aussehen, Updates und Diagnose sind jetzt in allen Ce-Apps gleich.
 - Termin-Editor: Schalter, Schaltflächen und die Auswahl Termin/Aufgabe folgen Retro 98 und den anderen Designs.

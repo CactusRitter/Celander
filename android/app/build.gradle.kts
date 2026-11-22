@@ -29,8 +29,8 @@ android {
         applicationId = "com.celander.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 16
-        versionName = "2.2.0"
+        versionCode = 17
+        versionName = "2.3.0"
         // The client ID is "<ID>.apps.googleusercontent.com"; empty until set in local.properties.
         val googleClientId = localProp("celander.oauth.google.clientId")
         buildConfigField("String", "GOOGLE_OAUTH_CLIENT_ID", "\"$googleClientId\"")
