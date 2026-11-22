@@ -70,3 +70,21 @@ adb -s RFGL107KERL logcat -d -s Accounts            # trazas del flujo de cuenta
 
 ## Otros
 - Estado del repo: ver `git log --oneline` en `ce/estilo-ce`. `docs/PLAN.md` es el plan original (histórico). `docs-ce/` (capturas con datos reales y `CAMBIOS-MOVIL.md`) está excluida de git.
+
+## Hecho el 2026-11-21/22 (rama `ce/estilo-ce`, sin publicar; suite unitaria verde: 486 tests, 0 fallos)
+- **Fondo único** bajo el `NavHost` (`Navigation.kt`: un `GlassBackground` + `HazeState` raíz; Home y Ajustes usan `LocalHazeState` y no dibujan fondo). Probado en emulador ×8 (Glass y Brutalist). Sin probar: Retro 98, Paper, AMOLED y ×1.
+- **Cajón ☰** (`calendar/HomeDrawer.kt` + `GlassDrawerSheet` del kit): vistas, calendarios con casilla de visibilidad agrupados por cuenta, Gestionar calendarios, Cuentas y ⚙ → Ajustes. Probado en emulador (Glass claro/oscuro, ancho) y en el S26 con cuentas reales. Se abre solo con ☰ (el gesto de deslizar choca con el atrás del sistema y el pager del mes: decisión de la líder, no inventar gestos).
+- **Push de calendario** (`push/Push.kt`: `PushManager`, `PushService`, `PushRenewWorker`; interruptor en Ajustes › Calendario, visible solo con claves; claves en `local.properties`: `celander.firebase.*`, `celander.push.url/appKey`). Google: `events.watch` por calendario (ttl 7 d, `X-Celander-Key` en `/cal/register`); un calendario que Google rechaza con 400 (`pushNotSupportedForRequestedResource`) se salta y queda en sondeo. Microsoft: suscripción Graph a `me/events` renovada en cada pasada. **Probado en el S26 con Google**: guardar → en Google 5 s → aviso `gcal` 4 s después → sincronizado (~11 s en total); borrar igual. **Sin probar**: Microsoft (`mscal`), renovación a las 24 h, interruptor apagado, sin Play Services.
+- No consta cuáles son los 2 calendarios (de 6) que dan 400 (ids locales 3 y 4; probablemente los de festivos). Se vería en la base de datos del S26.
+- Si algún día se activa R8: copiar la regla `-keep` de WorkManager `InputMerger` de Cenotes (`proguard-rules.pro`, commit 4289ccb) o los widgets Glance se quedan cargando.
+
+## Normas de dispositivos (César, 2026-11-21/22)
+- Turnos: `powershell -NoProfile -ExecutionPolicy Bypass -File "D:\cesar\Documents\Claude Projects\Ce\scripts\emu-lock.ps1" acquire Celander [-Dev s26|tableta]` (release/status igual; caduca a 10 min). Emulador SOLO con `android\scripts\emulator.ps1 start|stop` (sin ventana), nunca `emulator.exe` a mano.
+- S26 `RFGL107KERL` y tableta `R52Y806MWSP`: `install -r --user 0` permitido, nunca desinstalar. Pantalla encendida SOLO mientras pruebas: `svc power stayon true`; al acabar `stayon false` + `input keyevent KEYCODE_SLEEP` + release. El OPPO no se toca. Si el móvil está bloqueado, no se introduce el PIN: pedir a César. `input text` con paréntesis: ponerlo entre comillas.
+- Antes de usar el S26 mirar `topResumedActivity` (Cemail/Cenotes también lo usan).
+
+## Pendiente (siguiente sesión)
+1. Probar push con Microsoft si hay cuenta de pruebas, la renovación diaria y el interruptor apagado (no deja canales ni registro).
+2. Revisar el aspecto del cajón y del fondo único en Retro 98, Paper y AMOLED; fondo único con ×1.
+3. Averiguar qué calendarios no admiten `watch` (si se quiere mostrarlo en Ajustes).
+4. Lo del «Pendiente, EN ORDEN» de arriba sigue vigente (pruebas con César en el S26 de Microsoft, ics, copias, widgets).
