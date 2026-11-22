@@ -14,6 +14,15 @@ interface BirthdaySource {
 
     /** The People API refused ([code]: 401 or 403): the switch goes off and the reason is kept for the screen. */
     fun failed(accountId: Long, code: Int)
+
+    /**
+     * Whether the calendar [calendarId] of the account was read in full with the switch already on, so that Google's own birthday
+     * events stored before are gone. Until then the next sync of that calendar starts over; true when there is nothing to purge.
+     */
+    fun purged(accountId: Long, calendarId: String): Boolean = true
+
+    /** The calendar was read in full with the switch on. */
+    fun markPurged(accountId: Long, calendarId: String) {}
 }
 
 /**

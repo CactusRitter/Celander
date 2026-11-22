@@ -30,7 +30,21 @@ class BirthdayPrefs @Inject constructor(@ApplicationContext private val context:
 
     override fun calendarName(): String = context.getString(R.string.birthdays_calendar_name)
 
+    override fun purged(accountId: Long, calendarId: String): Boolean = prefs.getBoolean(PURGED + accountId + "." + calendarId, false)
+
+    override fun markPurged(accountId: Long, calendarId: String) {
+        prefs.edit().putBoolean(PURGED + accountId + "." + calendarId, true).apply()
+    }
+
+    /** Every purge mark of the account goes, so that switching on starts a clean full read. */
+    private fun clearPurged(accountId: Long) {
+        val editor = prefs.edit()
+        prefs.all.keys.filter { it.startsWith(PURGED + accountId + ".") }.forEach { editor.remove(it) }
+        editor.apply()
+    }
+
     fun enable(accountId: Long) {
+        clearPurged(accountId)
         prefs.edit().putBoolean(ON + accountId, true).remove(FAILED + accountId).apply()
         enabledIds.value = enabledIds.value + accountId
         failures.value = failures.value - accountId
@@ -49,6 +63,7 @@ class BirthdayPrefs @Inject constructor(@ApplicationContext private val context:
 
     /** The account is gone: nothing is kept for it. */
     fun forget(accountId: Long) {
+        clearPurged(accountId)
         prefs.edit().remove(ON + accountId).remove(FAILED + accountId).apply()
         enabledIds.value = enabledIds.value - accountId
         failures.value = failures.value - accountId
@@ -57,5 +72,6 @@ class BirthdayPrefs @Inject constructor(@ApplicationContext private val context:
     private companion object {
         const val ON = "on."
         const val FAILED = "failed."
+        const val PURGED = "purged."
     }
 }

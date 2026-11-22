@@ -49,16 +49,20 @@ class GoogleCalendarProvider(
 
     override suspend fun syncEvents(account: AccountEntity, calendar: RemoteCalendarEntity): EventSyncResult {
         if (calendar.remoteId == BirthdayEvents.CALENDAR_ID) return syncBirthdays(account, calendar)
-        val withToken = calendar.syncToken
+        // Read at the start: a sync that began before the switch went on cannot count as the purge, whenever it ends.
+        val own = birthdays?.enabled(account.id) == true
+        // With the switch on, the calendar is read in full once so that Google's own birthday events stored earlier go away.
+        val purge = own && birthdays?.purged(account.id, calendar.remoteId) == false
+        val withToken = if (purge) null else calendar.syncToken
         return try {
-            fetch(account, calendar, withToken).copy(full = withToken == null)
+            fetch(account, calendar, withToken, own).copy(full = withToken == null)
         } catch (_: SyncTokenGoneException) {
             // The token expired (Google keeps them for a limited time): start over with the whole calendar.
-            fetch(account, calendar, null).copy(full = true)
-        }
+            fetch(account, calendar, null, own).copy(full = true)
+        }.also { if (own && it.full) birthdays?.markPurged(account.id, calendar.remoteId) }
     }
 
-    private suspend fun fetch(account: AccountEntity, calendar: RemoteCalendarEntity, syncToken: String?): EventSyncResult {
+    private suspend fun fetch(account: AccountEntity, calendar: RemoteCalendarEntity, syncToken: String?, ownBirthdays: Boolean): EventSyncResult {
         val events = mutableListOf<RemoteEvent>()
         var page: String? = null
         var next: String?
@@ -66,7 +70,6 @@ class GoogleCalendarProvider(
         val timeMin = if (syncToken == null) now().minus(HISTORY_DAYS, ChronoUnit.DAYS).toString() else null
         do {
             val result = authorized(account) { api.events(it, calendar.remoteId, syncToken, timeMin, page) }
-            val ownBirthdays = birthdays?.enabled(account.id) == true
             result.items.mapNotNullTo(events) { item ->
                 GoogleCalendarMapper.event(item, calendar.timeZone)?.let { event ->
                     // Google's own birthday events would show every contact twice: the contacts are the source here.
