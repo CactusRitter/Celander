@@ -3,6 +3,7 @@ package com.celander.app.account
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.ce.kit.log.AppLog
 import com.celander.app.account.google.AccessTokens
 import com.celander.app.core.database.AccountEntity
 import com.celander.app.core.model.AccountType
@@ -35,7 +36,7 @@ class AccountPhotos(
     /** Fetches the provider's picture unless it was checked lately. */
     suspend fun refreshIfStale(account: AccountEntity) {
         if (account.type != AccountType.GOOGLE.name && account.type != AccountType.MICROSOFT.name) return
-        val checked = prefs().getLong("checked_${account.id}", 0L)
+        val checked = prefs().getLong(checkedKey(account.id), 0L)
         if (System.currentTimeMillis() - checked < RECHECK_MILLIS && (checked > 0 || file(account.id).exists())) return
         fetch(account)
     }
@@ -43,7 +44,7 @@ class AccountPhotos(
     /** Deletes the picture of a removed account. */
     fun remove(accountId: Long) {
         file(accountId).delete()
-        prefs().edit().remove("checked_$accountId").apply()
+        prefs().edit().remove(checkedKey(accountId)).apply()
         _version.value++
     }
 
@@ -52,9 +53,13 @@ class AccountPhotos(
             val token = tokens.token(account, forceRefresh = false) ?: return@withContext
             if (account.type == AccountType.GOOGLE.name) googlePicture(token) else microsoftPicture(token)
         } catch (e: Exception) {
+            AppLog.e("photos", "picture of account ${account.id} not fetched", e)
             return@withContext // offline, say: tried again next time
         }
-        prefs().edit().putLong("checked_${account.id}", System.currentTimeMillis()).apply()
+        // Found: look again in a week. Not found (a refusal or a failed answer, not just "no picture"): try again in a few hours.
+        val now = System.currentTimeMillis()
+        prefs().edit().putLong(checkedKey(account.id), if (bytes != null) now else now - (RECHECK_MILLIS - RETRY_MILLIS)).apply()
+        AppLog.i("photos", "picture of account ${account.id}: ${if (bytes != null) "${bytes.size} bytes" else "none"}")
         if (bytes != null) save(account.id, bytes)
     }
 
@@ -72,7 +77,10 @@ class AccountPhotos(
     /** The body, or null when the server says there is nothing (404 and the like). Network failures throw. */
     private fun get(url: String, token: String?): ByteArray? {
         val request = Request.Builder().url(url).apply { token?.let { header("Authorization", "Bearer $it") } }.build()
-        client.newCall(request).execute().use { response -> return if (response.isSuccessful) response.body?.bytes() else null }
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) AppLog.i("photos", "${request.url.host}: ${response.code}")
+            return if (response.isSuccessful) response.body?.bytes() else null
+        }
     }
 
     /** Crops the picture to a centred square, shrinks it and keeps it as JPEG. */
@@ -97,5 +105,9 @@ class AccountPhotos(
     private companion object {
         const val SIZE = 256
         const val RECHECK_MILLIS = 7L * 24 * 3600 * 1000
+        const val RETRY_MILLIS = 6L * 3600 * 1000
+
+        /** A new key (v2) so every account is looked at again once with the retry rule; the old key could hold a failed check. */
+        fun checkedKey(accountId: Long) = "checked_v2_$accountId"
     }
 }
