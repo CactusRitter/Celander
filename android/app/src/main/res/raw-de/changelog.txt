@@ -1,3 +1,6 @@
+## 2.4.1
+- Behoben: Beim Aktivieren der Kontakt-Geburtstage entstehen keine Duplikate mehr; die bereits von Google gespeicherten Geburtstage verschwinden beim Aktivieren.
+
 ## 2.4.0
 - Geburtstage der Kontakte (Einstellungen → Konten → Google-Konto, standardmäßig aus): in einem eigenen schreibgeschützten Kalender „Geburtstage“ in Seitenleiste, Ansichten, Suche und Widgets. Die Kontakte-Berechtigung wird separat angefragt.
 - Seitenleiste: Die Kalenderliste zeigt nur die unter Konten → Kalender verwalten aktivierten Kalender; deaktivierte verschwinden aus Seitenleiste, Ansichten, Suche und Standardauswahl (ihre Erinnerungen kommen weiter an).

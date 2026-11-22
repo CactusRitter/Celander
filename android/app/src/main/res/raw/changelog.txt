@@ -1,3 +1,6 @@
+## 2.4.1
+- Fixed: turning on contact birthdays no longer leaves duplicates; the birthdays Google had already saved disappear when you enable it.
+
 ## 2.4.0
 - Contact birthdays (Settings → Accounts → Google account, off by default): shown in their own read-only "Birthdays" calendar in the drawer, views, search and widgets. It asks for contacts permission separately.
 - Drawer: the calendar list only shows the calendars enabled in Accounts → Manage calendars; disabled ones disappear from the drawer, views, search and default pickers (their reminders still arrive).

@@ -1,3 +1,6 @@
+## 2.4.1
+- Arreglo: al activar los cumpleaños de los contactos ya no se duplican; los cumpleaños que Google tenía guardados desaparecen al activarlos.
+
 ## 2.4.0
 - Cumpleaños de los contactos (Ajustes → Cuentas → cuenta Google, apagado por defecto): se muestran en su propio calendario «Cumpleaños» de solo lectura, en el cajón, las vistas, la búsqueda y los widgets. Pide aparte el permiso de contactos.
 - Cajón: la lista de calendarios solo muestra los activados en Cuentas → Gestionar calendarios; los desactivados desaparecen del cajón, las vistas, la búsqueda y los calendarios predeterminados (sus avisos siguen llegando).
