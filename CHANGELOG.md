@@ -3,6 +3,7 @@
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+- Arreglo: al activar «Cumpleaños de los contactos» se vuelve a leer todo el calendario de la cuenta, para que los cumpleaños de Google ya guardados desaparezcan (antes se duplicaban). Compila; sin probar en dispositivo.
 
 ## 2.4.0 — 2026-11-22
 - Cumpleaños de los contactos (Ajustes > Cuentas > cuenta Google, apagado por defecto): pide aparte el permiso `contacts.readonly` (AppAuth, sin tocar el login base ni los tokens existentes), lee nombres y fechas con la People API como mucho una vez al día y los muestra en un calendario propio «Cumpleaños» (solo lectura, rosa, icono de pastel, «Ana · 34» si hay año) en cajón, Gestionar calendarios, vistas, búsqueda y widgets. Un evento de Google `eventType=birthday` se descarta mientras esté activo (sin duplicados). Si la People API falla (401/403) el interruptor se apaga con aviso y la sincronización sigue. Sin cambios de BD (sin migración). Política de privacidad en en/es/de. Tests unitarios; sin probar en emulador ni móvil. Requiere habilitar People API y el ámbito en Google Cloud (ver `Ce/docs/NUBE.md`).
