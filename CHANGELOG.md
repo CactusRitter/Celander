@@ -3,6 +3,7 @@
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+- Copia de seguridad: usa el contenedor común del kit (BackupFormat: manifiesto, límites, comprobaciones), sin cambiar el formato del zip. Probado en S26: crear y restaurar.
 
 ## 2.2.0 — 2026-11-21
 - Pasada de temas: «Todo el día», calendarios y recordatorios por defecto con GlassSwitch del kit; copia de seguridad con GlassDialog del kit (estado en BackupController); chips de fecha y hora con SelectableChip; Retro 98: Guardar legible y selector Evento/Tarea biselado (kit). Sin probar en emulador.

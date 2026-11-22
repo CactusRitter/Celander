@@ -30,6 +30,8 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.ce.kit.backup.NotABackupException
+import com.ce.kit.backup.TooNewException
 import com.celander.app.R
 import com.ce.kit.ui.GlassDialog
 import com.ce.kit.ui.settings.ChoiceChip
@@ -76,9 +78,9 @@ internal class BackupController(
         scope.launch {
             message = try {
                 block()
-            } catch (e: Backup.NotABackupException) {
+            } catch (e: NotABackupException) {
                 resources.getString(R.string.backup_not_celander)
-            } catch (e: Backup.TooNewException) {
+            } catch (e: TooNewException) {
                 resources.getString(R.string.backup_too_new)
             } catch (e: Exception) {
                 resources.getString(R.string.backup_failed, e.localizedMessage ?: e.javaClass.simpleName)

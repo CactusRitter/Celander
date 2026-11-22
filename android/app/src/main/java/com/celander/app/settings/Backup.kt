@@ -3,18 +3,18 @@ package com.celander.app.settings
 import android.content.Context
 import android.net.Uri
 import com.celander.app.BuildConfig
+import com.ce.kit.backup.BackupFormat
+import com.ce.kit.backup.NotABackupException
+import com.ce.kit.backup.TooNewException
 import com.celander.app.core.ical.LocalDataIcs
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.BufferedInputStream
-import java.io.InputStream
-import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
 import org.json.JSONObject
 
 /**
@@ -37,12 +37,6 @@ class Backup @Inject constructor(
 
     data class ImportResult(val settingsRestored: Boolean = false, val data: LocalDataIcs.ImportResult? = null)
 
-    /** Not a Celander backup (another app's zip, or anything else). */
-    class NotABackupException : Exception()
-
-    /** A backup made by a newer container version than this app understands. */
-    class TooNewException : Exception()
-
     /** One backup zip: `manifest.json` + `settings.json` if [includeSettings] + `data.ics` if [includeData]. */
     suspend fun export(uri: Uri, includeSettings: Boolean, includeData: Boolean = false) = withContext(Dispatchers.IO) {
         require(includeSettings || includeData) { "Nothing to back up" }
@@ -50,23 +44,10 @@ class Backup @Inject constructor(
         val dataIcs = if (includeData) data.export() else null
         val out = context.contentResolver.openOutputStream(uri, "wt") ?: error("Could not write the file")
         ZipOutputStream(out.buffered()).use { zip ->
-            zip.putText(ManifestEntry, manifest(listOfNotNull(ContentSettings.takeIf { includeSettings }, ContentData.takeIf { includeData })).toString(2))
-            settingsJson?.let { zip.putText(SettingsEntry, it) }
-            dataIcs?.let { zip.putText(DataEntry, it) }
+            BackupFormat.putJson(zip, BackupFormat.MANIFEST, BackupFormat.manifest(ManifestApp, BuildConfig.VERSION_NAME, listOfNotNull(ContentSettings.takeIf { includeSettings }, ContentData.takeIf { includeData })))
+            settingsJson?.let { BackupFormat.putText(zip, BackupFormat.SETTINGS, it) }
+            dataIcs?.let { BackupFormat.putText(zip, DataEntry, it) }
         }
-    }
-
-    private fun manifest(contents: List<String>) = JSONObject()
-        .put("app", ManifestApp)
-        .put("container", Container)
-        .put("appVersion", BuildConfig.VERSION_NAME)
-        .put("createdAt", System.currentTimeMillis())
-        .put("contents", JSONArray(contents))
-
-    private fun ZipOutputStream.putText(name: String, text: String) {
-        putNextEntry(ZipEntry(name))
-        write(text.toByteArray(Charsets.UTF_8))
-        closeEntry()
     }
 
     /**
@@ -83,20 +64,18 @@ class Backup @Inject constructor(
             ZipInputStream(it).use { zip ->
                 while (true) {
                     val entry = zip.nextEntry ?: break
-                    if (++entries > MaxEntries) throw NotABackupException()
+                    BackupFormat.checkEntryCount(++entries)
                     when {
                         entry.isDirectory -> Unit
-                        entry.name == ManifestEntry -> manifest = runCatching { JSONObject(readLimited(zip).toString(Charsets.UTF_8)) }.getOrNull()
-                        entry.name == SettingsEntry -> hasSettings = looksLikeSettings(readLimited(zip).toString(Charsets.UTF_8))
-                        entry.name == DataEntry -> hasData = readLimited(zip).toString(Charsets.UTF_8).contains("BEGIN:VCALENDAR")
+                        entry.name == BackupFormat.MANIFEST -> manifest = runCatching { JSONObject(BackupFormat.readLimited(zip).toString(Charsets.UTF_8)) }.getOrNull()
+                        entry.name == BackupFormat.SETTINGS -> hasSettings = looksLikeSettings(BackupFormat.readLimited(zip).toString(Charsets.UTF_8))
+                        entry.name == DataEntry -> hasData = BackupFormat.readLimited(zip).toString(Charsets.UTF_8).contains("BEGIN:VCALENDAR")
                     }
                     zip.closeEntry()
                 }
             }
             // The manifest says whose zip it is: another app's (or no manifest at all) is not a backup of ours.
-            val m = manifest ?: throw NotABackupException()
-            if (!m.optString("app").equals(ManifestApp, ignoreCase = true)) throw NotABackupException()
-            if (m.optInt("container", 0) > Container) throw TooNewException()
+            BackupFormat.checkManifest(manifest, ManifestApp)
             if (!hasSettings && !hasData) throw NotABackupException()
             Contents(hasSettings, hasData)
         }
@@ -112,9 +91,9 @@ class Backup @Inject constructor(
             ZipInputStream(it).use { zip ->
                 while (true) {
                     val entry = zip.nextEntry ?: break
-                    if (++entries > MaxEntries) throw NotABackupException()
-                    if (!entry.isDirectory && entry.name == SettingsEntry && restoreSettings) settingsJson = readLimited(zip).toString(Charsets.UTF_8)
-                    if (!entry.isDirectory && entry.name == DataEntry && restoreData) dataIcs = readLimited(zip).toString(Charsets.UTF_8)
+                    BackupFormat.checkEntryCount(++entries)
+                    if (!entry.isDirectory && entry.name == BackupFormat.SETTINGS && restoreSettings) settingsJson = BackupFormat.readLimited(zip).toString(Charsets.UTF_8)
+                    if (!entry.isDirectory && entry.name == DataEntry && restoreData) dataIcs = BackupFormat.readLimited(zip).toString(Charsets.UTF_8)
                     zip.closeEntry()
                 }
             }
@@ -126,7 +105,7 @@ class Backup @Inject constructor(
 
     /** Adds the events and tasks of a plain .ics file (from another calendar app) to this device; throws [NotABackupException] if it is not one. */
     suspend fun importIcs(uri: Uri): LocalDataIcs.ImportResult = withContext(Dispatchers.IO) {
-        val bytes = (context.contentResolver.openInputStream(uri) ?: error("Could not read the file")).use { readLimited(it) }
+        val bytes = (context.contentResolver.openInputStream(uri) ?: error("Could not read the file")).use { BackupFormat.readLimited(it) }
         val text = bytes.toString(Charsets.UTF_8)
         if (!text.contains("BEGIN:VCALENDAR", ignoreCase = true)) throw NotABackupException()
         data.import(text)
@@ -137,30 +116,11 @@ class Backup @Inject constructor(
         return o.optString("app").equals(ManifestApp, ignoreCase = true) && o.optJSONObject("settings") != null
     }
 
-    /** Reads at most [MaxJsonBytes] of an entry; a bigger one is not a backup (guards against zip bombs). */
-    private fun readLimited(input: InputStream): ByteArray {
-        val out = java.io.ByteArrayOutputStream()
-        val buffer = ByteArray(16 * 1024)
-        while (true) {
-            val n = input.read(buffer)
-            if (n < 0) break
-            if (out.size() + n > MaxJsonBytes) throw NotABackupException()
-            out.write(buffer, 0, n)
-        }
-        return out.toByteArray()
-    }
-
     private companion object {
         const val ManifestApp = "celander"
-        const val Container = 1
-        const val ManifestEntry = "manifest.json"
-        const val SettingsEntry = "settings.json"
         const val DataEntry = "data.ics"
         const val ContentSettings = "settings"
         const val ContentData = "data"
 
-        /** Limits for an untrusted zip: JSON entries and the number of entries. */
-        const val MaxJsonBytes = 64 * 1024 * 1024
-        const val MaxEntries = 10_000
     }
 }
