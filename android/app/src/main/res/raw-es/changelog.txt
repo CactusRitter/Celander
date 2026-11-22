@@ -1,4 +1,4 @@
-﻿## 2.3.0
+## 2.3.0
 - La copia de seguridad usa el código común de las apps Ce (mismo formato .zip).
 - Módulo de diseño común (CeKit) actualizado.
 

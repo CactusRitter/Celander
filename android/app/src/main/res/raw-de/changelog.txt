@@ -1,4 +1,4 @@
-﻿## 2.3.0
+## 2.3.0
 - Die Sicherung nutzt jetzt den gemeinsamen Ce-Code (gleiches .zip-Format).
 - Gemeinsames Design-Modul (CeKit) aktualisiert.
 

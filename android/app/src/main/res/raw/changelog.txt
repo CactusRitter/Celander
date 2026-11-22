@@ -1,4 +1,4 @@
-﻿## 2.3.0
+## 2.3.0
 - Backup now uses the common Ce code (same .zip format).
 - Updated shared design module (CeKit).
 
