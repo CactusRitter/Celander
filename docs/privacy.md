@@ -5,12 +5,12 @@ permalink: /privacy/
 
 # Privacy Policy
 
-*Last updated: 18 November 2026* · [Español](#español) · [Deutsch](#deutsch)
+*Last updated: 22 November 2026* · [Español](#español) · [Deutsch](#deutsch)
 
 Celander ("the app") is an Android calendar and task app, developed by César Caballero ("I", "me"). This policy explains what information the app accesses, how it is used and stored, and your choices. Celander is a small personal project distributed to a few people as an APK; it is not published on Google Play.
 
 ## Summary
-- Celander talks **directly** between your phone and Google or Microsoft. I run no server that receives your data.
+- Celander talks **directly** between your phone and Google or Microsoft. The only server of mine is a small, free relay for instant notifications (see "Instant change notifications" below) that never receives your calendars, events or tasks.
 - Your calendars, events and tasks are kept **on your device**. I never see them, store them, sell them or share them.
 - No advertising, no analytics, no tracking, no crash-reporting services.
 
@@ -36,12 +36,18 @@ The app also asks Android for permission to show **notifications**, to schedule 
 - Your settings (theme, colours, default reminders, and so on) stay on your phone.
 - Home screen widgets show data from that local database and make no network connection of their own.
 - If Android backup is turned on on your phone, Android may back up the app's local data to your Google account under your phone's backup settings; sign-in tokens are excluded from that backup. Backup files you create yourself in the app (ZIP) contain your settings and, if you tick the box, your local calendars, events and tasks; they never contain your Google or Microsoft accounts or sign-in tokens, and they are saved where you choose.
-- Nothing is sent to me or to any third party. The only network connections the app makes are to:
+- Nothing is sent to me or to any third party, except what the instant-notification relay receives (see below). The only network connections the app makes are to:
   - Google's services (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), when you use a Google account;
   - Microsoft's services (`login.microsoftonline.com`, `graph.microsoft.com`), when you use a Microsoft account;
   - the web address of a calendar you subscribe to with a link (`.ics`), only to download that calendar, from whichever server hosts it;
   - the place-suggestion service Photon by komoot (`photon.komoot.io`, built on OpenStreetMap data), only while you type a location for an event: it receives the text you typed and the app's language, never your position or any other data;
   - GitHub (`api.github.com`), only to check whether a newer version of the app is available: it receives no personal data.
+
+## Instant change notifications
+- So that changes made in Google or Microsoft appear within seconds, the app asks Google Calendar (and Microsoft Graph) to send a change notification to a small relay that I run on Cloudflare Workers (free plan). The notification only says that a calendar changed; it contains no event content.
+- The relay wakes your phone through Firebase Cloud Messaging (Google), and the app then syncs directly with Google or Microsoft.
+- While an account is added, the relay stores your **email address**, random identifiers of the notification channels or subscriptions (and a random secret for Microsoft ones) and your phone's **Firebase Cloud Messaging token** (an anonymous identifier of the app on your phone). It never receives or stores event titles, descriptions, attendees, tasks or sign-in tokens.
+- Firebase Analytics is not used. Removing an account, or using "Delete all data", stops the notifications and removes that account's data from the relay. If the relay is unavailable, the app keeps working and checks for changes regularly (every minute while it is open, every 15 minutes otherwise).
 
 ## Sharing
 I do not sell, rent, share or transfer your data to anyone. Google and Microsoft receive the requests the app makes to their services, as described in [Google's Privacy Policy](https://policies.google.com/privacy) and [Microsoft's Privacy Statement](https://privacy.microsoft.com/privacystatement).
@@ -66,12 +72,12 @@ César Caballero · cesar.a.caballerot@gmail.com
 
 # Política de privacidad {#español}
 
-*Última actualización: 18 de noviembre de 2026* · [English](#privacy-policy) · [Deutsch](#deutsch)
+*Última actualización: 22 de noviembre de 2026* · [English](#privacy-policy) · [Deutsch](#deutsch)
 
 Celander ("la app") es una aplicación de calendario y tareas para Android, desarrollada por César Caballero ("yo"). Esta política explica a qué información accede la app, cómo se usa y se guarda, y qué puedes decidir tú. Celander es un pequeño proyecto personal que se reparte como APK a unas pocas personas; no está publicada en Google Play.
 
 ## Resumen
-- Celander se comunica **directamente** entre tu teléfono y Google o Microsoft. No tengo ningún servidor que reciba tus datos.
+- Celander se comunica **directamente** entre tu teléfono y Google o Microsoft. El único servidor mío es un pequeño servicio gratuito de avisos instantáneos (ver «Avisos instantáneos de cambios» más abajo) que nunca recibe tus calendarios, eventos ni tareas.
 - Tus calendarios, eventos y tareas se quedan **en tu dispositivo**. Yo nunca los veo, los guardo, los vendo ni los comparto.
 - Sin publicidad, sin analíticas, sin seguimiento y sin servicios de informes de errores.
 
@@ -97,12 +103,18 @@ La app también pide a Android permiso para mostrar **notificaciones**, programa
 - Tus ajustes (tema, colores, recordatorios por defecto, etc.) se quedan en tu teléfono.
 - Los widgets de la pantalla de inicio muestran datos de esa base de datos local y no hacen conexiones de red por su cuenta.
 - Si la copia de seguridad de Android está activada en tu teléfono, Android puede guardar los datos locales de la app en tu cuenta de Google según los ajustes de copia de tu teléfono; los tokens de inicio de sesión no se incluyen en esa copia. Los archivos de copia (ZIP) que crees tú mismo en la app contienen tus ajustes y, si marcas la casilla, tus calendarios, eventos y tareas locales; nunca incluyen tus cuentas de Google o Microsoft ni los tokens de inicio de sesión, y se guardan donde elijas.
-- No se envía nada a mí ni a terceros. Las únicas conexiones de red de la app son con:
+- No se envía nada a mí ni a terceros, salvo lo que recibe el servicio de avisos instantáneos (ver abajo). Las únicas conexiones de red de la app son con:
   - los servicios de Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), si usas una cuenta de Google;
   - los servicios de Microsoft (`login.microsoftonline.com`, `graph.microsoft.com`), si usas una cuenta de Microsoft;
   - la dirección web de un calendario al que te suscribes con un enlace (`.ics`), solo para descargarlo, del servidor que lo aloje;
   - el servicio de sugerencias de lugares Photon de komoot (`photon.komoot.io`, con datos de OpenStreetMap), solo mientras escribes el lugar de un evento: recibe el texto que escribes y el idioma de la app, nunca tu posición ni otros datos;
   - GitHub (`api.github.com`), solo para comprobar si hay una versión nueva de la app: no recibe datos personales.
+
+## Avisos instantáneos de cambios
+- Para que los cambios hechos en Google o Microsoft aparezcan en segundos, la app pide a Google Calendar (y a Microsoft Graph) que envíe un aviso de cambio a un pequeño servicio que gestiono en Cloudflare Workers (plan gratuito). El aviso solo dice que un calendario ha cambiado; no contiene el contenido de ningún evento.
+- Ese servicio despierta tu teléfono a través de Firebase Cloud Messaging (Google), y la app sincroniza entonces directamente con Google o Microsoft.
+- Mientras haya una cuenta añadida, el servicio guarda tu **dirección de correo**, identificadores aleatorios de los canales o suscripciones de avisos (y un secreto aleatorio en los de Microsoft) y el **token de Firebase Cloud Messaging** de tu teléfono (un identificador anónimo de la app en tu teléfono). Nunca recibe ni guarda títulos, descripciones ni asistentes de eventos, tareas ni tokens de inicio de sesión.
+- No se usa Firebase Analytics. Quitar una cuenta, o usar «Borrar todos los datos», detiene los avisos y borra los datos de esa cuenta del servicio. Si el servicio no está disponible, la app sigue funcionando y comprueba los cambios con regularidad (cada minuto con la app abierta, cada 15 minutos si no).
 
 ## Compartir datos
 No vendo, alquilo, comparto ni transfiero tus datos a nadie. Google y Microsoft reciben las peticiones que la app hace a sus servicios, según la [Política de Privacidad de Google](https://policies.google.com/privacy) y la [Declaración de privacidad de Microsoft](https://privacy.microsoft.com/privacystatement).
@@ -127,12 +139,12 @@ César Caballero · cesar.a.caballerot@gmail.com
 
 # Datenschutzerklärung {#deutsch}
 
-*Zuletzt aktualisiert: 18. November 2026* · [English](#privacy-policy) · [Español](#español)
+*Zuletzt aktualisiert: 22. November 2026* · [English](#privacy-policy) · [Español](#español)
 
 Celander („die App“) ist eine Kalender- und Aufgaben-App für Android, entwickelt von César Caballero („ich“). Diese Erklärung beschreibt, auf welche Informationen die App zugreift, wie sie verwendet und gespeichert werden und welche Möglichkeiten du hast. Celander ist ein kleines privates Projekt, das als APK an ein paar Personen weitergegeben wird; es ist nicht bei Google Play veröffentlicht.
 
 ## Kurz gesagt
-- Celander kommuniziert **direkt** zwischen deinem Telefon und Google bzw. Microsoft. Ich betreibe keinen Server, der deine Daten empfängt.
+- Celander kommuniziert **direkt** zwischen deinem Telefon und Google bzw. Microsoft. Mein einziger Server ist ein kleiner, kostenloser Vermittlungsdienst für Sofortbenachrichtigungen (siehe „Sofortbenachrichtigungen bei Änderungen“ unten), der nie deine Kalender, Termine oder Aufgaben erhält.
 - Deine Kalender, Termine und Aufgaben bleiben **auf deinem Gerät**. Ich sehe, speichere, verkaufe oder teile sie nie.
 - Keine Werbung, keine Analyse, kein Tracking und keine Dienste zur Absturzberichterstattung.
 
@@ -158,12 +170,18 @@ Außerdem bittet die App Android um die Erlaubnis, **Benachrichtigungen** anzuze
 - Deine Einstellungen (Design, Farben, Standard-Erinnerungen usw.) bleiben auf deinem Telefon.
 - Widgets auf dem Startbildschirm zeigen Daten aus dieser lokalen Datenbank und bauen selbst keine Netzwerkverbindung auf.
 - Wenn die Android-Datensicherung auf deinem Telefon eingeschaltet ist, kann Android die lokalen Daten der App gemäß den Sicherungseinstellungen deines Telefons in deinem Google-Konto sichern; Anmelde-Tokens sind von dieser Sicherung ausgenommen. Sicherungsdateien (ZIP), die du selbst in der App erstellst, enthalten deine Einstellungen und, wenn du das Kästchen anhakst, deine lokalen Kalender, Termine und Aufgaben; sie enthalten nie deine Google- oder Microsoft-Konten oder Anmelde-Tokens und werden dort gespeichert, wo du es festlegst.
-- Es wird nichts an mich oder an Dritte gesendet. Die App verbindet sich nur mit:
+- Es wird nichts an mich oder an Dritte gesendet, außer dem, was der Vermittlungsdienst für Sofortbenachrichtigungen erhält (siehe unten). Die App verbindet sich nur mit:
   - den Diensten von Google (`accounts.google.com`, `oauth2.googleapis.com`, `www.googleapis.com`, `tasks.googleapis.com`), wenn du ein Google-Konto nutzt;
   - den Diensten von Microsoft (`login.microsoftonline.com`, `graph.microsoft.com`), wenn du ein Microsoft-Konto nutzt;
   - der Webadresse eines Kalenders, den du per Link (`.ics`) abonnierst, nur um diesen Kalender herunterzuladen, vom Server, der ihn bereitstellt;
   - dem Ortsvorschlagsdienst Photon von komoot (`photon.komoot.io`, auf Basis von OpenStreetMap-Daten), nur während du einen Ort für einen Termin eintippst: Er erhält den eingetippten Text und die Sprache der App, nie deinen Standort oder andere Daten;
   - GitHub (`api.github.com`), nur um zu prüfen, ob eine neuere Version der App verfügbar ist: Es werden keine personenbezogenen Daten übermittelt.
+
+## Sofortbenachrichtigungen bei Änderungen
+- Damit Änderungen in Google oder Microsoft innerhalb von Sekunden erscheinen, bittet die App Google Kalender (und Microsoft Graph), eine Änderungsmeldung an einen kleinen Vermittlungsdienst zu senden, den ich auf Cloudflare Workers (kostenloser Tarif) betreibe. Die Meldung sagt nur, dass sich ein Kalender geändert hat; sie enthält keine Termininhalte.
+- Der Dienst weckt dein Telefon über Firebase Cloud Messaging (Google), und die App synchronisiert dann direkt mit Google bzw. Microsoft.
+- Solange ein Konto hinzugefügt ist, speichert der Dienst deine **E-Mail-Adresse**, zufällige Kennungen der Benachrichtigungskanäle bzw. Abonnements (bei Microsoft zusätzlich ein zufälliges Geheimnis) und das **Firebase-Cloud-Messaging-Token** deines Telefons (eine anonyme Kennung der App auf deinem Telefon). Er erhält und speichert nie Termintitel, Beschreibungen, Teilnehmer, Aufgaben oder Anmelde-Tokens.
+- Firebase Analytics wird nicht verwendet. Wenn du ein Konto entfernst oder „Alle Daten löschen“ wählst, enden die Benachrichtigungen und die Daten dieses Kontos werden aus dem Dienst gelöscht. Ist der Dienst nicht erreichbar, funktioniert die App weiter und prüft regelmäßig auf Änderungen (jede Minute, solange sie geöffnet ist, sonst alle 15 Minuten).
 
 ## Weitergabe
 Ich verkaufe, vermiete, teile oder übertrage deine Daten an niemanden. Google und Microsoft erhalten die Anfragen, die die App an ihre Dienste stellt, gemäß der [Datenschutzerklärung von Google](https://policies.google.com/privacy) und der [Datenschutzbestimmungen von Microsoft](https://privacy.microsoft.com/privacystatement).
