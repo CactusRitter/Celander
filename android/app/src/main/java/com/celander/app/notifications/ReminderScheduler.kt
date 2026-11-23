@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.core.content.edit
+import com.ce.kit.log.AppLog
 import com.celander.app.core.database.CalendarDao
 import com.celander.app.core.database.CelanderDatabase
 import com.celander.app.core.database.EventDao
@@ -80,6 +81,11 @@ class ReminderScheduler @Inject constructor(
         val handledUntil = lastHandled(now)
         val oldest = now.minus(MISSED_WINDOW)
         val due = plan(maxOf(handledUntil, oldest), maxOf(wallClockStart(handledUntil), oldest), upTo, now)
+        if (due.isNotEmpty()) {
+            // How late the system delivered the alarm: some phones batch alarms and hand them over minutes after their time.
+            val late = Duration.between(due.minOf { it.triggerAt }, now).seconds
+            AppLog.i("reminders", "${due.size} reminder(s) due, the first ${if (late >= 0) "$late s late" else "${-late} s early"}")
+        }
         for (reminder in due) {
             val snoozed = reminder.key.startsWith(ReminderNotifier.SNOOZE_PREFIX)
             if (snoozed) snoozeDao.delete(reminder.key)
@@ -241,7 +247,9 @@ class ReminderScheduler @Inject constructor(
             Intent(context, ReminderReceiver::class.java).setAction(ReminderReceiver.ACTION_FIRE),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        if (canScheduleExact(alarms)) {
+        val exact = canScheduleExact(alarms)
+        AppLog.i("reminders", "next alarm at $at (${if (exact) "exact" else "approximate: no exact-alarm permission"})")
+        if (exact) {
             alarms.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at.toEpochMilli(), intent)
         } else {
             // Without permission the system may deliver a few minutes late; the settings say so.

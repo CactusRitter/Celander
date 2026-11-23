@@ -1,39 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The Celander logo without background: a gradient "C" with a dot. Source: branding/celander-logo.svg. -->
+<!-- The Celander mark without background: the calendar with the "Ce" indigo → violet → coral gradient and its coral dot
+     (same drawing as ic_launcher_foreground, cropped to the symbol). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="48dp"
     android:height="48dp"
-    android:viewportWidth="464"
-    android:viewportHeight="464">
+    android:viewportWidth="52"
+    android:viewportHeight="52">
     <group
-        android:translateX="-279"
-        android:translateY="-250">
+        android:translateX="-24"
+        android:translateY="-24">
         <path
-            android:pathData="M594.3,657 A185,185 0,1 1,641.4 341.7"
-            android:strokeWidth="81"
-            android:strokeLineCap="round">
+            android:pathData="M37,36 H65 A6,6 0 0 1 71,42 V66 A6,6 0 0 1 65,72 H37 A6,6 0 0 1 31,66 V42 A6,6 0 0 1 37,36 Z
+                              M31,48 H71 M42,31 V40 M60,31 V40"
+            android:strokeWidth="5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round">
             <aapt:attr name="android:strokeColor">
                 <gradient
                     android:type="linear"
-                    android:startX="0"
-                    android:startY="256"
-                    android:endX="0"
-                    android:endY="708">
-                    <item android:offset="0" android:color="#FF2A72FF" />
-                    <item android:offset="0.1" android:color="#FF3B72FC" />
-                    <item android:offset="0.27" android:color="#FF6168F1" />
-                    <item android:offset="0.45" android:color="#FF8561EA" />
-                    <item android:offset="0.63" android:color="#FFAB64F0" />
-                    <item android:offset="0.76" android:color="#FFD57ABD" />
-                    <item android:offset="0.85" android:color="#FFF08B94" />
-                    <item android:offset="0.94" android:color="#FFFC9676" />
-                    <item android:offset="1" android:color="#FFFC9774" />
+                    android:startX="31"
+                    android:startY="31"
+                    android:endX="76"
+                    android:endY="74">
+                    <item android:offset="0" android:color="#FF4A4FD8" />
+                    <item android:offset="0.55" android:color="#FFB565D9" />
+                    <item android:offset="1" android:color="#FFF08C7A" />
                 </gradient>
             </aapt:attr>
         </path>
         <path
-            android:fillColor="#FFFE9672"
-            android:pathData="M689,618.5 a35,35 0,1 1,0 70 a35,35 0,1 1,0 -70z" />
+            android:fillColor="#FFF08C7A"
+            android:pathData="M76,74 m-4.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
     </group>
 </vector>

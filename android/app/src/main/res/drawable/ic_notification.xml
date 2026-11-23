@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Status bar silhouette of the logo; the system only uses its alpha. -->
+<!-- Status bar silhouette of the app icon: the calendar and its dot, as the Cemail (envelope) and Cenotes (sheet) icons.
+     The system only uses its alpha, so it is white. Same geometry as ic_launcher_foreground, cropped to fill the 24 dp. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="464"
-    android:viewportHeight="464">
+    android:viewportWidth="52"
+    android:viewportHeight="52">
     <group
-        android:translateX="-279"
-        android:translateY="-250">
+        android:translateX="-24"
+        android:translateY="-24">
         <path
-            android:pathData="M594.3,657 A185,185 0,1 1,641.4 341.7"
+            android:pathData="M37,36 H65 A6,6 0 0 1 71,42 V66 A6,6 0 0 1 65,72 H37 A6,6 0 0 1 31,66 V42 A6,6 0 0 1 37,36 Z
+                              M31,48 H71 M42,31 V40 M60,31 V40"
             android:strokeColor="#FFFFFFFF"
-            android:strokeWidth="81"
-            android:strokeLineCap="round" />
+            android:strokeWidth="5"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
         <path
             android:fillColor="#FFFFFFFF"
-            android:pathData="M689,618.5 a35,35 0,1 1,0 70 a35,35 0,1 1,0 -70z" />
+            android:pathData="M76,74 m-4.5,0 a4.5,4.5 0 1,0 9,0 a4.5,4.5 0 1,0 -9,0" />
     </group>
 </vector>
