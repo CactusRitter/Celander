@@ -607,4 +607,10 @@
     <string name="drawer_calendars">Kalender</string>
     <string name="drawer_manage_calendars">Kalender verwalten</string>
     <string name="drawer_accounts">Konten</string>
+    <string name="shortcut_new_event">Neuer Termin</string>
+    <string name="shortcut_new_event_long">Neuen Termin anlegen</string>
+    <string name="shortcut_new_task">Neue Aufgabe</string>
+    <string name="shortcut_new_task_long">Neue Aufgabe anlegen</string>
+    <string name="shortcut_agenda">Agenda</string>
+    <string name="shortcut_agenda_long">Agenda öffnen</string>
 </resources>

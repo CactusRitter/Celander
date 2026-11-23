@@ -635,4 +635,10 @@
     <string name="drawer_calendars">Calendarios</string>
     <string name="drawer_manage_calendars">Gestionar calendarios</string>
     <string name="drawer_accounts">Cuentas</string>
+    <string name="shortcut_new_event">Nuevo evento</string>
+    <string name="shortcut_new_event_long">Crear un evento nuevo</string>
+    <string name="shortcut_new_task">Nueva tarea</string>
+    <string name="shortcut_new_task_long">Crear una tarea nueva</string>
+    <string name="shortcut_agenda">Agenda</string>
+    <string name="shortcut_agenda_long">Abrir la agenda</string>
 </resources>

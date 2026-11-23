@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Long-press menu of the app icon. Same actions as the widgets (MainActivity.handle). -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_event_adaptive"
+        android:shortcutId="new_event"
+        android:shortcutLongLabel="@string/shortcut_new_event_long"
+        android:shortcutShortLabel="@string/shortcut_new_event">
+        <intent
+            android:action="com.celander.app.action.NEW_ENTRY"
+            android:targetClass="com.celander.app.MainActivity"
+            android:targetPackage="com.celander.app">
+            <extra android:name="entry_kind" android:value="event" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_task_adaptive"
+        android:shortcutId="new_task"
+        android:shortcutLongLabel="@string/shortcut_new_task_long"
+        android:shortcutShortLabel="@string/shortcut_new_task">
+        <intent
+            android:action="com.celander.app.action.NEW_ENTRY"
+            android:targetClass="com.celander.app.MainActivity"
+            android:targetPackage="com.celander.app">
+            <extra android:name="entry_kind" android:value="task" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_agenda_adaptive"
+        android:shortcutId="agenda"
+        android:shortcutLongLabel="@string/shortcut_agenda_long"
+        android:shortcutShortLabel="@string/shortcut_agenda">
+        <intent
+            android:action="com.celander.app.action.OPEN_VIEW"
+            android:targetClass="com.celander.app.MainActivity"
+            android:targetPackage="com.celander.app">
+            <extra android:name="destination" android:value="AGENDA" />
+        </intent>
+    </shortcut>
+</shortcuts>

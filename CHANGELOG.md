@@ -5,6 +5,7 @@ Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.
 ## Sin publicar
 - Notificaciones: el icono pequeño de la barra de estado y el de la tarjeta de bienvenida pasan a ser el calendario con el punto (como el icono de la app), en vez de la «C» antigua.
 - Diagnóstico: el registro anota cada alarma de recordatorio que se programa (exacta o aproximada) y cuántos segundos tarde llega cada aviso, para saber si el móvil los retrasa.
+- Atajos al mantener pulsado el icono: «Nuevo evento», «Nueva tarea» y «Agenda» (mismas acciones que los widgets). Probados en emulador.
 
 ## 2.4.4 — 2026-11-23
 - Ajustes: se quitan «Licencias de código abierto» y el logo con la versión del final (como en Cemail y Cenotes; la versión sigue en Actualizaciones).
