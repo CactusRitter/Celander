@@ -134,7 +134,6 @@ private object SettingsRoute {
 fun SettingsScreen(
     onBack: () -> Unit,
     onOpenCalendars: () -> Unit,
-    onOpenLicenses: () -> Unit,
     onOpenAccounts: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -223,7 +222,6 @@ fun SettingsScreen(
                             },
                             onRoute = { route = it },
                             onOpenAccounts = onOpenAccounts,
-                            onOpenLicenses = onOpenLicenses,
                         )
                         SettingsRoute.APPEARANCE -> AppearanceRoute(current, viewModel)
                         SettingsRoute.CALENDAR -> CalendarPage(current, viewModel, formats, calendars, onOpenCalendars)
@@ -249,7 +247,6 @@ private fun MainPage(
     remindersSummary: String,
     onRoute: (String) -> Unit,
     onOpenAccounts: () -> Unit,
-    onOpenLicenses: () -> Unit,
 ) {
     val colorName = settings.customHue?.let { stringResource(R.string.design_custom) } ?: stringResource(settings.accent.label)
     val weekStartName = when (settings.weekStart) {
@@ -281,21 +278,6 @@ private fun MainPage(
     Section(stringResource(R.string.backup), stringResource(R.string.backup_summary), BackupIcon) { onRoute(SettingsRoute.BACKUP) }
     Section(stringResource(R.string.settings_section_updates), stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), DownloadIcon) { onRoute(SettingsRoute.UPDATES) }
     Section(stringResource(R.string.settings_section_diagnostics), stringResource(R.string.settings_row_diagnostics_body), Icons.Outlined.BugReport) { onRoute(SettingsRoute.DIAGNOSTICS) }
-    Section(stringResource(R.string.settings_licenses), null, Icons.Outlined.Info, onClick = onOpenLicenses)
-    // About as a quiet footer: logo, name and version.
-    Column(
-        Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Image(painterResource(R.drawable.logo_mark), null, modifier = Modifier.size(36.dp))
-        Text(
-            stringResource(R.string.app_name) + " · " + stringResource(R.string.settings_version, BuildConfig.VERSION_NAME),
-            style = MaterialTheme.typography.bodyMedium,
-            color = com.ce.kit.ui.glass.onBackdrop(MaterialTheme.colorScheme.onSurfaceVariant),
-            textAlign = TextAlign.Center,
-        )
-    }
 }
 
 // --- Appearance ---

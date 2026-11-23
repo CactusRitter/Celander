@@ -143,8 +143,12 @@ class ReminderNotifier @Inject constructor(
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
 
-        /** A snoozed reminder replaces the notification it came from. */
-        fun notificationId(key: String): Int = key.removePrefix(SNOOZE_PREFIX).hashCode() and 0x3fffffff
+        /**
+         * One notification per event occurrence (or task), not per reminder: the key ends with the lead time
+         * ("e:7:1700000000000:60"), which is left out, so "1 hour before" is replaced by "10 minutes before"
+         * instead of piling up. A snoozed reminder replaces the notification it came from.
+         */
+        fun notificationId(key: String): Int = key.removePrefix(SNOOZE_PREFIX).substringBeforeLast(':').hashCode() and 0x3fffffff
 
         const val SNOOZE_PREFIX = "s:"
 

@@ -97,5 +97,23 @@ class ReminderNotifierTest {
         assertEquals(ReminderNotifier.notificationId(reminder.key) + 2, done.requestCode)
     }
 
+    @Test
+    fun theRemindersOfOneEventShareOneNotification() {
+        val event = timedEvent(7, LocalDateTime.of(2026, 11, 3, 14, 30), 60)
+        val start = event.timing.occurrenceKey
+        val anHourBefore = DueReminder("e:7:$start:60", ReminderKind.EVENT, 7, start, Instant.EPOCH)
+        val tenMinutesBefore = DueReminder("e:7:$start:10", ReminderKind.EVENT, 7, start, Instant.EPOCH)
+        notifier.showEvent(anHourBefore, event.occurrence(), formats, BERLIN, today)
+        notifier.showEvent(tenMinutesBefore, event.occurrence(), formats, BERLIN, today)
+
+        // The later reminder replaces the earlier one instead of piling up beside it.
+        assertEquals(1, shadowOf(system).size())
+        assertEquals(ReminderNotifier.notificationId(anHourBefore.key), ReminderNotifier.notificationId(tenMinutesBefore.key))
+        // Snoozing keeps the same notification, and another event or another day gets its own.
+        assertEquals(ReminderNotifier.notificationId(tenMinutesBefore.key), ReminderNotifier.notificationId(ReminderNotifier.SNOOZE_PREFIX + tenMinutesBefore.key))
+        assertTrue(ReminderNotifier.notificationId("e:8:$start:10") != ReminderNotifier.notificationId(tenMinutesBefore.key))
+        assertTrue(ReminderNotifier.notificationId("e:7:${start + 1}:10") != ReminderNotifier.notificationId(tenMinutesBefore.key))
+    }
+
     private fun posted(): Notification = shadowOf(system).allNotifications.single()
 }

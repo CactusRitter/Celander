@@ -22,7 +22,6 @@ import com.ce.kit.ui.theme.CeTheme
 import com.ce.kit.ui.MotionTokens
 import com.celander.app.account.ui.AccountsScreen
 import com.celander.app.settings.CalendarsScreen
-import com.celander.app.settings.LicensesScreen
 import com.celander.app.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
@@ -34,9 +33,6 @@ object SettingsRoute
 
 @Serializable
 object CalendarsRoute
-
-@Serializable
-object LicensesRoute
 
 @Serializable
 object AccountsRoute
@@ -86,7 +82,6 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
                 SettingsScreen(
                     onBack = back,
                     onOpenCalendars = { navController.navigate(CalendarsRoute) },
-                    onOpenLicenses = { navController.navigate(LicensesRoute) },
                     onOpenAccounts = { navController.navigate(AccountsRoute) },
                 )
             }
@@ -96,9 +91,6 @@ fun CelanderNavHost(launchRequests: LaunchRequests) {
         }
         composable<AccountsRoute> {
             Page(navController) { back -> AccountsScreen(onBack = back) }
-        }
-        composable<LicensesRoute> {
-            Page(navController) { back -> LicensesScreen(onBack = back) }
         }
     }
     }
