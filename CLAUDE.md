@@ -3,7 +3,7 @@
 App de calendario para Android de **Jonathan** (cuenta GitHub `allurecha`). Forma parte de las apps «Ce» de César Caballero y Jonathan, junto con **Cemail** y **Cenotes**: comparten el mismo diseño y deben parecer una sola familia. Celander es **el origen del diseño de cristal**; Cemail y Cenotes lo han ido ampliando.
 
 - Repositorio de César: https://github.com/CactusRitter/Celander (fork del de Jonathan, https://github.com/allurecha/celander-app, que también aloja la web en la raíz: `index.html`, `datenschutz.html`). La app está en `android/`.
-- Paquete: `com.celander.app` · versión 2.4.3 (versionCode 21) · minSdk 26 · targetSdk 37
+- Paquete: `com.celander.app` · versión 2.4.4 (versionCode 22) · minSdk 26 · targetSdk 37
 - Kotlin + Jetpack Compose (Material 3) · Room · Haze (cristal) · widgets. Versiones en `android/gradle/libs.versions.toml`.
 - Código en `android/app/src/main/java/com/celander/app/`; el sistema de diseño está en `designsystem/` (`Glass.kt`, `Theme.kt`, `Tokens.kt`, `GlassSheet.kt`, `Controls.kt`, `Motion.kt`…).
 
