@@ -1,3 +1,8 @@
+## 2.4.4
+- Ajustes: se quitan «Licencias de código abierto» y el logo con la versión del final (la versión sigue en Actualizaciones).
+- Recordatorios: un evento o tarea tiene una sola notificación; el aviso nuevo («10 minutos antes») sustituye al anterior en vez de apilarse.
+- Diagnóstico: los botones bajan de línea cuando no caben.
+
 ## 2.4.3
 - Cuentas y red pasan al módulo común (CeKit): sin cambios visibles. La sesión se mantiene.
 

@@ -1,3 +1,8 @@
+## 2.4.4
+- Settings: "Open source licences" and the logo with the version at the bottom are gone (the version stays in Updates).
+- Reminders: an event or task has a single notification; a newer reminder (e.g. "10 minutes before") replaces the earlier one instead of stacking.
+- Diagnostics: the buttons now wrap to a new line when they don't fit.
+
 ## 2.4.3
 - Accounts and network now live in the shared Ce module (CeKit): no visible changes. You stay signed in.
 

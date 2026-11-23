@@ -1,3 +1,8 @@
+## 2.4.4
+- Einstellungen: „Open-Source-Lizenzen“ und das Logo mit der Version am Ende entfallen (die Version steht unter Updates).
+- Erinnerungen: Ein Termin oder eine Aufgabe hat nur eine Benachrichtigung; eine neuere Erinnerung („10 Minuten vorher“) ersetzt die frühere, statt sich zu stapeln.
+- Diagnose: Die Schaltflächen springen in eine neue Zeile, wenn sie nicht passen.
+
 ## 2.4.3
 - Konten und Netzwerk sind jetzt im gemeinsamen Ce-Modul (CeKit): keine sichtbaren Änderungen. Du bleibst angemeldet.
 
