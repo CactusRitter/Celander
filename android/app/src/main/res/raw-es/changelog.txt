@@ -1,3 +1,8 @@
+## 2.4.5
+- Notificaciones: el icono pequeño de la barra de estado y el de la tarjeta de bienvenida pasan a ser el calendario con el punto (como el icono de la app).
+- Atajos al mantener pulsado el icono de la app: Nuevo evento, Nueva tarea y Agenda.
+- Diagnóstico: el registro anota cada alarma de recordatorio programada y cuántos segundos tarde llega cada aviso.
+
 ## 2.4.4
 - Ajustes: se quitan «Licencias de código abierto» y el logo con la versión del final (la versión sigue en Actualizaciones).
 - Recordatorios: un evento o tarea tiene una sola notificación; el aviso nuevo («10 minutos antes») sustituye al anterior en vez de apilarse.

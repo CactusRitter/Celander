@@ -1,3 +1,8 @@
+## 2.4.5
+- Benachrichtigungen: Das kleine Statusleisten-Symbol und das Symbol der Willkommenskarte sind jetzt der Kalender mit dem Punkt (wie das App-Symbol).
+- App-Symbol lange drücken für Kurzbefehle: Neuer Termin, Neue Aufgabe und Agenda.
+- Diagnose: Das Protokoll hält jeden geplanten Erinnerungsalarm fest und wie viele Sekunden zu spät jede Meldung eintrifft.
+
 ## 2.4.4
 - Einstellungen: „Open-Source-Lizenzen“ und das Logo mit der Version am Ende entfallen (die Version steht unter Updates).
 - Erinnerungen: Ein Termin oder eine Aufgabe hat nur eine Benachrichtigung; eine neuere Erinnerung („10 Minuten vorher“) ersetzt die frühere, statt sich zu stapeln.

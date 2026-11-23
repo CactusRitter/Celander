@@ -1,3 +1,8 @@
+## 2.4.5
+- Notifications: the small status-bar icon and the welcome card icon are now the calendar with the dot (like the app icon).
+- Long-press the app icon for shortcuts: New event, New task and Agenda.
+- Diagnostics: the log records every reminder alarm scheduled and how many seconds late each notice arrives.
+
 ## 2.4.4
 - Settings: "Open source licences" and the logo with the version at the bottom are gone (the version stays in Updates).
 - Reminders: an event or task has a single notification; a newer reminder (e.g. "10 minutes before") replaces the earlier one instead of stacking.
