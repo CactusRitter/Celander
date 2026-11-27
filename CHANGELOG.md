@@ -3,6 +3,7 @@
 Cada versión se guarda en Google Drive (`Mi unidad/Ce Apps/Celander/Celander-x.y.z.apk`, sin reemplazar la anterior) y, desde la 2.1.2, se publica en GitHub (la app avisa leyendo la última release). Las versiones anteriores están en las releases de GitHub y en `res/raw*/changelog.txt`.
 
 ## Sin publicar
+- Ajustes: la sección «Datos» (datos de ejemplo y «Borrar todos los datos») y el botón de datos de ejemplo de la tarjeta de bienvenida solo existen en las compilaciones de depuración; la app publicada ya no los muestra.
 
 ## 2.4.5 — 2026-11-23
 - Notificaciones: el icono pequeño de la barra de estado y el de la tarjeta de bienvenida pasan a ser el calendario con el punto (como el icono de la app), en vez de la «C» antigua.

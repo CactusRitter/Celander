@@ -58,7 +58,8 @@ fun WelcomeCard(onCreate: () -> Unit, onLoadSamples: () -> Unit, modifier: Modif
             )
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 AccentButton(stringResource(R.string.welcome_create), onCreate, icon = Icons.Rounded.Add)
-                SoftButton(stringResource(R.string.welcome_samples), onLoadSamples)
+                // Sample data is for testing only: debug builds.
+                if (com.celander.app.BuildConfig.DEBUG) SoftButton(stringResource(R.string.welcome_samples), onLoadSamples)
             }
         }
     }

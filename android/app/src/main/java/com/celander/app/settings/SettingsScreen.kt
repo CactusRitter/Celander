@@ -274,7 +274,10 @@ private fun MainPage(
     ) { onRoute(SettingsRoute.APPEARANCE) }
     Section(stringResource(R.string.settings_section_calendar), calendarSummary, Icons.Outlined.CalendarMonth) { onRoute(SettingsRoute.CALENDAR) }
     Section(stringResource(R.string.settings_section_reminders), remindersSummary, Icons.Outlined.Notifications) { onRoute(SettingsRoute.REMINDERS) }
-    Section(stringResource(R.string.settings_section_data), stringResource(R.string.settings_data_summary), Icons.Outlined.Storage) { onRoute(SettingsRoute.DATA) }
+    // Sample data and "delete all data" are for testing only: debug builds, never the released app.
+    if (BuildConfig.DEBUG) {
+        Section(stringResource(R.string.settings_section_data), stringResource(R.string.settings_data_summary), Icons.Outlined.Storage) { onRoute(SettingsRoute.DATA) }
+    }
     Section(stringResource(R.string.backup), stringResource(R.string.backup_summary), BackupIcon) { onRoute(SettingsRoute.BACKUP) }
     Section(stringResource(R.string.settings_section_updates), stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), DownloadIcon) { onRoute(SettingsRoute.UPDATES) }
     Section(stringResource(R.string.settings_section_diagnostics), stringResource(R.string.settings_row_diagnostics_body), Icons.Outlined.BugReport) { onRoute(SettingsRoute.DIAGNOSTICS) }
