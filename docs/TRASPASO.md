@@ -95,3 +95,10 @@ adb -s RFGL107KERL logcat -d -s Accounts            # trazas del flujo de cuenta
 - Dispositivos: turnos con `Ce/scripts/emu-lock.ps1 acquire Celander [-Dev s26|tableta]` (+ burn-in según `Ce/CLAUDE.md`); detalles en «Normas de dispositivos».
 - Sin publicar: todo lo de `ce/estilo-ce` (Unreleased en `res/raw*/changelog.txt`). No publicar versión hasta que César o Ce Líder lo digan.
 - Pendiente de probar, resumido: push de Microsoft (`mscal`), renovación a las 24 h, interruptor de push apagado, ids locales 3 y 4 que Google rechaza con 400 en `watch` (quedan en sondeo; ver cuáles son), temas Retro 98/Paper/AMOLED y ×1 con fondo único.
+
+## Hecho el 2026-11-27: Celander como calendario de cualquier app (sin publicar)
+- `intake/` (IntakeActivity, Incoming = lectura, IntakePlan = decisión por UID, IntakeRepository, ReviewSheet). INSERT sin .ics usa el editor existente; .ics usa la hoja de revisión.
+- El UID importado → fila y SEQUENCE se guarda en SharedPreferences `ics_imports` (las cuentas cambian el UID al primer envío y la tabla no tiene SEQUENCE; sin migración).
+- Cemail: `Intent(ACTION_INSERT).setDataAndType(Events.CONTENT_URI, "vnd.android.cursor.dir/event")` + extra String `com.celander.app.extra.ICS`.
+- Sin probar: cuentas Google/Microsoft reales con un .ics, móviles reales, integración con Cemail.
+- `GlassDialogTest.tappingTheTitleOrMessageKeepsTheDialogOpen` falló una vez en la suite completa y pasa sola (inestable).

@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import com.ce.kit.ui.glass.LocalHazeState
 import com.celander.app.ui.LocalWindowLayout
 import com.ce.kit.ui.LocalMotion
-import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ContentTransform
@@ -91,7 +90,6 @@ fun HomeScreen(
     val now by viewModel.now.collectAsStateWithLifecycle()
     val completingTasks by viewModel.completingTasks.collectAsStateWithLifecycle()
     val hazeState = com.ce.kit.ui.glass.LocalHazeState.current ?: rememberHazeState()
-    val activity = LocalActivity.current
     val drawer = androidx.compose.material3.rememberDrawerState(androidx.compose.material3.DrawerValue.Closed)
     val drawerScope = androidx.compose.runtime.rememberCoroutineScope()
     val calendarList by viewModel.calendarList.collectAsStateWithLifecycle()
@@ -397,11 +395,7 @@ fun HomeScreen(
                         firstDay = firstDay,
                         zone = zone,
                         onSaved = viewModel::onEntrySaved,
-                        onDismissed = {
-                            viewModel.closeSheet()
-                            // Opened on top of another app (a date in an e-mail): back to it, as calendar apps do.
-                            if (sheet.request is EditorRequest.InsertEvent && activity?.isTaskRoot == false) activity.finish()
-                        },
+                        onDismissed = viewModel::closeSheet,
                     )
                 }
                 null -> Unit

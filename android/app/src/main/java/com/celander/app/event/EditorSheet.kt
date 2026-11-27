@@ -129,6 +129,8 @@ fun EditorSheet(
     onSaved: (EditorOutcome.Saved) -> Unit,
     onDismissed: () -> Unit,
     viewModel: EditorViewModel = hiltViewModel(key = "editor"),
+    /** Shown under the calendar chooser of an event, e.g. what else happens at that time. */
+    notice: @Composable (EditorDraft) -> Unit = {},
 ) {
     LaunchedEffect(request) { viewModel.open(request) }
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -182,6 +184,7 @@ fun EditorSheet(
                 titleFocus = titleFocus,
                 notifications = notifications,
                 viewModel = viewModel,
+                notice = notice,
                 onClose = { controller.close(force = false) },
                 onKeepEditing = { askDiscard = false },
                 onDiscard = { controller.close(force = true) },
@@ -213,6 +216,7 @@ private fun ColumnScope.EditorContent(
     titleFocus: FocusRequester,
     notifications: NotificationAccess,
     viewModel: EditorViewModel,
+    notice: @Composable (EditorDraft) -> Unit,
     onClose: () -> Unit,
     onKeepEditing: () -> Unit,
     onDiscard: () -> Unit,
@@ -242,6 +246,7 @@ private fun ColumnScope.EditorContent(
         titleFocus = titleFocus,
         notifications = notifications,
         viewModel = viewModel,
+        notice = notice,
     )
 }
 
@@ -334,6 +339,7 @@ private fun ColumnScope.EditorBody(
     titleFocus: FocusRequester,
     notifications: NotificationAccess,
     viewModel: EditorViewModel,
+    notice: @Composable (EditorDraft) -> Unit,
 ) {
     val motion = LocalMotion.current
     val focusManager = LocalFocusManager.current
@@ -374,6 +380,7 @@ private fun ColumnScope.EditorBody(
             onSelect = viewModel::setCalendar,
             modifier = Modifier.staggeredEntrance(1, entrance),
         )
+        if (draft.kind == EntryKind.EVENT) notice(draft)
         AnimatedContent(
             targetState = draft.kind,
             transitionSpec = { fadeIn(motion.enter()) togetherWith fadeOut(motion.exit()) using SizeTransform(clip = false) },
@@ -445,7 +452,7 @@ private fun TitleField(
 }
 
 @Composable
-private fun CalendarChooser(calendars: List<CalendarInfo>, selectedId: Long?, onSelect: (Long) -> Unit, modifier: Modifier = Modifier) {
+internal fun CalendarChooser(calendars: List<CalendarInfo>, selectedId: Long?, onSelect: (Long) -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),

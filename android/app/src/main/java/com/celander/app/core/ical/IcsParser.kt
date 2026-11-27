@@ -50,7 +50,13 @@ data class ICalTodo(
     val calendar: String? = null,
 )
 
-data class ICalCalendar(val name: String?, val events: List<ICalEvent>, val todos: List<ICalTodo> = emptyList())
+data class ICalCalendar(
+    val name: String?,
+    val events: List<ICalEvent>,
+    val todos: List<ICalTodo> = emptyList(),
+    /** The iTIP METHOD of the file in capitals (REQUEST, CANCEL, REPLY…), null for a plain calendar. */
+    val method: String? = null,
+)
 
 object IcsParser {
     /** Properties mapped to [ICalEvent] fields; everything else is preserved in [ICalEvent.extra]. */
@@ -67,6 +73,7 @@ object IcsParser {
         val events = mutableListOf<ICalEvent>()
         val todos = mutableListOf<ICalTodo>()
         var name: String? = null
+        var method: String? = null
         var current: MutableList<String>? = null
         var kind = "VEVENT"
         var depth = 0
@@ -80,6 +87,8 @@ object IcsParser {
                         kind = upper.removePrefix("BEGIN:")
                         depth = 0
                     }
+                    upper.startsWith("METHOD") && method == null ->
+                        method = ContentLine.parse(line)?.takeIf { it.name == "METHOD" }?.value?.trim()?.uppercase()
                     upper.startsWith("X-WR-CALNAME") && name == null ->
                         name = ContentLine.parse(line)?.value?.let(ContentLine::unescapeText)
                 }
@@ -87,7 +96,9 @@ object IcsParser {
             }
             when {
                 upper == "END:$kind" && depth == 0 -> {
-                    if (kind == "VTODO") parseTodo(event)?.let(todos::add) else parseEvent(event)?.let(events::add)
+                    // One broken component (an absurd duration, say) is left out; the rest of the file still counts.
+                    if (kind == "VTODO") runCatching { parseTodo(event) }.getOrNull()?.let(todos::add)
+                    else runCatching { parseEvent(event) }.getOrNull()?.let(events::add)
                     current = null
                 }
                 upper.startsWith("BEGIN:") -> {
@@ -101,7 +112,7 @@ object IcsParser {
                 else -> event += line
             }
         }
-        return ICalCalendar(name, events, todos)
+        return ICalCalendar(name, events, todos, method)
     }
 
     /** A VTODO: its due moment (or start) as the wall-clock date and time of the person, its state and its relative reminders. */

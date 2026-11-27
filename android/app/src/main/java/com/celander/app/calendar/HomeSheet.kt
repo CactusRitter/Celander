@@ -49,6 +49,8 @@ sealed interface EditorRequest {
         val location: String = "",
         val description: String = "",
         val rrule: String? = null,
+        /** The UID of the .ics the event came from, so a later update of it is recognised. */
+        val uid: String? = null,
     ) : EditorRequest
 }
 

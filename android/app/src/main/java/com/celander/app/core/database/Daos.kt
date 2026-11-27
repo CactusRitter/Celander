@@ -132,6 +132,9 @@ interface EventDao {
     @Query("SELECT * FROM events WHERE id = :id")
     fun observeById(id: Long): Flow<EventEntity?>
 
+    @Query("SELECT * FROM events WHERE uid = :uid ORDER BY id")
+    suspend fun getByUid(uid: String): List<EventEntity>
+
     @Query("SELECT * FROM events ORDER BY id")
     suspend fun getAll(): List<EventEntity>
 

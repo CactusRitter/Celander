@@ -641,4 +641,47 @@
     <string name="shortcut_new_task_long">Crear una tarea nueva</string>
     <string name="shortcut_agenda">Agenda</string>
     <string name="shortcut_agenda_long">Abrir la agenda</string>
+
+    <!-- Events and .ics files other apps hand over. -->
+    <string name="intake_title_add">Añadir al calendario</string>
+    <string name="intake_title_update">Actualizar evento</string>
+    <string name="intake_title_cancel">Evento cancelado</string>
+    <string name="intake_title_message">Archivo de calendario</string>
+    <string name="intake_add">Añadir</string>
+    <string name="intake_update">Actualizar</string>
+    <string name="intake_delete">Eliminar</string>
+    <string name="intake_edit">Editar antes de añadir</string>
+    <string name="intake_show">Ver en el calendario</string>
+    <string name="intake_done">Listo</string>
+    <string name="intake_back_to_list">Volver a la lista</string>
+    <string name="intake_status_new">Nuevo</string>
+    <string name="intake_status_update">Ya está en tu calendario. El archivo lo cambia.</string>
+    <string name="intake_status_unchanged">Ya está en tu calendario.</string>
+    <string name="intake_status_removed">Ya se quitó de tu calendario.</string>
+    <string name="intake_status_outdated">El archivo es más antiguo que el evento de tu calendario.</string>
+    <string name="intake_status_cancel">Cancelado por quien lo organiza; sigue en tu calendario.</string>
+    <string name="intake_status_not_found">Cancelado. No está en tu calendario.</string>
+    <string name="intake_status_read_only">Ya está en un calendario que no se puede cambiar aquí.</string>
+    <string name="intake_added">Añadido a tu calendario.</string>
+    <string name="intake_updated">Evento actualizado.</string>
+    <string name="intake_deleted">Quitado de tu calendario.</string>
+    <string name="intake_conflicts_time">También a esa hora</string>
+    <string name="intake_conflicts_day">También ese día</string>
+    <string name="intake_delete_title">¿Eliminar este evento?</string>
+    <string name="intake_delete_message">«%s» se quitará de tu calendario.</string>
+    <string name="intake_delete_occurrence_message">Se quitará esta fecha de «%s». El resto de la serie se queda.</string>
+    <string name="intake_guests">Invitados: %s</string>
+    <string name="intake_truncated">Solo se muestran las primeras %d entradas.</string>
+    <string name="intake_error_unreadable">Aquí no hay ningún evento que Celander pueda leer.</string>
+    <string name="intake_error_reply">Es la respuesta a una invitación. No hay nada que añadir.</string>
+    <string name="intake_error_too_large">Este archivo de calendario es demasiado grande.</string>
+    <string name="intake_error_edit">Celander no puede abrir este evento para editarlo desde otra app.</string>
+    <plurals name="intake_title_list">
+        <item quantity="one">%d evento</item>
+        <item quantity="other">%d eventos</item>
+    </plurals>
+    <plurals name="intake_conflicts_more">
+        <item quantity="one">y %d más</item>
+        <item quantity="other">y %d más</item>
+    </plurals>
 </resources>

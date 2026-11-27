@@ -616,4 +616,47 @@
     <string name="shortcut_new_task_long">Create a new task</string>
     <string name="shortcut_agenda">Agenda</string>
     <string name="shortcut_agenda_long">Open the agenda</string>
+
+    <!-- Events and .ics files other apps hand over. -->
+    <string name="intake_title_add">Add to calendar</string>
+    <string name="intake_title_update">Update event</string>
+    <string name="intake_title_cancel">Cancelled event</string>
+    <string name="intake_title_message">Calendar file</string>
+    <string name="intake_add">Add</string>
+    <string name="intake_update">Update</string>
+    <string name="intake_delete">Delete</string>
+    <string name="intake_edit">Edit before adding</string>
+    <string name="intake_show">Show in calendar</string>
+    <string name="intake_done">Done</string>
+    <string name="intake_back_to_list">Back to the list</string>
+    <string name="intake_status_new">New</string>
+    <string name="intake_status_update">Already in your calendar. The file changes it.</string>
+    <string name="intake_status_unchanged">Already in your calendar.</string>
+    <string name="intake_status_removed">Already removed from your calendar.</string>
+    <string name="intake_status_outdated">The file is older than the event in your calendar.</string>
+    <string name="intake_status_cancel">Cancelled by the organiser, still in your calendar.</string>
+    <string name="intake_status_not_found">Cancelled. It is not in your calendar.</string>
+    <string name="intake_status_read_only">Already in a calendar that cannot be changed here.</string>
+    <string name="intake_added">Added to your calendar.</string>
+    <string name="intake_updated">Event updated.</string>
+    <string name="intake_deleted">Removed from your calendar.</string>
+    <string name="intake_conflicts_time">Also at this time</string>
+    <string name="intake_conflicts_day">Also on this day</string>
+    <string name="intake_delete_title">Delete this event?</string>
+    <string name="intake_delete_message">“%s” will be removed from your calendar.</string>
+    <string name="intake_delete_occurrence_message">This date of “%s” will be removed. The rest of the series stays.</string>
+    <string name="intake_guests">Guests: %s</string>
+    <string name="intake_truncated">Only the first %d entries are shown.</string>
+    <string name="intake_error_unreadable">This does not contain an event Celander can read.</string>
+    <string name="intake_error_reply">This is a reply to an invitation. There is nothing to add.</string>
+    <string name="intake_error_too_large">This calendar file is too large.</string>
+    <string name="intake_error_edit">Celander cannot open this event for editing from another app.</string>
+    <plurals name="intake_title_list">
+        <item quantity="one">%d event</item>
+        <item quantity="other">%d events</item>
+    </plurals>
+    <plurals name="intake_conflicts_more">
+        <item quantity="one">and %d more</item>
+        <item quantity="other">and %d more</item>
+    </plurals>
 </resources>

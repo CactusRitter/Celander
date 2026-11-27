@@ -16,6 +16,11 @@ Rutas relativas a `android/app/src/main/java/com/celander/app/`. Lo compartido: 
 - Google Calendar, Microsoft, suscripción .ics por URL, calendario local, importar/exportar .ics (account/, core/ical/)
 - Cumpleaños de contactos de Google, opcional (account/google/BirthdayEvents.kt)
 
+## Desde otras apps (intake/)
+- Calendario del sistema para cualquier app: INSERT / EDIT sin id de eventos (título, lugar, descripción, inicio, fin, todo el día, RRULE, EXTRA_EMAIL como línea «Invitados») abre el editor, con aviso de lo que hay a esa hora
+- Abrir .ics (text/calendar, content o file): revisión con calendario y recordatorios; mismo UID = actualizar (respeta SEQUENCE), CANCEL = borrar con confirmación (evento o una fecha), varios = lista; máx. 1 MB y 100 entradas; REPLY no se importa
+- Extra `com.celander.app.extra.ICS` (texto del .ics en el INSERT): manda sobre los extras estándar
+
 ## Avisos y accesos
 - Notificaciones con posponer y aviso si falta permiso de alarma exacta (notifications/); recordatorios por defecto
 - 5 widgets: mes, día, año, agenda, tareas (widget/); atajos: evento, tarea, agenda
@@ -25,4 +30,4 @@ Rutas relativas a `android/app/src/main/java/com/celander/app/`. Lo compartido: 
 - Copia .zip manual (settings/Backup.kt); Diagnóstico y actualizaciones (kit); datos de ejemplo solo en depuración
 
 ## No tiene
-Recibir «Compartir» de otras apps, abrir .ics desde un correo (dudoso), tiempo o trayecto, resumen diario, bloqueo con huella, tile, Wear OS, copia automática.
+Recibir «Compartir» (SEND) de otras apps, invitados/responder invitaciones, tiempo o trayecto, resumen diario, bloqueo con huella, tile, Wear OS, copia automática.

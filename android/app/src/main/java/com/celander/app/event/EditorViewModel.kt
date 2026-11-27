@@ -354,7 +354,7 @@ class EditorViewModel @Inject constructor(
                 ).copy(remindersFromDefaults = false)
             }
             is EditorRequest.EditTask -> tasks.get(request.taskId)?.let { fromTask(it, key) }
-            is EditorRequest.InsertEvent -> insertedDraft(request, newEventDraft(now.toLocalDate(), null, request.allDay, request.title))
+            is EditorRequest.InsertEvent -> insertedDraft(request, newEventDraft(now.toLocalDate(), null, request.allDay, request.title)).copy(uid = request.uid)
         }
     }
 

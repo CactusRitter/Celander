@@ -613,4 +613,47 @@
     <string name="shortcut_new_task_long">Neue Aufgabe anlegen</string>
     <string name="shortcut_agenda">Agenda</string>
     <string name="shortcut_agenda_long">Agenda öffnen</string>
+
+    <!-- Events and .ics files other apps hand over. -->
+    <string name="intake_title_add">Zum Kalender hinzufügen</string>
+    <string name="intake_title_update">Termin aktualisieren</string>
+    <string name="intake_title_cancel">Abgesagter Termin</string>
+    <string name="intake_title_message">Kalenderdatei</string>
+    <string name="intake_add">Hinzufügen</string>
+    <string name="intake_update">Aktualisieren</string>
+    <string name="intake_delete">Löschen</string>
+    <string name="intake_edit">Vor dem Hinzufügen bearbeiten</string>
+    <string name="intake_show">Im Kalender zeigen</string>
+    <string name="intake_done">Fertig</string>
+    <string name="intake_back_to_list">Zurück zur Liste</string>
+    <string name="intake_status_new">Neu</string>
+    <string name="intake_status_update">Steht schon in deinem Kalender. Die Datei ändert ihn.</string>
+    <string name="intake_status_unchanged">Steht schon in deinem Kalender.</string>
+    <string name="intake_status_removed">Wurde schon aus deinem Kalender entfernt.</string>
+    <string name="intake_status_outdated">Die Datei ist älter als der Termin in deinem Kalender.</string>
+    <string name="intake_status_cancel">Vom Veranstalter abgesagt, steht noch in deinem Kalender.</string>
+    <string name="intake_status_not_found">Abgesagt. Steht nicht in deinem Kalender.</string>
+    <string name="intake_status_read_only">Steht schon in einem Kalender, der hier nicht geändert werden kann.</string>
+    <string name="intake_added">Zu deinem Kalender hinzugefügt.</string>
+    <string name="intake_updated">Termin aktualisiert.</string>
+    <string name="intake_deleted">Aus deinem Kalender entfernt.</string>
+    <string name="intake_conflicts_time">Ebenfalls um diese Zeit</string>
+    <string name="intake_conflicts_day">Ebenfalls an diesem Tag</string>
+    <string name="intake_delete_title">Diesen Termin löschen?</string>
+    <string name="intake_delete_message">„%s“ wird aus deinem Kalender entfernt.</string>
+    <string name="intake_delete_occurrence_message">Dieses Datum von „%s“ wird entfernt. Der Rest der Serie bleibt.</string>
+    <string name="intake_guests">Gäste: %s</string>
+    <string name="intake_truncated">Nur die ersten %d Einträge werden gezeigt.</string>
+    <string name="intake_error_unreadable">Hier ist kein Termin, den Celander lesen kann.</string>
+    <string name="intake_error_reply">Das ist eine Antwort auf eine Einladung. Es gibt nichts hinzuzufügen.</string>
+    <string name="intake_error_too_large">Diese Kalenderdatei ist zu groß.</string>
+    <string name="intake_error_edit">Celander kann diesen Termin nicht aus einer anderen App heraus bearbeiten.</string>
+    <plurals name="intake_title_list">
+        <item quantity="one">%d Termin</item>
+        <item quantity="other">%d Termine</item>
+    </plurals>
+    <plurals name="intake_conflicts_more">
+        <item quantity="one">und %d weiterer</item>
+        <item quantity="other">und %d weitere</item>
+    </plurals>
 </resources>
