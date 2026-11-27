@@ -102,3 +102,6 @@ adb -s RFGL107KERL logcat -d -s Accounts            # trazas del flujo de cuenta
 - Cemail: `Intent(ACTION_INSERT).setDataAndType(Events.CONTENT_URI, "vnd.android.cursor.dir/event")` + extra String `com.celander.app.extra.ICS`.
 - Sin probar: cuentas Google/Microsoft reales con un .ics, móviles reales, integración con Cemail.
 - `GlassDialogTest.tappingTheTitleOrMessageKeepsTheDialogOpen` falló una vez en la suite completa y pasa sola (inestable).
+- Probado en emulador: INSERT, .ics (extra y content://), anadir/actualizar/antiguo/cancelar/lista/archivo roto; hoja de revision en Glass, Modern, AMOLED, Retro 98, Paper y Brutalist (claro y oscuro; Indigo, 65 %) y Glass con Teal y transparencia 100 % (claro y oscuro).
+- El emulador `Pixel_API_36` se cayo varias veces (sobre todo al abrir Ajustes > Apariencia): quedo con color Teal y 100 % en Celander. `android/scripts/emulator.ps1` usa adb sin `-s`: llamarlo con `ANDROID_SERIAL=emulator-5554`, o con un movil conectado le habla a el.
+
